@@ -1,22 +1,28 @@
 import React, { Fragment, useState } from 'react';
-import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {path} from './utils/constant';
-import AdminRoute from './components/AdminRouter';
-import SellRoute from './components/SellRouter';
+import { RootState } from './redux/store';
+import { useSelector } from 'react-redux';
+import './styles/app.module.css';
+import AdminRoute from './components/router/AdminRouter';
+import SellRoute from './components/router/SellRouter';
 import Admin from './router/Admin';
+import Sell from './router/Sell';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+
+
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   return (
-    <div className="App">
+    <div className="content-app">
       <Fragment>
         <Router>
           <Routes>
-              <Route path={path.HOME_PAGE} } />
-              <Route path={path.LOGIN} />
-              <Route path={path.REGISTER} element={} />
+              <Route path={path.HOME_PAGE} element={<></>} />
+              <Route path={path.LOGIN} element={<>{isAuthenticated ? <></> : <Login />}</>}/>
+              <Route path={path.REGISTER} element={<>{isAuthenticated ? <></> : <Register />}</>}/>
               <Route path={path.SELL} element={
                   <SellRoute>
                       <Sell />

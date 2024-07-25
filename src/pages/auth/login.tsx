@@ -6,8 +6,7 @@ import { useDispatch } from 'react-redux';
 import { setUserLoginInfo } from '../../redux/slice/authSlice';
 import styles from '../../styles/auth.module.css';
 import { useAppSelector } from '../../redux/hooks';
-
-const LoginPage = () => {
+const Login = () => {
     const navigate = useNavigate();
     const [isSubmit, setIsSubmit] = useState(false);
     const dispatch = useDispatch();
@@ -30,7 +29,7 @@ const LoginPage = () => {
         setIsSubmit(true);
         const res = await callLogin(username, password);
         setIsSubmit(false);
-
+        console.log(res);
         if (res?.data) {
             localStorage.setItem('access_token', res.data.access_token);
             dispatch(setUserLoginInfo(res.data.user))
@@ -48,7 +47,7 @@ const LoginPage = () => {
 
 
     return (
-        <div className={styles["login-page"]}>
+        <div className={styles["login-page"]} style={{display:"flex", justifyContent:"right"}}>
             <main className={styles.main}>
                 <div className={styles.container}>
                     <section className={styles.wrapper}>
@@ -102,4 +101,4 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage;
+export default Login;

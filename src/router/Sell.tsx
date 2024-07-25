@@ -5,14 +5,14 @@ import { RootState } from '../redux/store'; // Đảm bảo định nghĩa RootS
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 
-const Admin = () => {
+const Sell = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   return (
     <Fragment>
         {/* {isAuthenticated && <NavBarManagement />} */}
-        <div className='admin-container'>
-            <div className="admin-list">
+        <div className='sell-container'>
+            <div className="sell-list">
             <Router>
                 <Routes>
                    
@@ -24,4 +24,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Sell;

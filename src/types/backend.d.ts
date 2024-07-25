@@ -40,12 +40,13 @@ export interface IGetAccount extends Omit<IAccount, "access_token"> { }
 
 export interface IUser {
     id?: string;
-    fullname: string;
+    fullname?: string;
     email: string;
     phoneNumber?: string;
     password?: string;
-    gender: string;
-    address: string;
+    confirmPassword?: string;
+    gender?: string;
+    address?: string;
     dateOfBirth: string;
     avatar: string;
     role?: {

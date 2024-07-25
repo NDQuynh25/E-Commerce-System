@@ -4,8 +4,8 @@ import { IAccount, IGetAccount, IUser } from '../types/backend'
 
 
 
-export const callRegister = (name: string, email: string, password: string, age: number, gender: string, address: string) => {
-    return axios.post<IBackendRes<IUser>>('/api/v1/auth/register', { name, email, password, age, gender, address })
+export const callRegister = ( email: string, password: string, confirmPassword: String) => {
+    return axios.post<IBackendRes<IUser>>('/api/v1/auth/register', {email, password, confirmPassword })
 }
 
 export const callLogin = (username: string, password: string) => {

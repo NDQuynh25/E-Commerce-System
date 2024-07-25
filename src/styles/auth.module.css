@@ -15,7 +15,10 @@
 .login-page,
 .register-page {
     color: var(--color-black);
-    background: var(--color-light);
+    background-image: url('../../public/background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover; /* Đảm bảo ảnh nền bao phủ toàn bộ khu vực */
+    background-position: center; /* Canh giữa ảnh nền */
 }
 
 .login-page .container,
@@ -23,6 +26,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    min-width: 40rem;
     max-width: 80rem;
     min-height: 100vh;
     padding: 0 2rem;

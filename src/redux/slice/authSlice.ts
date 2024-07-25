@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 
-// First, create the thunk
+// //First, create the thunk
 // export const fetchAccount = createAsyncThunk(
 //     'account/fetchAccount',
 //     async () => {
