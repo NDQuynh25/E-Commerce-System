@@ -1,15 +1,16 @@
 
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import useAuth from '../hooks/useAuth';
-import {role} from '../utils/constant';
+import {role} from '../../utils/constant';
+import { useAppSelector } from '../../redux/hooks';
 
 interface SellRouteProps {
     children: React.ReactNode;
 }
 
 const SellRoute: React.FC<SellRouteProps> = ({ children }) => {
-    const { isAuthenticated, userRole } = useAuth();
+    const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
+    const userRole = useAppSelector(state => state.auth.user.role.name);
 
     if (!isAuthenticated) {
         return <Navigate to="/admin/login" />;

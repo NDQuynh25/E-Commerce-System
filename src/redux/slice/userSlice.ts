@@ -1,36 +1,76 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { callFetchUser } from '../../api/userApi';
 
-import { createSlice } from "@reduxjs/toolkit";
-import { IUser } from "../../types/backend";
+import { IUser, IBackendRes, IModelPaginate } from '../../types/backend';
 
-interface IState {
+// First, create the thunk
+
+
+export interface IState {
     isFetching: boolean;
     meta: {
         page: number;
-        pageSize: number;
-        pages: number;
-        total: number;
+        page_size: number;
+        total_elements: number;
+        total_pages: number;
     },
-    result: IUser[]
+    results: IUser[]
 }
-
 
 const initialState: IState = {
     isFetching: true,
     meta: {
         page: 1,
-        pageSize: 10,
-        pages: 0,
-        total: 0
+        page_size: 10,
+        total_elements: 0,
+        total_pages: 0
     },
-    result: []
+    results: []
 };
 
 
 
-export const userSlice = createSlice({
+
+const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
+        setActiveMenu: (state, action) => {
+            // state.activeMenu = action.payload;
+        },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchUser.pending, (state, action) => {
+            state.isFetching = true;
+        });
         
+        builder.addCase(fetchUser.fulfilled, (state, action) => {
+            if (action.payload && action.payload.data) {
+                console.log(action.payload.data.results);
+                state.isFetching = false;
+                state.meta = action.payload.data.meta;
+                state.results = action.payload.data.results;
+            }
+        });
+
+        builder.addCase(fetchUser.rejected, (state, action) => {
+            state.isFetching = false;
+        });
     },
 });
+
+export const fetchUser = createAsyncThunk<
+    IBackendRes<IModelPaginate<IUser>>,
+    { query: string },
+    {}
+>(
+    'user/fetchUser',
+    async ({ query }) => {
+        const response: IBackendRes<IModelPaginate<IUser>> = await callFetchUser(query);
+        return response;
+    }
+);
+
+export const { setActiveMenu, } = userSlice.actions;
+
+export default userSlice.reducer;

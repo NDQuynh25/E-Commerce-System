@@ -12,18 +12,28 @@ import {
     ScheduleOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, message, Avatar, Button } from 'antd';
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import { callLogout } from '../../api/authApi';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { isMobile } from 'react-device-detect';
 import type { MenuProps } from 'antd';
+import { Footer } from 'antd/lib/layout/layout';
+import { setLogoutAction } from '../../redux/slice/authSlice';
 // import { setLogoutAction } from '@/redux/slice/accountSlide';
 // import { ALL_PERMISSIONS } from '@/config/permissions';
 
+
+
+interface IProps {
+    children: React.ReactNode
+}
+
+
+
 const { Content, Sider } = Layout;
 
-const LayoutAdmin = () => {
+const LayoutAdmin = (props: IProps) => {
     const location = useLocation();
 
     const [collapsed, setCollapsed] = useState(false);
@@ -79,8 +89,8 @@ const LayoutAdmin = () => {
                     icon: <AppstoreOutlined />
                 },
                 ...(viewUser || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/user'>User</Link>,
-                    key: '/admin/user',
+                    label: <Link to='/admin/users'>User</Link>,
+                    key: '/admin/users',
                     icon: <UserOutlined />
                 }] : []),
                 ...(viewRole || ACL_ENABLE === 'false' ? [{
@@ -100,14 +110,16 @@ const LayoutAdmin = () => {
         setActiveMenu(location.pathname)
     }, [location])
 
-    // const handleLogout = async () => {
-    //     const res = await callLogout();
-    //     if (res && +res.statusCode === 200) {
-    //         dispatch(setLogoutAction({}));
-    //         message.success('Đăng xuất thành công');
-    //         navigate('/')
-    //     }
-    // }
+    const handleLogout = async () => {
+        const res = await callLogout();
+        console.log('res', res);
+        if (res && +res.status === 200) {
+            console.log('logout success');
+            await dispatch(setLogoutAction({}));
+            message.success('Đăng xuất thành công');
+            navigate('/')
+        }
+    }
 
     // if (isMobile) {
     //     items.push({
@@ -125,19 +137,19 @@ const LayoutAdmin = () => {
             label: <Link to={'/'}>Trang chủ</Link>,
             key: 'home',
         },
-        // {
-        //     label: <label
-        //         style={{ cursor: 'pointer' }}
-        //         onClick={() => handleLogout()}
-        //     >Đăng xuất</label>,
-        //     key: 'logout',
-        // },
+        {
+            label: <label
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleLogout()}
+            >Đăng xuất</label>,
+            key: 'logout',
+        },
     ];
 
     return (
         <>
             <Layout
-                style={{ minHeight: '100vh' }}
+                style={{ minHeight: '98vh' }}
                 className="layout-admin"
             >
                 {!isMobile ?
@@ -181,18 +193,19 @@ const LayoutAdmin = () => {
 
                             <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                 <Space style={{ cursor: "pointer" }}>
-                                    Welcome {user?.name}
-                                    <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar>
-
+                                    Welcome {user?.fullname}
+                                    <Avatar src={user?.avatar}/>
                                 </Space>
                             </Dropdown>
                         </div>
                     }
                     <Content style={{ padding: '15px' }}>
-                        <Outlet />
+                        {props.children}
+                        
+                        
                     </Content>
                     {/* <Footer style={{ padding: 10, textAlign: 'center' }}>
-                        React Typescript series Nest.JS &copy; Hỏi Dân IT - Made with <HeartTwoTone />
+                        React Typescript series Nest.JS &copy; HAHAHA - Made with <HeartTwoTone />
                     </Footer> */}
                 </Layout>
             </Layout>

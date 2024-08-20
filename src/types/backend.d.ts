@@ -1,35 +1,34 @@
 export interface IBackendRes<T> {
     error?: string | string[];
     message: string;
-    statusCode: number | string;
+    status: number | string;
     data?: T;
 }
 
 export interface IModelPaginate<T> {
     meta: {
         page: number;
-        pageSize: number;
-        pages: number;
-        total: number;
+        page_size: number;
+        total_elements: number;
+        total_pages: number;
     },
-    result: T[]
+    results: T[]
 }
 
 export interface IAccount {
     access_token: string;
     user: {
-        id: string;
+        id: number;
         email: string;
-        name: string;
+        fullname: string;
         role: {
-            id: string;
+            id: number;
             name: string;
             permissions: {
-                id: string;
+                id: number;
                 name: string;
-                apiPath: string;
+                api_access: string;
                 method: string;
-                module: string;
             }[]
         }
     }
@@ -49,6 +48,7 @@ export interface IUser {
     address?: string;
     dateOfBirth: string;
     avatar: string;
+    avatarFile?: File;
     role?: {
         id: string;
         name: string;
@@ -66,11 +66,9 @@ export interface IPermission {
     name?: string;
     apiPath?: string;
     method?: string;
-    module?: string;
 
     createdBy?: string;
-    isDeleted?: boolean;
-    deletedAt?: boolean | null;
+    updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
 
@@ -84,8 +82,7 @@ export interface IRole {
     permissions: IPermission[] | string[];
 
     createdBy?: string;
-    isDeleted?: boolean;
-    deletedAt?: boolean | null;
+    updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
 }

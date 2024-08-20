@@ -1,38 +1,47 @@
 import { Button, Divider, Form, Input, message, notification } from 'antd';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { callLogin } from '../../api/authApi';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserLoginInfo } from '../../redux/slice/authSlice';
-import styles from '../../styles/auth.module.css';
+import styles from '../../styles/login.admin.module.css';
 import { useAppSelector } from '../../redux/hooks';
-const Login = () => {
+import {path, role} from '../../utils/constant';
+import { RootState } from '../../redux/store';
+
+
+
+const LoginAdmin = () => {
     const navigate = useNavigate();
     const [isSubmit, setIsSubmit] = useState(false);
     const dispatch = useDispatch();
-    const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
+
+    const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated);
+    const isAdmin = useAppSelector((state: RootState) => state.auth.user?.role?.name === role.ADMIN);
 
     let location = useLocation();
     let params = new URLSearchParams(location.search);
     const callback = params?.get("callback");
 
     useEffect(() => {
-        //đã login => redirect to '/'
-        if (isAuthenticated) {
-            // navigate('/');
-            window.location.href = '/';
+        if (isAuthenticated && isAdmin) {
+            //window.location.href = path.LOGIN_ADMIN;
         }
+        
     }, [])
+
+    
 
     const onFinish = async (values: any) => {
         const { username, password } = values;
         setIsSubmit(true);
         const res = await callLogin(username, password);
+        console.log("res: " + JSON.stringify(res));
         setIsSubmit(false);
-        console.log(res);
         if (res?.data) {
             localStorage.setItem('access_token', res.data.access_token);
-            dispatch(setUserLoginInfo(res.data.user))
+            console.log("data: " + JSON.stringify(res.data.user));
+            dispatch(setUserLoginInfo(res.data?.user))
             message.success('Đăng nhập tài khoản thành công!');
             window.location.href = callback ? callback : '/admin/users';
         } else {
@@ -47,7 +56,7 @@ const Login = () => {
 
 
     return (
-        <div className={styles["login-page"]} style={{display:"flex", justifyContent:"right"}}>
+        <div className={styles["login-page"]}>
             <main className={styles.main}>
                 <div className={styles.container}>
                     <section className={styles.wrapper}>
@@ -87,12 +96,6 @@ const Login = () => {
                                     Đăng nhập
                                 </Button>
                             </Form.Item>
-                            <Divider>Or</Divider>
-                            <p className="text text-normal">Chưa có tài khoản ?
-                                <span>
-                                    <Link to='/register' > Đăng Ký </Link>
-                                </span>
-                            </p>
                         </Form>
                     </section>
                 </div>
@@ -101,4 +104,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default LoginAdmin;

@@ -1,0 +1,17 @@
+
+.ant-modal-header {
+    
+    margin-bottom: 20px !important;
+    
+}
+.col-image {
+   
+    margin-bottom: 20px !important;
+}
+
+
+.ant-upload-list-item-thumbnail img{
+    border-radius: 50% !important;
+    /* object-fit: cover; */
+  
+}

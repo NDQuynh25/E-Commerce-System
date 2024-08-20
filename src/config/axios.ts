@@ -29,6 +29,9 @@ const handleRefreshToken = async (): Promise<string | null> => {
 };
 
 instance.interceptors.request.use(function (config) {
+    if (config.url && config.url.startsWith('/api/v1/auth/')) {
+        return config;
+    }
     if (typeof window !== "undefined" && window && window.localStorage && window.localStorage.getItem('access_token')) {
         config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('access_token');
     }
@@ -51,11 +54,17 @@ instance.interceptors.response.use(
             && error.config.url !== '/api/v1/auth/login'
             && !error.config.headers[NO_RETRY_HEADER]
         ) {
+            error.config.headers[NO_RETRY_HEADER] = 'true'; // Prevent infinite loop
+
             const access_token = await handleRefreshToken();
-            error.config.headers[NO_RETRY_HEADER] = 'true'
+            
             if (access_token) {
-                error.config.headers['Authorization'] = `Bearer ${access_token}`;
-                localStorage.setItem('access_token', access_token)
+
+
+                localStorage.setItem('access_token', access_token); // Update local storage
+                error.config.headers['Authorization'] = `Bearer ${access_token}`; // Update access token
+                
+                console.log("Retry request with new access token");
                 return instance.request(error.config);
             }
         }

@@ -1,19 +1,21 @@
 import DataTable from "../../components/DataTable";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { fetchUser } from "@/redux/slice/userSlide";
-import { IUser } from "@/types/backend";
+
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { IUser } from "../../types/backend";
 import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, message, notification } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteUser } from "@/config/api";
+import { callDeleteUser } from "../../api/userApi";
 import queryString from 'query-string';
-import ModalUser from "@/components/admin/user/modal.user";
-import ViewDetailUser from "@/components/admin/user/view.user";
-import Access from "@/components/share/access";
-import { ALL_PERMISSIONS } from "@/config/permissions";
+import ViewDetailUser from "../../components/admin/user/ViewDetailUser";
+import ModalUser from "../../components/admin/user/ModalUser";
+// import ViewDetailUser from "@/components/admin/user/view.user";
+// import Access from "@/components/share/access";
+// import { ALL_PERMISSIONS } from "@/config/permissions";
 import { sfLike } from "spring-filter-query-builder";
+import { fetchUser } from "../../redux/slice/userSlice";
 
 const UserPage = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -24,13 +26,14 @@ const UserPage = () => {
 
     const isFetching = useAppSelector(state => state.user.isFetching);
     const meta = useAppSelector(state => state.user.meta);
-    const users = useAppSelector(state => state.user.result);
+    const users = useAppSelector(state => state.user.results);
     const dispatch = useAppDispatch();
+
 
     const handleDeleteUser = async (id: string | undefined) => {
         if (id) {
             const res = await callDeleteUser(id);
-            if (+res.statusCode === 200) {
+            if (+res.status === 200) {
                 message.success('Xóa User thành công');
                 reloadTable();
             } else {
@@ -46,6 +49,13 @@ const UserPage = () => {
         tableRef?.current?.reload();
     }
 
+    const handleRowClick = (record: IUser) => {
+        setDataInit(record);
+        setOpenViewDetail(true);
+        console.log("record: " + JSON.stringify(record));
+        console.log("op")
+    }
+
     const columns: ProColumns<IUser>[] = [
         {
             title: 'STT',
@@ -55,14 +65,14 @@ const UserPage = () => {
             render: (text, record, index) => {
                 return (
                     <>
-                        {(index + 1) + (meta.page - 1) * (meta.pageSize)}
+                        {(index + 1) + (meta.page) * (meta.page_size)}
                     </>)
             },
             hideInSearch: true,
         },
         {
             title: 'Name',
-            dataIndex: 'name',
+            dataIndex: 'fullname',
             sorter: true,
         },
         {
@@ -74,13 +84,6 @@ const UserPage = () => {
         {
             title: 'Role',
             dataIndex: ["role", "name"],
-            sorter: true,
-            hideInSearch: true
-        },
-
-        {
-            title: 'Company',
-            dataIndex: ["company", "name"],
             sorter: true,
             hideInSearch: true
         },
@@ -116,10 +119,10 @@ const UserPage = () => {
             width: 50,
             render: (_value, entity, _index, _action) => (
                 <Space>
-                    < Access
+                    {/* < Access
                         permission={ALL_PERMISSIONS.USERS.UPDATE}
                         hideChildren
-                    >
+                    > */}
                         <EditOutlined
                             style={{
                                 fontSize: 20,
@@ -131,12 +134,23 @@ const UserPage = () => {
                                 setDataInit(entity);
                             }}
                         />
-                    </Access >
+                    {/* </Access > */}
 
-                    <Access
+                    {/* <Access
                         permission={ALL_PERMISSIONS.USERS.DELETE}
                         hideChildren
-                    >
+                    > */}
+                        <EyeOutlined
+                            style={{
+                                fontSize: 20,
+                                color: '#1890ff',
+                            }}
+                            onClick={() => {
+                                setOpenViewDetail(true);
+                                setDataInit(entity);
+                            }}
+
+                        />
                         <Popconfirm
                             placement="leftTop"
                             title={"Xác nhận xóa user"}
@@ -154,7 +168,7 @@ const UserPage = () => {
                                 />
                             </span>
                         </Popconfirm>
-                    </Access>
+                    {/* </Access> */}
                 </Space >
             ),
 
@@ -163,7 +177,7 @@ const UserPage = () => {
 
     const buildQuery = (params: any, sort: any, filter: any) => {
         const q: any = {
-            page: params.current,
+            page: params.current - 1,
             size: params.pageSize,
             filter: ""
         }
@@ -205,9 +219,9 @@ const UserPage = () => {
 
     return (
         <div>
-            <Access
+            {/* <Access
                 permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}
-            >
+            > */}
                 <DataTable<IUser>
                     actionRef={tableRef}
                     headerTitle="Danh sách Users"
@@ -217,15 +231,17 @@ const UserPage = () => {
                     dataSource={users}
                     request={async (params, sort, filter): Promise<any> => {
                         const query = buildQuery(params, sort, filter);
-                        dispatch(fetchUser({ query }))
+                        dispatch(fetchUser({ query }));
+                        console.log(users);
+                        
                     }}
                     scroll={{ x: true }}
                     pagination={
                         {
-                            current: meta.page,
-                            pageSize: meta.pageSize,
+                            current: meta.page+1,
+                            pageSize: meta.page_size,
                             showSizeChanger: true,
-                            total: meta.total,
+                            total: meta.total_pages,
                             showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
                         }
                     }
@@ -242,7 +258,7 @@ const UserPage = () => {
                         );
                     }}
                 />
-            </Access>
+            {/* </Access> */}
             <ModalUser
                 openModal={openModal}
                 setOpenModal={setOpenModal}

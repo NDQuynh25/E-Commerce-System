@@ -1,16 +1,16 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { AsyncThunk, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { callFetchAccount } from '../../api/authApi';
+import { IGetAccount } from '../../types/backend';
 
 
 // //First, create the thunk
-// export const fetchAccount = createAsyncThunk(
-//     'account/fetchAccount',
-//     async () => {
-//         const response = await callFetchAccount();
-//         return response.data;
-//     }
-// )
-
-
+const fetchAccount: AsyncThunk<IGetAccount | undefined, void, {}> = createAsyncThunk(
+    'account/fetchAccount',
+    async () => {
+        const response = await callFetchAccount();
+        return response.data;
+    }
+);
 
 export interface IState {
     isAuthenticated: boolean;
@@ -18,18 +18,18 @@ export interface IState {
     isRefreshToken: boolean;
     errorRefreshToken: string;
     user: {
-        id: string;
+        id: number | string;
         email: string;
-        name: string;
+        fullname: string;
+        avatar?: string;
         role: {
-            id?: string;
-            name?: string;
+            id: number | string;
+            name: string;
             permissions?: {
-                id: string;
+                id: number | string;
                 name: string;
-                apiPath: string;
+                api_access: string;
                 method: string;
-                module: string;
             }[]
         }
     };
@@ -44,7 +44,8 @@ const initialState: IState = {
     user: {
         id: "",
         email: "",
-        name: "",
+        fullname: "",
+        avatar: "",
         role: {
             id: "",
             name: "",
@@ -64,19 +65,59 @@ export const authSlice = createSlice({
             state.isRefreshToken = action.payload?.status ?? false;
             state.errorRefreshToken = action.payload?.message ?? "";
         },
+        setLogoutAction: (state, action) => {
+            localStorage.removeItem('access_token');
+            state.isAuthenticated = false;
+            state.user = {
+                id: "",
+                email: "",
+                fullname: "",
+                avatar: "",
+                role: {
+                    id: "",
+                    name: "",
+                    permissions: [],
+                },
+            }
+        },
         setUserLoginInfo: (state, action) => {
             state.isAuthenticated = true;
             state.isLoading = false;
-            state.user.id = action?.payload?.id;
-            state.user.email = action.payload.email;
-            state.user.name = action.payload.name;
-            state.user.role = action?.payload?.role;
-
-            if (!action?.payload?.user?.role) state.user.role = {};
+            state.user.id = action.payload?.id;
+            state.user.email = action.payload?.email;
+            state.user.fullname = action.payload?.fullname;
+            state.user.avatar = action.payload?.avatar;
+            state.user.role.id = action?.payload?.role?.id ?? -1;
+            state.user.role.name = action?.payload?.role?.name ?? "";
             state.user.role.permissions = action?.payload?.role?.permissions ?? [];
         },
     },
+    extraReducers: (builder) => {
+        // Add reducers for additional action types here, and handle loading state as needed
+        builder.addCase(fetchAccount.pending, (state, action) => {
+            if (action.payload) {
+                state.isAuthenticated = false;
+                state.isLoading = true;
+            }
+        })
+
+        builder.addCase(fetchAccount.fulfilled, (state, action) => {
+            if (action.payload) {
+                state.isAuthenticated = true;
+                state.isLoading = false;
+                
+            }
+        })
+
+        builder.addCase(fetchAccount.rejected, (state, action) => {
+            if (action.payload) {
+                state.isAuthenticated = false;
+                state.isLoading = false;
+            }
+        })
+
+    },
 });
 
-export const {  setRefreshTokenAction, setUserLoginInfo } = authSlice.actions;
+export const {  setRefreshTokenAction, setLogoutAction, setUserLoginInfo } = authSlice.actions;
 export default authSlice.reducer;

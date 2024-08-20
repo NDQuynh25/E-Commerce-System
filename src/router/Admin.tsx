@@ -1,26 +1,12 @@
-
-import React, { Fragment } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store'; // Đảm bảo định nghĩa RootState trong store
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import UserPage from '../pages/admin/UserManagement';
 
 const Admin = () => {
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-
   return (
-    <Fragment>
-        {/* {isAuthenticated && <NavBarManagement />} */}
-        <div className='admin-container'>
-            <div className="admin-list">
-            <Router>
-                <Routes>
-                   
-                </Routes>
-            </Router>
-            </div>
-        </div>
-    </Fragment>
+    <Routes>
+      <Route path="/users" element={<UserPage />} />
+    </Routes>
   );
 };
 
