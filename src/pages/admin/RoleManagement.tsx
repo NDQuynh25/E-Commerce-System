@@ -1,38 +1,36 @@
 import DataTable from "../../components/DataTable";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { IUser } from "../../types/backend";
+import { IRole} from "../../types/backend";
 import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
-import { Button, Popconfirm, Space, message, notification } from "antd";
+import { Button, Modal, Popconfirm, Space, Tag, message, notification } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteUser } from "../../api/userApi";
 import queryString from 'query-string';
-import ViewDetailUser from "../../components/admin/user/ViewDetailUser";
-import ModalUser from "../../components/admin/user/ModalUser";
-// import ViewDetailUser from "@/components/admin/user/view.user";
+import ModalRole from "../../components/admin/role/ModalRole";
 // import Access from "@/components/share/access";
 // import { ALL_PERMISSIONS } from "@/config/permissions";
 import { sfLike } from "spring-filter-query-builder";
-import { fetchUser } from "../../redux/slices/userSlice";
+import { fetchRole } from "../../redux/slices/roleSlice";
+import { callDeleteRole } from "../../api/roleApi";
 
-const UserPage = () => {
+const RoleManagement = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const [dataInit, setDataInit] = useState<IUser | null>(null);
+    const [dataInit, setDataInit] = useState<IRole | null>(null);
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
 
     const tableRef = useRef<ActionType>();
 
-    const isFetching = useAppSelector(state => state.user.isFetching);
-    const meta = useAppSelector(state => state.user.meta);
-    const users = useAppSelector(state => state.user.results);
+    const isFetching = useAppSelector(state => state.role.isFetching);
+    const meta = useAppSelector(state => state.role.meta);
+    const roles = useAppSelector(state => state.role.results);
     const dispatch = useAppDispatch();
 
 
     const handleDeleteUser = async (id: string | undefined) => {
         if (id) {
-            const res = await callDeleteUser(id);
+            const res = await callDeleteRole(id);
             if (+res.status === 200) {
                 message.success('Xóa User thành công');
                 reloadTable();
@@ -49,14 +47,9 @@ const UserPage = () => {
         tableRef?.current?.reload();
     }
 
-    const handleRowClick = (record: IUser) => {
-        setDataInit(record);
-        setOpenViewDetail(true);
-        console.log("record: " + JSON.stringify(record));
-        console.log("op")
-    }
+    
 
-    const columns: ProColumns<IUser>[] = [
+    const columns: ProColumns<IRole>[] = [
         {
             title: 'STT',
             key: 'index',
@@ -71,21 +64,30 @@ const UserPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Name',
-            dataIndex: 'fullname',
+            title: 'ID',
+            dataIndex: 'id',
+            align: "center",
             sorter: true,
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            sorter: true,
-        },
+            hideInSearch: true,
 
+        },
         {
-            title: 'Role',
-            dataIndex: ["role", "name"],
+            title: 'Name',
+            dataIndex: 'name',
             sorter: true,
-            hideInSearch: true
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            render(dom, entity, index, action, schema) {
+                return <>
+                    <Tag color={entity.isActive ? "lime" : "red"} >
+                        {entity.isActive?.toString() == '1' ? "ACTIVE" : "INACTIVE"}
+                    </Tag>
+                </>
+            },
+            hideInSearch: true,
+
         },
 
         {
@@ -156,7 +158,7 @@ const UserPage = () => {
                         <Popconfirm
                             placement="leftTop"
                             title={"Xác nhận xóa user"}
-                            description={"Bạn có chắc chắn muốn xóa user này ?"}
+                            description={"Bạn có chắc chắn muốn xóa role này ?"}
                             onConfirm={() => handleDeleteUser(entity.id)}
                             okText="Xác nhận"
                             cancelText="Cancel"
@@ -224,17 +226,17 @@ const UserPage = () => {
             {/* <Access
                 permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}
             > */}
-                <DataTable<IUser>
+                <DataTable<IRole>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Users"
+                    headerTitle="Danh sách Roles"
                     rowKey="id"
                     loading={isFetching}
                     columns={columns}
-                    dataSource={users}
+                    dataSource={roles}
                     request={async (params, sort, filter): Promise<any> => {
                         const query = buildQuery(params, sort, filter);
-                        dispatch(fetchUser({ query }));
-                        console.log(users);
+                        dispatch(fetchRole({ query }));
+                       
                         
                     }}
                     scroll={{ x: true }}
@@ -261,21 +263,16 @@ const UserPage = () => {
                     }}
                 />
             {/* </Access> */}
-            <ModalUser
+            <ModalRole
                 openModal={openModal}
                 setOpenModal={setOpenModal}
+                dataInit={dataInit}
+                setDataInit={setDataInit}
                 reloadTable={reloadTable}
-                dataInit={dataInit}
-                setDataInit={setDataInit}
             />
-            <ViewDetailUser
-                onClose={setOpenViewDetail}
-                open={openViewDetail}
-                dataInit={dataInit}
-                setDataInit={setDataInit}
-            />
+            
         </div >
     )
 }
 
-export default UserPage;
+export default RoleManagement;

@@ -1,6 +1,7 @@
 
-import authReducer from '../redux/slice/authSlice';
-import userReducer from '../redux/slice/userSlice';
+import authReducer from './slices/authSlice';
+import userReducer from './slices/userSlice';
+import roleReducer from './slices/roleSlice';
 import {
   Action,
   combineReducers,
@@ -9,6 +10,7 @@ import {
 } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+
 
 
 
@@ -22,6 +24,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
+  role: roleReducer,
   
 });
 

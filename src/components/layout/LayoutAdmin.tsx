@@ -19,7 +19,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { isMobile } from 'react-device-detect';
 import type { MenuProps } from 'antd';
 import { Footer } from 'antd/lib/layout/layout';
-import { setLogoutAction } from '../../redux/slice/authSlice';
+import { setLogoutAction } from '../../redux/slices/authSlice';
 // import { setLogoutAction } from '@/redux/slice/accountSlide';
 // import { ALL_PERMISSIONS } from '@/config/permissions';
 
@@ -89,8 +89,8 @@ const LayoutAdmin = (props: IProps) => {
                     icon: <AppstoreOutlined />
                 },
                 ...(viewUser || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/users'>User</Link>,
-                    key: '/admin/users',
+                    label: <Link to='/admin/user'>User</Link>,
+                    key: '/admin/user',
                     icon: <UserOutlined />
                 }] : []),
                 ...(viewRole || ACL_ENABLE === 'false' ? [{

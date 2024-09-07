@@ -53,7 +53,7 @@ export interface IUser {
         id: string;
         name: string;
     }
-    isActive: number;
+    isActive: string;
     createdBy?: string;
     updatedBy?: string;
     createdAt?: string;
@@ -62,8 +62,8 @@ export interface IUser {
 
 
 export interface IPermission {
-    id?: string;
-    name?: string;
+    id: string;
+    name: string;
     apiPath?: string;
     method?: string;
 
@@ -77,10 +77,9 @@ export interface IPermission {
 export interface IRole {
     id?: string;
     name: string;
-    description: string;
-    active: boolean;
-    permissions: IPermission[] | string[];
-
+    isActive: string | undefined;
+    permissions: IPermission[];
+    permissionIds: string[];
     createdBy?: string;
     updatedBy?: string;
     createdAt?: string;

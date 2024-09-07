@@ -37,7 +37,10 @@ const ViewDetailUser = (props: IProps) => {
                         <Badge status="processing" text={<>{dataInit?.role?.name}</>} />
                     </Descriptions.Item>
                     
-                    <Descriptions.Item label="Status" >{dataInit?.isActive}</Descriptions.Item>
+                    <Descriptions.Item label="Status" >
+                        {dataInit?.isActive.toString() === '1' ? <Badge status="success" text="Active" /> : <Badge status="error" text="Inactive" />}
+                    </Descriptions.Item>
+
 
                     <Descriptions.Item label="Created by">{dataInit && dataInit.createdBy ? dataInit.createdBy : ""}</Descriptions.Item>
                     <Descriptions.Item label="Created at">{dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>

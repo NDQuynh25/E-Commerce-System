@@ -1,5 +1,5 @@
 import { ModalForm, ProForm, ProFormDatePicker, ProFormDateTimePicker, ProFormDigit, ProFormItem, ProFormSelect, ProFormText, ProFormUploadButton } from "@ant-design/pro-components";
-import { Avatar, Col, Form, Row, Upload, message, notification } from "antd";
+import { Avatar, Badge, Col, Form, Row, Upload, message, notification } from "antd";
 import { isMobile } from 'react-device-detect';
 import { useState, useEffect } from "react";
 import { callCreateUser, callUpdateUser } from "../../../api/userApi";
@@ -9,7 +9,6 @@ import { create } from "domain";
 import { PlusOutlined } from '@ant-design/icons';
 import { UploadFile } from "antd/lib/upload/interface";
 import "../../../styles/modal.user.css";
-import enUS from 'antd/lib/locale/en_US';
 
 interface IProps {
     openModal: boolean;
@@ -19,73 +18,69 @@ interface IProps {
     reloadTable: () => void;
 }
 
+
 export interface IRoleSelect {
     label: string;
-    value: string;
-    key?: string;
+    value: string; 
 }
+
 
 const ModalUser = (props: IProps) => {
     const { openModal, setOpenModal, reloadTable, dataInit, setDataInit } = props;
     const [form] = Form.useForm();
-    const [roles, setRoles] = useState<IRoleSelect[]>([]);
     const [fileList, setFileList] = useState<UploadFile<any>[]>([]);
-    const [avatarFile, setAvatarFile] = useState<File | null>(null);
-    const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
-
+    
+    console.log(dataInit);
     useEffect(() => {
         if (dataInit?.id) {
-            if (dataInit.avatar) {
+            if (dataInit?.avatar) {
                 setFileList([{
                     uid: '-1',
                     name: 'avatar.png',
                     status: 'done',
                     url: dataInit.avatar,
                 } as UploadFile]);
-                setImageUrl(dataInit.avatar);
-            }
-        
-            if (dataInit.role) {
-                setRoles([
-                    {
-                        label: dataInit.role?.name,
-                        value: dataInit.role?.id,
-                        key: dataInit.role?.id,
-                    }
-                ])
             }
         }
     }, [dataInit]);
 
+ 
+
     useEffect(() => {
         if (fileList.length > 0 && fileList[0].originFileObj) {
             const reader = new FileReader();
-            reader.onload = (e) => {
-                setImageUrl(e.target?.result as string);
-            };
             reader.readAsDataURL(fileList[0].originFileObj);
         }
     }, [fileList]);
 
     const submitUser = async (valuesForm: any) => {
-        const {id, fullname, email, avatar, role, phoneNumber, gender, dateOfBirth, isActive, address } = valuesForm;
+        const {id, fullname, email, avatar, password, confirmPassword, role, phoneNumber, gender, dateOfBirth, isActive, address } = valuesForm;
         if (dataInit?.id) {
             //update
-            const user = {
-                id,
-                fullname,
-                email,
-                avatar,
-                role: { id: role.value, name: "" },
-                phoneNumber,
-                gender,
-                dateOfBirth,
-                isActive,
-                address,  
-            };
+    
+
+            const userFormData = new FormData();
+            userFormData.append('id', id);
+            userFormData.append('fullName', fullname);
+            userFormData.append('email', email);
+            userFormData.append('phoneNumber', phoneNumber);
+            userFormData.append('roleId', role);
+            userFormData.append('password', password);
+            userFormData.append('confirmPassword', confirmPassword);
+            userFormData.append('gender', gender);
+            userFormData.append('dateOfBirth', dateOfBirth);
+            userFormData.append('address', address);
+            userFormData.append('isActive', isActive);
+            if (fileList.length > 0 && fileList[0].originFileObj) {
+                userFormData.append('avatarFile', fileList[0].originFileObj as Blob);
+            } else {
+                
+            }
+
+
               
 
-            const res = await callUpdateUser(user);
+            const res = await callUpdateUser(id, userFormData);
             if (res.data) {
                 message.success("Cập nhật user thành công");
                 handleReset();
@@ -98,18 +93,26 @@ const ModalUser = (props: IProps) => {
             }
         } else {
             //create
-            const user = {
-                fullname,
-                email,
-                avatar,
-                role: { id: role.value, name: "" },
-                phoneNumber,
-                gender,
-                dateOfBirth,
-                isActive,
-                address,  
+            const userFormData = new FormData();
+            userFormData.append('fullName', fullname);
+            userFormData.append('email', email);
+            userFormData.append('phoneNumber', phoneNumber);
+            userFormData.append('roleId', role);
+            userFormData.append('password', password);
+            userFormData.append('confirmPassword', confirmPassword);
+            userFormData.append('gender', gender);
+            userFormData.append('dateOfBirth', dateOfBirth);
+            userFormData.append('address', address);
+            userFormData.append('isActive', isActive);
+            if (fileList.length > 0 && fileList[0].originFileObj) {
+                userFormData.append('avatarFile', fileList[0].originFileObj as Blob);
+            } else {
+                console.log("No file");
             }
-            const res = await callCreateUser(user);
+        
+            
+            
+            const res = await callCreateUser(userFormData);
             if (res.data) {
                 message.success("Thêm mới user thành công");
                 handleReset();
@@ -124,13 +127,13 @@ const ModalUser = (props: IProps) => {
     }
 
     const handleReset = async () => {
+        setFileList([]);
         form.resetFields();
         setDataInit(null);
-       
         setOpenModal(false);
     }
 
-    // Usage of DebounceSelect
+    
 
     async function fetchRoleList(name: string): Promise<IRoleSelect[]> {
         const res = await callFetchRole(`page=0&size=100&name=/${name}/i`);
@@ -166,7 +169,7 @@ const ModalUser = (props: IProps) => {
                 preserve={false}
                 form={form}
                 onFinish={submitUser}
-                initialValues={dataInit?.id ? dataInit : {}}
+                // initialValues={dataInit?.id ? dataInit : {}}
             >
                 <Row gutter={16}>
                     
@@ -224,10 +227,18 @@ const ModalUser = (props: IProps) => {
 
                     </Col>
                    
-                 
-
-
-                    <Col lg={12} md={12} sm={24} xs={24}>
+                    {dataInit?.id &&
+                        <Col lg={3} md={12} sm={24} xs={24}>
+                            <ProFormText
+                                label="ID"
+                                name="id"
+                                rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                                initialValue={dataInit?.id}
+                                disabled
+                            />
+                        </Col>
+                    }
+                    <Col lg={6} md={12} sm={24} xs={24}>
                         <ProFormText
                             label="Email"
                             name="email"
@@ -235,6 +246,7 @@ const ModalUser = (props: IProps) => {
                                 { required: true, message: 'Vui lòng không bỏ trống' },
                                 { type: 'email', message: 'Vui lòng nhập email hợp lệ' }
                             ]}
+                            initialValue={dataInit?.email}
                             placeholder="Nhập email"
                         />
                     </Col>
@@ -243,23 +255,54 @@ const ModalUser = (props: IProps) => {
                             label="Phone Number"
                             name="phoneNumber"
                             rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                            initialValue={dataInit?.phoneNumber}
                             placeholder="Nhập số điện thoại"
                         />
                     </Col>
-                    <Col lg={6} md={12} sm={24} xs={24}>
-                        <ProFormText.Password
-                            disabled={dataInit?.id ? true : false}
-                            label="Password"
-                            name="password"
-                            rules={[{ required: dataInit?.id ? false : true, message: 'Vui lòng không bỏ trống' }]}
-                            placeholder="Nhập password"
-                        />
-                    </Col>
+                    {dataInit?.id &&
+                        <Col lg={6} md={12} sm={24} xs={24}>
+                            <ProFormSelect
+                                name="isActive"
+                                label="Status"
+                                valueEnum={{
+                                    1: <Badge status="success" text="Active" />,
+                                    0: <Badge status="error" text="Inactive" />,
+                                }}
+                                placeholder="Chọn trạng thái"
+                                initialValue={dataInit?.isActive.toString()}
+                                rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+                            />
+                        </Col>
+                    }
+                    {!dataInit?.id && 
+                        <Col lg={6} md={12} sm={24} xs={24}>
+                            <ProFormText.Password
+                                disabled={dataInit?.id ? true : false}
+                                label="Password"
+                                name="password"
+                                rules={[{ required: dataInit?.id ? false : true, message: 'Vui lòng không bỏ trống' }]}
+                                placeholder="Nhập password"
+                            />
+                        </Col>
+                    }
+                    {!dataInit?.id &&
+                        <Col lg={6} md={12} sm={24} xs={24}>
+                            <ProFormText.Password
+                                disabled={dataInit?.id ? true : false}
+                                label="Confirm Password"
+                                name="confirmPassword"
+                                rules={[{ required: dataInit?.id ? false : true, message: 'Vui lòng không bỏ trống' }]}
+                                placeholder="Nhập password"
+                            />
+                        </Col>
+                    }
+                   
                     <Col lg={6} md={6} sm={24} xs={24}>
                         <ProFormText
                             label="Fullname"
                             name="fullname"
                             rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                            initialValue={dataInit?.fullname}
                             placeholder="Nhập tên hiển thị"
                         />
                     </Col>
@@ -268,7 +311,12 @@ const ModalUser = (props: IProps) => {
                             label="Date Of Birth"
                             name="dateOfBirth"
                             rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                            initialValue={dataInit?.dateOfBirth}
+                            fieldProps={{
+                                format: 'DD/MM/YYYY',
+                            }}
                             placeholder="Ngày sinh"
+                           
                         />
                     </Col>
                     <Col lg={6} md={6} sm={24} xs={24}>
@@ -281,16 +329,18 @@ const ModalUser = (props: IProps) => {
                                 OTHER: 'Khác',
                             }}
                             placeholder="Chọn giới tính"
+                            initialValue={dataInit?.gender}
                             rules={[{ required: true, message: 'Vui lòng chọn giới tính!' }]}
                         />
                     </Col>
                     <Col lg={6} md={6} sm={24} xs={24}>
                         <ProFormSelect
-                            name="roles"
+                            name="role"
                             label="Role"
                             request={async () => {
                                 return fetchRoleList("");
                             }}
+                            initialValue={dataInit?.role?.id}
                             placeholder="Chọn role"
                             rules={[{ required: true, message: 'Vui lòng chọn role!' }]}
                         />
@@ -303,6 +353,7 @@ const ModalUser = (props: IProps) => {
                             name="address"
                             rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
                             placeholder="Nhập địa chỉ"
+                            initialValue={dataInit?.address}
                         />
                     </Col>
                 </Row>

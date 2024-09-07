@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setRefreshTokenAction } from "../../redux/slice/authSlice";
+import { setRefreshTokenAction } from "../../redux/slices/authSlice";
 import { message } from "antd";
 import { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";

@@ -2,7 +2,7 @@ import { IBackendRes } from "../types/backend";
 import { Mutex } from "async-mutex";
 import axiosClient from "axios";
 import { store } from "../redux/store";
-import { setRefreshTokenAction } from "../redux/slice/authSlice";
+import { setRefreshTokenAction } from "../redux/slices/authSlice";
 import { notification } from "antd";
 interface AccessTokenResponse {
     access_token: string;

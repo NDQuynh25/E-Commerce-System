@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { callLogin } from '../../api/authApi';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUserLoginInfo } from '../../redux/slice/authSlice';
+import { setUserLoginInfo } from '../../redux/slices/authSlice';
 import styles from '../../styles/login.admin.module.css';
 import { useAppSelector } from '../../redux/hooks';
 import {path, role} from '../../utils/constant';
@@ -43,7 +43,7 @@ const LoginAdmin = () => {
             console.log("data: " + JSON.stringify(res.data.user));
             dispatch(setUserLoginInfo(res.data?.user))
             message.success('Đăng nhập tài khoản thành công!');
-            window.location.href = callback ? callback : '/admin/users';
+            window.location.href = callback ? callback : '/admin/user';
         } else {
             notification.error({
                 message: "Có lỗi xảy ra",
