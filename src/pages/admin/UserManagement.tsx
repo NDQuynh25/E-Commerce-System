@@ -17,7 +17,7 @@ import ModalUser from "../../components/admin/user/ModalUser";
 import { sfLike } from "spring-filter-query-builder";
 import { fetchUser } from "../../redux/slices/userSlice";
 
-const UserPage = () => {
+const UserManagement = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [dataInit, setDataInit] = useState<IUser | null>(null);
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
@@ -278,4 +278,4 @@ const UserPage = () => {
     )
 }
 
-export default UserPage;
+export default UserManagement;

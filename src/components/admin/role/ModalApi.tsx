@@ -67,27 +67,30 @@ const ModalApi= (props: IState) => {
     const handleChange: TransferProps['onChange'] = (newTargetKeys) => {
         
         setTargetKeys(newTargetKeys);
-        setListPermissionIds(newTargetKeys.toString().split(','));
+       // setListPermissionIds(newTargetKeys.toString().split(','));
     };
     
-    const handleSearch: TransferProps['onSearch'] = (dir, value) => {
-        console.log('search:', dir, value);
-    };
     console.log('targetkeys', targetKeys);
     return (
         <Transfer
             dataSource={mockData}
             showSearch
                 listStyle={{
-                    width: 250,
+                    width: 300,
                     height: 300,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    justifyItems: 'center'
                 }}
             oneWay
+            titles={['Danh sách quyền', 'Quyền đã chọn']}
             targetKeys={targetKeys}
             onChange={handleChange}
-            onSearch={handleSearch}
             pagination={{ pageSize: 5 }}
             render={(item) => item.title}
+            filterOption={(inputValue, option) =>
+                option?.title.toLowerCase().indexOf(inputValue.toLowerCase()) > -1
+            }
         />
     );
   

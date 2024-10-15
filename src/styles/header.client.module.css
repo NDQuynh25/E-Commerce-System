@@ -1,0 +1,110 @@
+/* Tổng thể header */
+.header-client {
+    background-color: #2196F3; 
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  .header-container {
+    display: inline-block;
+    width: 70%;
+  }
+  
+  /* Phần trên cùng của header */
+  .header-top {
+    display: flex;
+    
+    justify-content: space-between;
+    padding: 10px 20px;
+    font-size: 14px;
+    /* background-color: #E53935;  */
+  }
+  
+  .top-links a, .language-selector a, .language-selector span {
+    margin-right: 15px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  /* Phần giữa của header */
+  .header-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+  }
+  .logo {
+    margin-right: 2%;
+  }
+  
+  .logo img {
+    height: 50px;
+    
+  }
+  .logo p {
+    font-family: 'Arial', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    color: #FF5722; /* Màu cam */
+    letter-spacing: 5px; /* Khoảng cách giữa các chữ cái */
+    text-shadow: 4px 4px 10px rgba(0, 0, 0, 0.7); /* Hiệu ứng bóng đổ */
+    transform: skew(-10deg); /* Cách điệu bằng việc nghiêng chữ */
+  }
+  
+  .search-bar {
+    height: 40px;
+    
+    display: flex;
+    flex-grow: 1;
+    margin: 0 15px;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: white;
+  }
+  
+  .search-bar input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+  }
+  
+  .search-button {
+    width: 60px;
+    background-color: #2196F3;
+    margin: 2px 2px 2px 2px;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 0 4px 4px 0;
+  }
+  
+  .search-button img {
+    height: 20px;
+  }
+  .cart{
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+  
+  .cart img {
+    height: 35px;
+  }
+  
+  /* Phần dưới cùng của header */
+  .header-bottom {
+    padding: 10px 20px;
+  }
+  
+  .product-suggestions a {
+    margin-right: 15px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  

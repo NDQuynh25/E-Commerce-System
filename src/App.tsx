@@ -12,6 +12,7 @@ import Register from './pages/auth/Register';
 import LoginAdmin from './pages/auth/LoginAdmin';
 import LayoutAdmin from './components/layout/LayoutAdmin';
 import LayoutApp from './components/layout/LayoutApp';
+import HomePage from './pages/home/HomePage';
 
 function App() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -21,7 +22,7 @@ function App() {
       <Fragment>
         <Router>
           <Routes>
-            <Route path={path.HOME_PAGE} element={<div>Home Page</div>} />
+            <Route path={path.HOME_PAGE} element={<HomePage/>} />
             <Route path={path.LOGIN} element={isAuthenticated ? <div>Already logged in</div> : <Login />} />
             <Route path={path.REGISTER} element={isAuthenticated ? <div>Already registered</div> : <Register />} />
             <Route path={path.LOGIN_ADMIN} element={<LoginAdmin />} />

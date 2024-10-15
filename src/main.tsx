@@ -9,6 +9,7 @@ import { persistor, store } from './redux/store';
 import enUS from 'antd/lib/locale/en_US';
 import { ConfigProvider } from 'antd';
 
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>

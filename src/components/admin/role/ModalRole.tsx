@@ -1,9 +1,8 @@
 import { IRole } from "../../../types/backend";
-import { Badge, Button, Col, Form, Input, Modal, notification, Row, Select, Space } from "antd";
+import { Badge, Col, Form, notification, Row } from "antd";
 import { useEffect, useState } from "react";
 import { isMobile } from 'react-device-detect';
 import { callCreateRole, callUpdateRole } from "../../../api/roleApi";
-import { IPermission } from "../../../types/backend";
 import { ModalForm, ProCard, ProFormSelect, ProFormText } from "@ant-design/pro-components";
 import ModuleApi from "./ModalApi";
 
@@ -18,7 +17,7 @@ interface IState {
 
 const ModalRole = (props: IState) => {
     const { openModal, setOpenModal, reloadTable, dataInit, setDataInit } = props;
-    const [listPermissions, setListPermissions] = useState<IPermission[]>([]);
+    
     const [listPermissionIds, setListPermissionIds] = useState<string[]>([]);
     const [form] = Form.useForm();
 
@@ -121,7 +120,7 @@ const ModalRole = (props: IState) => {
                                 0: <Badge status="error" text="Inactive" />,
                             }}
                             placeholder="Chọn trạng thái"
-                            initialValue={dataInit?.isActive}
+                            initialValue={dataInit?.isActive?.toString()}
                             rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
                         />
                     </Col>
