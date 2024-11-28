@@ -1,17 +1,74 @@
 
-.ant-modal-header {
-    
-    margin-bottom: 20px !important;
-    
-}
-.col-image {
+.modal-user-form-container {
+    width: 100%;
+    display: inline;
    
-    margin-bottom: 20px !important;
+    background-color: white;
+    border: 1px solid red;
 }
+    .modal-user-form-header {
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 20%;
+        width: 100%;
+        border: 1px solid red;
+    }
+    
 
+    .modal-user-form-content {
+        background-color: white;
+        display: inline;
+        justify-content: center;
+        align-items: center;
+        height: 60%;
+        width: 100%;
+        border: 1px solid red;
+    }
+        .modal-user-form-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            border: 1px solid red;
+        }
+            .modal-user-form-text {
+                padding-left: 5%;
+                display: inline-block;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                width: 50%;
+               
+            }
+            .modal-user-form-text img {
+                height: 6vw;
+            }
+            .modal-user-form-text h3 {
+                color: black;
+                font-size: 1.8vw;
 
-.ant-upload-list-item-thumbnail img{
-    border-radius: 50% !important;
-    /* object-fit: cover; */
-  
-}
+            }
+            .modal-user-form-text p {
+                color: black;
+                font-size: 1vw;
+            }
+            .modal-user-form-input {
+                display: inline-block;
+                align-items: center;
+                height: 100%;
+                width: 50%;
+               
+            }
+
+    .modal-user-form-footer {
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 20%;
+        width: 100%;
+        border: 1px solid red;
+    }

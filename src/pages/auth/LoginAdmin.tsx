@@ -43,7 +43,7 @@ const LoginAdmin = () => {
             console.log("data: " + JSON.stringify(res.data.user));
             dispatch(setUserLoginInfo(res.data?.user))
             message.success('Đăng nhập tài khoản thành công!');
-            window.location.href = callback ? callback : '/admin/user';
+            window.location.href = callback ? callback : '/admin/';
         } else {
             notification.error({
                 message: "Có lỗi xảy ra",

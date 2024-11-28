@@ -1,21 +1,21 @@
-import DataTable from "../../components/DataTable";
+import DataTable from "../../../components/DataTable";
 
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { IUser } from "../../types/backend";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { IUser } from "../../../types/backend";
 import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, message, notification } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteUser } from "../../api/userApi";
+import { callDeleteUser } from "../../../api/userApi";
 import queryString from 'query-string';
-import ViewDetailUser from "../../components/admin/user/ViewDetailUser";
-import ModalUser from "../../components/admin/user/ModalUser";
+import ViewDetailUser from "../../../components/admin/user/ViewDetailUser";
+import ModalUser from "../../../components/admin/user/ModalUser";
 // import ViewDetailUser from "@/components/admin/user/view.user";
 // import Access from "@/components/share/access";
 // import { ALL_PERMISSIONS } from "@/config/permissions";
 import { sfLike } from "spring-filter-query-builder";
-import { fetchUser } from "../../redux/slices/userSlice";
+import { fetchUser } from "../../../redux/slices/userSlice";
 
 const UserManagement = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -262,6 +262,7 @@ const UserManagement = () => {
                 />
             {/* </Access> */}
             <ModalUser
+            
                 openModal={openModal}
                 setOpenModal={setOpenModal}
                 reloadTable={reloadTable}

@@ -1,0 +1,6 @@
+
+.ant-select-selector {
+    border: none !important; /* Loại bỏ border của Select */
+    background-color: white;
+    box-shadow: none !important; /* Loại bỏ shadow của Select */
+}

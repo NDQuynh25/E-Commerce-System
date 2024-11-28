@@ -20,6 +20,7 @@ import { isMobile } from 'react-device-detect';
 import type { MenuProps } from 'antd';
 import { Footer } from 'antd/lib/layout/layout';
 import { setLogoutAction } from '../../redux/slices/authSlice';
+import { icons } from 'antd/es/image/PreviewGroup';
 // import { setLogoutAction } from '@/redux/slice/accountSlide';
 // import { ALL_PERMISSIONS } from '@/config/permissions';
 
@@ -88,19 +89,48 @@ const LayoutAdmin = (props: IProps) => {
                     key: '/admin',
                     icon: <AppstoreOutlined />
                 },
+
                 ...(viewUser || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/user'>User</Link>,
-                    key: '/admin/user',
-                    icon: <UserOutlined />
+                    label: <b>User Management</b>,
+                    key: '/admin/user-management',
+                    icon: <img src='/project-manager.png' alt='Product Icon' style={{ width: '26px', height: '26px' }} />,
+                    children: [
+                        {   
+                            
+                            label: <Link to='/admin/user-management/user'>Users</Link>, // Quản lý tài khoản người dùng
+                            key: '/admin/user-management/user',
+                        },
+                        {
+                            label: <Link to='/admin/user-management/role'>Roles</Link>, // Quản lý vai trò (Roles)
+                            key: '/admin/user-management/role',
+                        },
+                        {
+                            label: <Link to='/admin/user-management/permission'>Permissions</Link>, // Quản lý quyền hạn (Permissions)
+                            key: '/admin/user-management/permission',
+                        },
+                    ],
                 }] : []),
+               
                 ...(viewRole || ACL_ENABLE === 'false' ? [{
-                    label: <Link to='/admin/role'>Role</Link>,
-                    key: '/admin/role',
-                    icon: <ExceptionOutlined />
+                    label: <b>Product Management</b>,
+                    key: '/admin/product-management',
+                    icon: <img src='/best-product.png' alt='Product Icon' style={{ width: '26px', height: '26px' }} />, // Icon hình ảnh,
+                    children: [ // Các tùy chọn con (selection)
+                        {
+                            label: <Link to='/admin/product-management/product'>Products </Link>, // Tùy chọn 1
+                            key: '/admin/product/list',
+                        },
+                        {
+                            label: <Link to='/admin/product/add'>Add Product</Link>, // Tùy chọn 2
+                            key: '/admin/product/add',
+                        },
+                        {
+                            label: <Link to='/admin/product-management/category'>Categories</Link>, // Tùy chọn 3
+                            key: '/admin/product/categories',
+                        },
+                    ],
                 }] : []),
-
-
-
+            
             ];
 
             setMenuItems(full);
@@ -154,7 +184,9 @@ const LayoutAdmin = (props: IProps) => {
             >
                 {!isMobile ?
                     <Sider
+                        style={{ height: '100vh'}}
                         theme='light'
+                        width={256}
                         collapsible
                         collapsed={collapsed}
                         onCollapse={(value) => setCollapsed(value)}>
@@ -170,6 +202,7 @@ const LayoutAdmin = (props: IProps) => {
                     </Sider>
                     :
                     <Menu
+                    
                         selectedKeys={[activeMenu]}
                         items={menuItems}
                         onClick={(e) => setActiveMenu(e.key)}
