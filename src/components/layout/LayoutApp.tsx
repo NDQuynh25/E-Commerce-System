@@ -12,7 +12,7 @@ interface IProps {
 
 const LayoutApp = (props: IProps) => {
     const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated);
-    const userRole = useAppSelector((state: RootState) => state.auth.user.role.name);
+    const userRole = useAppSelector((state: RootState) => state.auth.user.role.roleName);
     const isRefreshToken = useAppSelector(state => state.auth.isRefreshToken);
     const errorRefreshToken = useAppSelector(state => state.auth.errorRefreshToken);
     const navigate = useNavigate();

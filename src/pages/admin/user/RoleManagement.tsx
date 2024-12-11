@@ -14,6 +14,7 @@ import ModalRole from "../../../components/admin/role/ModalRole";
 import { sfLike } from "spring-filter-query-builder";
 import { fetchRole } from "../../../redux/slices/roleSlice";
 import { callDeleteRole } from "../../../api/roleApi";
+import ViewDetailRole from "../../../components/admin/role/ViewDetailRole";
 
 const RoleManagement = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
@@ -32,11 +33,11 @@ const RoleManagement = () => {
         if (id) {
             const res = await callDeleteRole(id);
             if (+res.status === 200) {
-                message.success('Xóa User thành công');
+                message.success('Role deleted successfully');
                 reloadTable();
             } else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: 'An error occurred',
                     description: res.message
                 });
             }
@@ -72,8 +73,8 @@ const RoleManagement = () => {
 
         },
         {
-            title: 'Name',
-            dataIndex: 'name',
+            title: 'Role Name',
+            dataIndex: 'roleName',
             sorter: true,
         },
         {
@@ -157,10 +158,10 @@ const RoleManagement = () => {
                         />
                         <Popconfirm
                             placement="leftTop"
-                            title={"Xác nhận xóa user"}
-                            description={"Bạn có chắc chắn muốn xóa role này ?"}
+                            title={"Confirm role deletion"}
+                            description={"Are you sure you want to delete this role??"}
                             onConfirm={() => handleDeleteUser(entity.id)}
-                            okText="Xác nhận"
+                            okText="Confirm"
                             cancelText="Cancel"
                         >
                             <span style={{ cursor: "pointer", margin: "0 0px" }}>
@@ -228,7 +229,7 @@ const RoleManagement = () => {
             > */}
                 <DataTable<IRole>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Roles"
+                    headerTitle="List of Roles"
                     rowKey="id"
                     loading={isFetching}
                     columns={columns}
@@ -255,9 +256,12 @@ const RoleManagement = () => {
                             <Button
                                 icon={<PlusOutlined />}
                                 type="primary"
-                                onClick={() => setOpenModal(true)}
+                                onClick={() => {
+                                    setOpenModal(true);
+                                    setDataInit(null);
+                                }}
                             >
-                                Thêm mới
+                                Add new
                             </Button>
                         );
                     }}
@@ -269,6 +273,12 @@ const RoleManagement = () => {
                 dataInit={dataInit}
                 setDataInit={setDataInit}
                 reloadTable={reloadTable}
+            />
+            <ViewDetailRole
+                open={openViewDetail}
+                onClose={setOpenViewDetail}
+                dataInit={dataInit}
+                setDataInit={setDataInit}
             />
             
         </div >

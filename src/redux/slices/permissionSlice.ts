@@ -31,7 +31,7 @@ const initialState: IState = {
 
 
 
-const roleSlice = createSlice({
+const permissionSlice = createSlice({
     name: 'permission',
     initialState,
     reducers: {
@@ -71,6 +71,6 @@ export const fetchPermission = createAsyncThunk<
     }
 );
 
-export const { setActiveMenu, } = roleSlice.actions;
+export const { setActiveMenu, } = permissionSlice.actions;
 
-export default roleSlice.reducer;
+export default permissionSlice.reducer;

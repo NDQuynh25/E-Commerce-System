@@ -67,6 +67,7 @@ export const fetchUser = createAsyncThunk<
     'user/fetchUser',
     async ({ query }) => {
         const response: IBackendRes<IModelPaginate<IUser>> = await callFetchUser(query);
+        console.log(response);
         return response;
     }
 );

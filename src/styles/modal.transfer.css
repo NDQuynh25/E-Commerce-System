@@ -1,0 +1,25 @@
+.modal-transfer {
+    .ant-transfer-operation {
+        
+        margin-top: 15px !important;
+        margin-bottom: 15px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .modal-transfer {
+        .ant-transfer-operation {
+            height: 40px;
+            width: 60px;
+            margin-top: 15px !important;
+            margin-bottom: 15px !important;
+        }
+        .ant-btn {
+            height: 40px !important;
+            width: 60px !important;
+        }
+        .anticon.anticon-right {
+            font-size: 18px !important;
+        }
+    }
+}

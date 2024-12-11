@@ -72,7 +72,7 @@ const UserManagement = () => {
         },
         {
             title: 'Name',
-            dataIndex: 'fullname',
+            dataIndex: 'fullName',
             sorter: true,
         },
         {
@@ -83,7 +83,7 @@ const UserManagement = () => {
 
         {
             title: 'Role',
-            dataIndex: ["role", "name"],
+            dataIndex: ["role", "roleName"],
             sorter: true,
             hideInSearch: true
         },
@@ -253,7 +253,10 @@ const UserManagement = () => {
                             <Button
                                 icon={<PlusOutlined />}
                                 type="primary"
-                                onClick={() => setOpenModal(true)}
+                                onClick={() => {
+                                    setOpenModal(true);
+                                    setDataInit(null);
+                                }}
                             >
                                 Thêm mới
                             </Button>

@@ -24,11 +24,11 @@ export interface IState {
         avatar?: string;
         role: {
             id: number | string;
-            name: string;
+            roleName: string;
             permissions?: {
                 id: number | string;
                 name: string;
-                api_access: string;
+                apiAccess: string;
                 method: string;
             }[]
         }
@@ -48,7 +48,7 @@ const initialState: IState = {
         avatar: "",
         role: {
             id: "",
-            name: "",
+            roleName: "",
             permissions: [],
         },
     },
@@ -75,7 +75,7 @@ export const authSlice = createSlice({
                 avatar: "",
                 role: {
                     id: "",
-                    name: "",
+                    roleName: "",
                     permissions: [],
                 },
             }
@@ -88,7 +88,7 @@ export const authSlice = createSlice({
             state.user.fullname = action.payload?.fullname;
             state.user.avatar = action.payload?.avatar;
             state.user.role.id = action?.payload?.role?.id ?? -1;
-            state.user.role.name = action?.payload?.role?.name ?? "";
+            state.user.role.roleName = action?.payload?.role?.roleName ?? "";
             state.user.role.permissions = action?.payload?.role?.permissions ?? [];
         },
     },

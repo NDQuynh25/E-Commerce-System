@@ -4,7 +4,7 @@
     display: inline;
    
     background-color: white;
-    border: 1px solid red;
+ 
 }
     .modal-user-form-header {
         background-color: white;
@@ -13,29 +13,67 @@
         align-items: center;
         height: 20%;
         width: 100%;
-        border: 1px solid red;
+      
     }
+        .modal-user-form-header-content {
+            width: 80%;
+        }
     
 
     .modal-user-form-content {
+        padding-top: 50px;
+        margin-top: 50px;
         background-color: white;
         display: inline;
         justify-content: center;
         align-items: center;
         height: 60%;
         width: 100%;
-        border: 1px solid red;
-    }
-        .modal-user-form-slide {
+      
+    }   
+        .display-step {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100%;
             width: 100%;
-            border: 1px solid red;
+            
+            transform: translateX(0);  /* Ẩn bước hiện tại khi không được hiển thị */
+            opacity: 0;  /* Làm mờ bước hiện tại khi không hiển thị */
+        }
+        .hide-step {
+            display: none ;
+            transform: translateX(-100%); /* Hiển thị bước hiện tại */
+            opacity: 1;  /* Hiển thị bước với độ mờ 100% */
+        }
+        .modal-user-form-title {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            padding-left: 5%;
+            margin-top: 20px;
+            height: 100%;
+            width: 100%; 
+        }
+        .modal-user-form-title h2 {
+            color: var(--color-blue);
+            font-size: 2.2vw;
+        }
+        .modal-user-form-slide {
+            margin-top: 0px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+            
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;  /* Thêm hiệu ứng chuyển động */
+            opacity: 1;  /* Mặc định là 100% */
         }
             .modal-user-form-text {
                 padding-left: 5%;
+                padding-right: 13%;
                 display: inline-block;
                 justify-content: center;
                 align-items: center;
@@ -49,8 +87,8 @@
             .modal-user-form-text h3 {
                 color: black;
                 font-size: 1.8vw;
-
             }
+           
             .modal-user-form-text p {
                 color: black;
                 font-size: 1vw;
@@ -65,10 +103,83 @@
 
     .modal-user-form-footer {
         background-color: white;
+        margin-right: 50px!important;
         display: flex;
-        justify-content: center;
+        justify-content: right;
         align-items: center;
         height: 20%;
         width: 100%;
-        border: 1px solid red;
+      
     }
+    .modal-user-btn-left {
+        
+        display: flex;
+        margin-right: 20px;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 5vw;
+        
+    }
+    .modal-user-btn-right {
+        margin-right: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 5vw;
+       
+    }
+        .modal-user-btn {
+            height: 100%;
+            width: 5vw;
+        }
+
+
+/* CSS cho floating input */
+/* CSS cho floating label */
+/* .floating-input-form-item {
+    position: relative!important;
+  }
+  
+
+  
+  .floating-input-form-item .ant-input:focus + .ant-form-item-label,
+  .floating-input-form-item .ant-input:not(:placeholder-shown) + .ant-form-item-label {
+    top: -16px;
+    font-size: 10px;
+    color: #1890ff; 
+  }
+.ant-row.ant-form-item-row.css-dev-only-do-not-override-1hpnbz2 {
+    position: relative!important;
+   
+    border: 1px solid red!important;
+}
+.ant-form-item-label {
+    background-color: white;
+    
+    padding: 0px !important;
+    position: absolute !important;
+    top: 0; 
+    left: 10px;
+    font-size: 12px;
+    z-index: 9999;
+    color: rgba(0, 0, 0, 0.65);
+    transition: all 0.3s ease;
+  }
+
+  .ant-input:focus + .ant-form-item-label,
+  .ant-input:not(:placeholder-shown) + .ant-form-item-label {
+    top: -50% !important; 
+  }
+  input:focus + .ant-form-item-label {
+    top: -50% !important;
+    border-color: #1890ff !important;
+    color: #1890ff !important;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  }
+  
+ 
+  .ant-input:placeholder-shown + .ant-form-item-label {
+    top: 0;
+  } */

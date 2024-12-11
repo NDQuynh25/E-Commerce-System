@@ -17,7 +17,7 @@ const LoginAdmin = () => {
     const dispatch = useDispatch();
 
     const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated);
-    const isAdmin = useAppSelector((state: RootState) => state.auth.user?.role?.name === role.ADMIN);
+    const isAdmin = useAppSelector((state: RootState) => state.auth.user?.role?.roleName === role.ADMIN);
 
     let location = useLocation();
     let params = new URLSearchParams(location.search);

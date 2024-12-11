@@ -11,7 +11,12 @@ export const callCreateRole = (role: IRole) => {
 }
 
 export const callUpdateRole = (role: IRole, id: string) => {
-    return axios.put<IBackendRes<IRole>>(`/api/v1/roles/update/${id}`, { id, ...role })
+    return axios.put<IBackendRes<IRole>>(`/api/v1/roles/update/${id}`, role, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    
 }
 
 export const callDeleteRole = (id: string) => {

@@ -1,6 +1,7 @@
 import { IUser } from "../../../types/backend";
 import { Badge, Descriptions, Drawer } from "antd";
 import dayjs from 'dayjs';
+import { isMobile } from "react-device-detect";
 
 interface IProps {
     onClose: (v: boolean) => void;
@@ -12,21 +13,21 @@ const ViewDetailUser = (props: IProps) => {
     const { onClose, open, dataInit, setDataInit } = props;
 
     return (
-        <>
+        
             <Drawer
                 title="Thông Tin User"
                 placement="right"
                 onClose={() => { onClose(false); setDataInit(null) }}
                 open={open}
-                width={"40vw"}
+                width={isMobile? "100vw" :"40vw"}
                 maskClosable={false}
             >
-                <Descriptions title="" bordered column={2} layout="vertical">
+                <Descriptions title="" bordered column={isMobile? 1 : 2} layout="vertical">
                     <Descriptions.Item label="Avatar" span={2}>
                         <img src={dataInit?.avatar} alt="avatar" style={{ width: "30%", borderRadius: "50%"}} />
                     </Descriptions.Item>
                     <Descriptions.Item label="ID">{dataInit?.id}</Descriptions.Item>
-                    <Descriptions.Item label="FullName">{dataInit?.fullname}</Descriptions.Item>
+                    <Descriptions.Item label="FullName">{dataInit?.fullName}</Descriptions.Item>
                     <Descriptions.Item label="Email">{dataInit?.email}</Descriptions.Item>
                     <Descriptions.Item label="Phone Number">{dataInit?.phoneNumber}</Descriptions.Item>
 
@@ -34,7 +35,7 @@ const ViewDetailUser = (props: IProps) => {
                     <Descriptions.Item label="Date Of Birth">{dataInit?.dateOfBirth}</Descriptions.Item>
                     <Descriptions.Item label="Address" span={2} >{dataInit?.address}</Descriptions.Item>
                     <Descriptions.Item label="Role" >
-                        <Badge status="processing" text={<>{dataInit?.role?.name}</>} />
+                        <Badge status="processing" text={<>{dataInit?.role?.roleName}</>} />
                     </Descriptions.Item>
                     
                     <Descriptions.Item label="Status" >
@@ -49,7 +50,7 @@ const ViewDetailUser = (props: IProps) => {
 
                 </Descriptions>
             </Drawer>
-        </>
+        
     )
 }
 

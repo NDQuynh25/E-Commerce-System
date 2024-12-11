@@ -1,6 +1,6 @@
 export interface IBackendRes<T> {
-    error?: string | string[];
-    message: string;
+    error?: string;
+    message: string | string[];
     status: number | string;
     data?: T;
 }
@@ -23,11 +23,11 @@ export interface IAccount {
         fullname: string;
         role: {
             id: number;
-            name: string;
+            roleName: string;
             permissions: {
                 id: number;
-                name: string;
-                api_access: string;
+                permissionName: string;
+                apiAccess: string;
                 method: string;
             }[]
         }
@@ -39,7 +39,7 @@ export interface IGetAccount extends Omit<IAccount, "access_token"> { }
 
 export interface IUser {
     id?: string;
-    fullname?: string;
+    fullName?: string;
     email: string;
     phoneNumber?: string;
     password?: string;
@@ -48,41 +48,45 @@ export interface IUser {
     address?: string;
     dateOfBirth: string;
     avatar: string;
-    avatarFile?: File;
+    avatarFile?: File | null;
     role?: {
         id: string;
-        name: string;
+        roleName: string;
     }
     isActive: string;
     createdBy?: string;
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
+    [key: string]: any; // Add dynamic key
 }
 
 
 export interface IPermission {
     id: string;
-    name: string;
-    apiPath?: string;
-    method?: string;
-
+    permissionName: string;
+    apiAccess: string;
+    method: string;
+    isActive: string;
+    description: string;
     createdBy?: string;
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
+    [key: string]: any; // Add dynamic key
 
 }
 
 export interface IRole {
     id?: string;
-    name: string;
-    isActive: string | undefined;
+    roleName: string;
+    isActive: string;
     permissions: IPermission[];
     permissionIds: string[];
     createdBy?: string;
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
+    [key: string]: any; // Add dynamic key
 }
 

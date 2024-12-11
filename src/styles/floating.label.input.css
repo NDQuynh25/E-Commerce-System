@@ -1,6 +1,64 @@
+.floating-label-input {
+    /* Các thành phần chính của input */
+    .ant-select-selector {
+        border: none !important; 
+        background-color: white;
+        box-shadow: none !important; 
+    }
 
-.ant-select-selector {
-    border: none !important; /* Loại bỏ border của Select */
-    background-color: white;
-    box-shadow: none !important; /* Loại bỏ shadow của Select */
+    /* Đảm bảo rằng các input sẽ chiếm 100% chiều rộng */
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="date"],
+    .ant-select-selector {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 5px;
+        outline: none;
+        background: white;
+        color: black;
+        border: 1px solid #aaa;
+        margin-bottom: 10px; /* Thêm khoảng cách dưới mỗi trường nhập */
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Placeholder cho các trường date */
+    input[type="date"]::-webkit-input-placeholder {
+        color: transparent !important;  /* Chrome và Safari */
+    }
+    input[type="date"]::-moz-placeholder {
+        color: transparent !important;  /* Firefox */
+    }
+    input[type="date"]:-ms-input-placeholder {
+        color: transparent !important;  /* IE */
+    }
+    input[type="date"] {
+        color: transparent !important;  
+    }
+    input[type="date"].focused  {
+        color: black !important; 
+    }
+
+    /* Đảm bảo các trường date căn lề trái */
+    input[type="date"] {
+        text-align: left; 
+    }
+
+    /* Thêm responsive cho các màn hình nhỏ */
+    @media (max-width: 600px) {
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="date"],
+        .ant-select-selector {
+            font-size: 12px;
+            padding: 8px;
+        }
+
+        label {
+            font-size: 12px;
+        }
+    }
 }

@@ -50,6 +50,7 @@ const ImageUpload = (props: ImageUploadProps) => {
           fileList={fileList}
           onChange={onChange}
           onPreview={onPreview}
+          
       >
         <div>
           <PlusOutlined
@@ -58,6 +59,7 @@ const ImageUpload = (props: ImageUploadProps) => {
               color: "#1890ff",
               borderRadius: "50%",
               border: "1px solid #1890ff",
+              
             }}
           />
           <div style={{ marginTop: 8, borderRadius: "50%" }}>Upload</div>

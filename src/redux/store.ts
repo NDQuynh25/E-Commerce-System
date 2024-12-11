@@ -2,6 +2,7 @@
 import authReducer from './slices/authSlice';
 import userReducer from './slices/userSlice';
 import roleReducer from './slices/roleSlice';
+import permissionReducer from './slices/permissionSlice';
 import {
   Action,
   combineReducers,
@@ -14,6 +15,7 @@ import storage from 'redux-persist/lib/storage';
 
 
 
+
 // Cấu hình persist
 const persistConfig = {
   key: 'root',
@@ -22,9 +24,10 @@ const persistConfig = {
 };
 
 const rootReducer = combineReducers({
-  auth: authReducer,
-  user: userReducer,
-  role: roleReducer,
+    auth: authReducer,
+    user: userReducer,
+    role: roleReducer,
+    permission: permissionReducer,
   
 });
 

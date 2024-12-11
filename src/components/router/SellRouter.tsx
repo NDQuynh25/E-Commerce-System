@@ -10,7 +10,7 @@ interface SellRouteProps {
 
 const SellRoute: React.FC<SellRouteProps> = ({ children }) => {
     const isAuthenticated = useAppSelector(state => state.auth.isAuthenticated);
-    const userRole = useAppSelector(state => state.auth.user.role.name);
+    const userRole = useAppSelector(state => state.auth.user.role.roleName);
 
     if (!isAuthenticated) {
         return <Navigate to="/admin/login" />;
