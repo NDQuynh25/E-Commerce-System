@@ -1,38 +1,55 @@
 import DataTable from "../../../components/DataTable";
-
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { IRole} from "../../../types/backend";
+import { IPermission} from "../../../types/backend";
 import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { Button, Modal, Popconfirm, Space, Tag, message, notification } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import queryString from 'query-string';
-import ModalRole from "../../../components/admin/role/ModalRole";
 // import Access from "@/components/share/access";
 // import { ALL_PERMISSIONS } from "@/config/permissions";
 import { sfLike } from "spring-filter-query-builder";
-import { fetchRole } from "../../../redux/slices/roleSlice";
-import { callDeleteRole } from "../../../api/roleApi";
-
+import { fetchPermission } from "../../../redux/slices/permissionSlice";
+import { callDeletePermission } from "../../../api/permissionApi";
+import ViewDetailPermission from "../../../components/admin/permission/ViewDetailPermission";
+import ModalPermission from "../../../components/admin/permission/ModalPermission";
+import { createStyles } from 'antd-style';
 const PermissionManagement = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const [dataInit, setDataInit] = useState<IRole | null>(null);
+    const [dataInit, setDataInit] = useState<IPermission | null>(null);
     const [openViewDetail, setOpenViewDetail] = useState<boolean>(false);
 
     const tableRef = useRef<ActionType>();
 
-    const isFetching = useAppSelector(state => state.role.isFetching);
-    const meta = useAppSelector(state => state.role.meta);
-    const roles = useAppSelector(state => state.role.results);
+    const isFetching = useAppSelector(state => state.permission.isFetching);
+    const meta = useAppSelector(state => state.permission.meta);
+    const permissions = useAppSelector(state => state.permission.results);
     const dispatch = useAppDispatch();
+    // const useStyle = createStyles(({ css, token }) => {
+    //     const { antCls } = token;
+    //     return {
+    //       customTable: css`
+    //         ${antCls}-table {
+    //           ${antCls}-table-container {
+    //             ${antCls}-table-body,
+    //             ${antCls}-table-content {
+    //               scrollbar-width: thin;
+    //               scrollbar-color: #eaeaea transparent;
+    //               scrollbar-gutter: stable;
+    //             }
+    //           }
+    //         }
+    //       `,
+    //     };
+    //   });
 
 
-    const handleDeleteUser = async (id: string | undefined) => {
+    const handleDeletePermission = async (id: string | undefined) => {
         if (id) {
-            const res = await callDeleteRole(id);
+            const res = await callDeletePermission(id);
             if (+res.status === 200) {
-                message.success('Xóa User thành công');
+                message.success('Delete permission successfully');
                 reloadTable();
             } else {
                 notification.error({
@@ -49,7 +66,7 @@ const PermissionManagement = () => {
 
     
 
-    const columns: ProColumns<IRole>[] = [
+    const columns: ProColumns<IPermission>[] = [
         {
             title: 'STT',
             key: 'index',
@@ -72,9 +89,21 @@ const PermissionManagement = () => {
 
         },
         {
-            title: 'Name',
-            dataIndex: 'name',
+            title: 'Permission Name',
+            dataIndex: 'permissionName',
             sorter: true,
+            
+        },
+
+        {
+            title: 'Method',
+            dataIndex: 'method',
+            
+        },
+        {
+            title: 'API Access',
+            dataIndex: 'apiAccess',
+            responsive:['md'], // md: 768px, lg: 992px, xl: 1200px, xxl: 1600px, sm: 576px, xs: 480px,
         },
         {
             title: 'Status',
@@ -157,10 +186,10 @@ const PermissionManagement = () => {
                         />
                         <Popconfirm
                             placement="leftTop"
-                            title={"Xác nhận xóa user"}
-                            description={"Bạn có chắc chắn muốn xóa role này ?"}
-                            onConfirm={() => handleDeleteUser(entity.id)}
-                            okText="Xác nhận"
+                            title={"Confirm deletion permission"}
+                            description={"Are you sure you want to delete this permission?"}
+                            onConfirm={() => handleDeletePermission(entity.id)}
+                            okText="Confirm"
                             cancelText="Cancel"
                         >
                             <span style={{ cursor: "pointer", margin: "0 0px" }}>
@@ -226,27 +255,26 @@ const PermissionManagement = () => {
             {/* <Access
                 permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}
             > */}
-                <DataTable<IRole>
+                <DataTable<IPermission>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Roles"
+                    headerTitle="List of Permissions"
                     rowKey="id"
                     loading={isFetching}
                     columns={columns}
-                    dataSource={roles}
+                    dataSource={permissions}
                     request={async (params, sort, filter): Promise<any> => {
                         const query = buildQuery(params, sort, filter);
-                        dispatch(fetchRole({ query }));
+                        await dispatch(fetchPermission({ query }));
                        
                         
                     }}
                     scroll={{ x: true }}
                     pagination={
                         {
-                            current: meta.page+1,
                             pageSize: meta.page_size,
-                            showSizeChanger: true,
-                            total: meta.total_pages,
-                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                            total: meta.total_elements,
+                            current: meta.page + 1,
+                            showSizeChanger: true,       
                         }
                     }
                     rowSelection={false}
@@ -257,18 +285,25 @@ const PermissionManagement = () => {
                                 type="primary"
                                 onClick={() => setOpenModal(true)}
                             >
-                                Thêm mới
+                                Add new
                             </Button>
                         );
                     }}
                 />
             {/* </Access> */}
-            <ModalRole
+            <ModalPermission
                 openModal={openModal}
                 setOpenModal={setOpenModal}
                 dataInit={dataInit}
                 setDataInit={setDataInit}
                 reloadTable={reloadTable}
+            />
+
+            <ViewDetailPermission
+                open={openViewDetail}
+                onClose={setOpenViewDetail}
+                dataInit={dataInit}
+                setDataInit={setDataInit}
             />
             
         </div >

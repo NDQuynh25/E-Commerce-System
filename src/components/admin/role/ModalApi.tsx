@@ -35,6 +35,7 @@ const ModalApi = (props: ModalRoleProps) => {
     const [permissionData, setPermissionData] = useState<DataType[]>([]);
     const dispatch = useAppDispatch();
     const permissions = useAppSelector(state => state.permission.results);
+    const isFetching = useAppSelector(state => state.permission.isFetching);
 
     //console.log("listPermissionIds: ", listPermissionIds)
     //console.log("Permission: ", permissions);
@@ -49,7 +50,7 @@ const ModalApi = (props: ModalRoleProps) => {
         
         fetchData();
         
-    }, [fetchPermission]);
+    }, [dispatch]);
 
     useEffect(() => {
         setPermissionData(permissions.map((item) => ({
@@ -199,6 +200,7 @@ const ModalApi = (props: ModalRoleProps) => {
             dataSource={permissionData} 
             rowSelection={rowSelection}
             pagination={{ pageSize: 4 }}
+            loading={isFetching}
             expandable={{
                 expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
                 //rowExpandable: (record) => record.name !== 'Not Expandable',

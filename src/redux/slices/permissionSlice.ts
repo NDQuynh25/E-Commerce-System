@@ -45,6 +45,7 @@ const permissionSlice = createSlice({
         });
         
         builder.addCase(fetchPermission.fulfilled, (state, action) => {
+            console.log(action.payload.data?.results);
             if (action.payload && action.payload.data) {
                 console.log(action.payload.data.results);
                 state.isFetching = false;

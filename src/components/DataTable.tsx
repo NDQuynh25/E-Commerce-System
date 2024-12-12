@@ -3,7 +3,7 @@ import {
     ProTable,
     ProTableProps,
 } from '@ant-design/pro-components';
-import vi_VN from 'antd/locale/vi_VN';
+import en_US from 'antd/locale/en_US';
 import { ConfigProvider } from 'antd';
 
 const DataTable = <
@@ -31,13 +31,15 @@ const DataTable = <
     rowSelection,
 }: ProTableProps<T, U, ValueType>) => {
     return (
-        <ConfigProvider locale={vi_VN}>
+        <ConfigProvider locale={en_US}>
             <ProTable<T, U, ValueType>
                 columns={columns}
                 defaultData={defaultData}
                 dataSource={dataSource}
                 postData={postData}
-                pagination={pagination}
+                pagination={
+                    pagination
+                }
                 bordered
                 sticky={sticky}
                 loading={loading}

@@ -3,6 +3,7 @@ import { Badge, Descriptions, Drawer, Table, TableColumnsType } from "antd";
 import dayjs from 'dayjs';
 import { useEffect, useState } from "react";
 import { isMobile, isTablet } from "react-device-detect";
+import "../../../styles/view.detail.css";
 
 interface IProps {
     onClose: (v: boolean) => void;
@@ -12,7 +13,6 @@ interface IProps {
 }
 interface DataType {
     key: string;
-    //id: string;
     permissionName: string;
     method: string;
     apiAccess: string;
@@ -25,7 +25,8 @@ const ViewDetailRole = (props: IProps) => {
             title: 'ID',
             dataIndex: 'key',
             key: 'key',
-            width: '12.5%',
+            width: '15%',
+            align: 'center', 
             
             //...getColumnSearchProps('key', 'ID'),
             //sorter: (a, b) => a.id.length - b.id.length,
@@ -62,76 +63,67 @@ const ViewDetailRole = (props: IProps) => {
             description: item.description
         })) || []);
     }, [dataInit]);
-    console.log("permissionData: ", permissionData);
-    
-
-
-    
-
 
     return (
-        <>
-            <Drawer
-                title="Role Information"
-                placement="right"
-                onClose={() => { onClose(false); setDataInit(null) }}
-                open={open}
-                width={isTablet ? "80%" : isMobile ? "95%" : "40%"}
-                maskClosable={false}
-            >
-                <Descriptions 
-                    title={
-                        <span style={{color: "#1677ff"}}>
-                            Basic Information
-                        </span>
-                    } 
-                    bordered column={1} 
-                    layout="horizontal" 
-                    style={{marginBottom: "20px"}}
-                >
-                   
-                    <Descriptions.Item label={<b>ID:</b>} >{dataInit?.id}</Descriptions.Item>
-                    <Descriptions.Item label={<b>Role Name:</b>}>{dataInit?.roleName}</Descriptions.Item>
-                    <Descriptions.Item label={<b>Status:</b>}>
-                        {dataInit?.isActive.toString() === '1' ? <Badge status="success" text="Active" /> : <Badge status="error" text="Inactive" />}
-                    </Descriptions.Item>
-                    <Descriptions.Item label={<b>Created by:</b>} span={2}>{dataInit && dataInit.createdBy ? dataInit.createdBy : ""}</Descriptions.Item>
-                    <Descriptions.Item label={<b>Created at:</b>} >{dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
-                    <Descriptions.Item label={<b>Updated by:</b>}>{dataInit && dataInit.updatedBy ? dataInit.updatedBy : ""}</Descriptions.Item>
-                    <Descriptions.Item label={<b>Updated at:</b>}>{dataInit && dataInit.updatedAt ? dayjs(dataInit.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
-
-                </Descriptions>
-
-                <Descriptions title={
+      
+        <Drawer
+            title={<h3>Role Information</h3>}
+            className="view-detail-drawer"
+            placement="right"
+            onClose={() => { onClose(false); setDataInit(null) }}
+            open={open}
+            width={isMobile ? "95%" : "40%"}
+            maskClosable={false}
+        >
+            <Descriptions 
+                title={
                     <span style={{color: "#1677ff"}}>
-                        List of Role-based Permissions
+                        Basic Information
                     </span>
-                }/>
-                <Table<DataType> 
-                    columns={columns} 
-                    dataSource={permissionData} 
-                    //pagination={{ pageSize: 4 }}
-                    expandable={{
-                        expandedRowRender: (record) => (
-                            <div style={{ maxWidth: '100%', overflow: 'auto' }}>
-                            <p style={{ margin: 0, whiteSpace: 'normal', wordBreak: 'break-word' }}>
-                                {record.description}
-                            </p>
-                            
-                            </div>
-                        ),
+                } 
+                bordered column={1} 
+                layout="horizontal" 
+                style={{marginBottom: "20px"}}
+            >
+                
+                <Descriptions.Item label={<b>ID:</b>} >{dataInit?.id}</Descriptions.Item>
+                <Descriptions.Item label={<b>Role Name:</b>}>{dataInit?.roleName}</Descriptions.Item>
+                <Descriptions.Item label={<b>Status:</b>}>
+                    {dataInit?.isActive.toString() === '1' ? <Badge status="success" text="Active" /> : <Badge status="error" text="Inactive" />}
+                </Descriptions.Item>
+                <Descriptions.Item label={<b>Created by:</b>} span={2}>{dataInit && dataInit.createdBy ? dataInit.createdBy : ""}</Descriptions.Item>
+                <Descriptions.Item label={<b>Created at:</b>} >{dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
+                <Descriptions.Item label={<b>Updated by:</b>}>{dataInit && dataInit.updatedBy ? dataInit.updatedBy : ""}</Descriptions.Item>
+                <Descriptions.Item label={<b>Updated at:</b>}>{dataInit && dataInit.updatedAt ? dayjs(dataInit.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
+
+            </Descriptions>
+
+            <Descriptions title={
+                <span style={{color: "#1677ff"}}>
+                    List of Role-based Permissions
+                </span>
+            }/>
+            <Table<DataType> 
+                columns={columns} 
+                dataSource={permissionData} 
+                pagination={{ pageSize: 4 }}
+                expandable={{
+                    expandedRowRender: (record) => (
+                        <div style={{ maxWidth: '100%', overflow: 'auto' }}>
+                        <p style={{ margin: 0, whiteSpace: 'normal', wordBreak: 'break-word' }}>
+                            {record.description}
+                        </p>
                         
-                        
-                        
-                        
-                    }}
-                    //scroll={{ x: 'max-content' }}  // Make the table horizontally scrollable when the screen is smaller
-                    bordered
-                    size="middle"
-                />
-                  
-            </Drawer>
-        </>
+                        </div>
+                    ),
+                }}
+                //scroll={{ x: 'max-content' }}  // Make the table horizontally scrollable when the screen is smaller
+                bordered
+                size="middle"
+            />
+                
+        </Drawer>
+    
     );
 }
 

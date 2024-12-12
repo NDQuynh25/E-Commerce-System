@@ -29,7 +29,7 @@ const RoleManagement = () => {
     const dispatch = useAppDispatch();
 
 
-    const handleDeleteUser = async (id: string | undefined) => {
+    const handleDeleteRole = async (id: string | undefined) => {
         if (id) {
             const res = await callDeleteRole(id);
             if (+res.status === 200) {
@@ -159,8 +159,8 @@ const RoleManagement = () => {
                         <Popconfirm
                             placement="leftTop"
                             title={"Confirm role deletion"}
-                            description={"Are you sure you want to delete this role??"}
-                            onConfirm={() => handleDeleteUser(entity.id)}
+                            description={"Are you sure you want to delete this role?"}
+                            onConfirm={() => handleDeleteRole(entity.id)}
                             okText="Confirm"
                             cancelText="Cancel"
                         >
@@ -236,6 +236,7 @@ const RoleManagement = () => {
                     dataSource={roles}
                     request={async (params, sort, filter): Promise<any> => {
                         const query = buildQuery(params, sort, filter);
+                        console.log(query);
                         dispatch(fetchRole({ query }));
                        
                         
@@ -246,8 +247,7 @@ const RoleManagement = () => {
                             current: meta.page+1,
                             pageSize: meta.page_size,
                             showSizeChanger: true,
-                            total: meta.total_pages,
-                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                            total: meta.total_elements,
                         }
                     }
                     rowSelection={false}

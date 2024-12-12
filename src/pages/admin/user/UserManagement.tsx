@@ -71,6 +71,13 @@ const UserManagement = () => {
             hideInSearch: true,
         },
         {
+            title: 'ID',
+            dataIndex: 'id',
+            sorter: true,
+            align: "center",
+            width: 50,
+        },
+        {
             title: 'Name',
             dataIndex: 'fullName',
             sorter: true,
@@ -84,7 +91,7 @@ const UserManagement = () => {
         {
             title: 'Role',
             dataIndex: ["role", "roleName"],
-            sorter: true,
+            //sorter: true,
             hideInSearch: true
         },
 
@@ -196,8 +203,11 @@ const UserManagement = () => {
         let temp = queryString.stringify(q);
 
         let sortBy = "";
-        if (sort && sort.name) {
-            sortBy = sort.name === 'ascend' ? "sort=name,asc" : "sort=name,desc";
+        if (sort && sort.id) {
+            sortBy = sort.id === 'ascend' ? "sort=id,asc" : "sort=id,desc";
+        }
+        if (sort && sort.fullName) {
+            sortBy = sort.fullName === 'ascend' ? "sort=fullName,asc" : "sort=fullName,desc";
         }
         if (sort && sort.email) {
             sortBy = sort.email === 'ascend' ? "sort=email,asc" : "sort=email,desc";
@@ -243,8 +253,8 @@ const UserManagement = () => {
                             current: meta.page+1,
                             pageSize: meta.page_size,
                             showSizeChanger: true,
-                            total: meta.total_pages,
-                            showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) }
+                            total: meta.total_elements,
+                            
                         }
                     }
                     rowSelection={false}

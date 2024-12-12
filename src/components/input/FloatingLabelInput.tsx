@@ -57,7 +57,7 @@ const FloatingLabelInput = (props: FloatingLabelInputProps) => {
         if (onValidate) {
             onValidate(validate);  // Gọi validate khi prop onValidate thay đổi
         }
-    }, [onValidate]);
+    }, []);
 
   
     
@@ -67,6 +67,7 @@ const FloatingLabelInput = (props: FloatingLabelInputProps) => {
                 padding: 0,
                 marginTop: "15px",
                 marginBottom: "20px",
+                height: "fit-content",
             }}
         >
             <div
@@ -103,7 +104,8 @@ const FloatingLabelInput = (props: FloatingLabelInputProps) => {
                             borderRadius: "5px",
                             outline: "none",
                             border: error? "1.45px solid red" : (isFocused || value ? "1.45px solid #1a73e8" : "1px solid #aaa"),
-                            minHeight: "100px", 
+                            minHeight: "50px",
+                            maxHeight: "100px", 
                             resize: "vertical", 
                             ...style,
                         }}
