@@ -51,9 +51,10 @@ const PermissionManagement = () => {
             if (+res.status === 200) {
                 message.success('Delete permission successfully');
                 reloadTable();
-            } else {
+            } 
+            else {
                 notification.error({
-                    message: 'Có lỗi xảy ra',
+                    message: res.status + ' ' + res.error,
                     description: res.message
                 });
             }

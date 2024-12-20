@@ -23,11 +23,13 @@
     "react-dom": "^18.3.1",
     "react-highlight-words": "^0.20.0",
     "react-redux": "^9.1.2",
+    "react-responsive": "^10.0.0",
     "react-router-dom": "^6.25.1",
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "shop-react-vite": "file:",
-    "spring-filter-query-builder": "^1.1.0"
+    "spring-filter-query-builder": "^1.1.0",
+    "styled-components": "^6.1.13"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.7",

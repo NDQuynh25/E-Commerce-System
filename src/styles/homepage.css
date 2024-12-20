@@ -1,0 +1,16 @@
+.homepage-container {
+   
+    width: 100%;
+    
+  
+}
+    .homepage-content {
+        display: inline-block;
+        width: 100%;
+    }
+        .homepage-carousel {
+            margin-top: 20px;
+            width: 84%;
+            margin-left: 8%;
+            margin-right: 8%;
+        }

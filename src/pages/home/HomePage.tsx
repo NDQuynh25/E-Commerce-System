@@ -1,14 +1,21 @@
 
 import HeaderClient from '../../components/HeaderClient';
-import style from "../../styles/homepage.module.css"
+import React from 'react';
+import CarouselPoster from '../../components/CarouselPoster';
+import  "../../styles/homepage.css"
 const HomePage = () => {
     return (
-        <div className={style['homepage-container']}>
-            <div className={style['homepage-header']}>
+        <div className="homepage-container">
+            <div className="homepage-content">
                 <HeaderClient />
+                <div className="homepage-carousel">
+                    <CarouselPoster />
+                </div>
+                
             </div>
-            
         </div>
+             
+        
     );
 };
 

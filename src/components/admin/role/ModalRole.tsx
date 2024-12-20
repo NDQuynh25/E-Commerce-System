@@ -94,39 +94,46 @@ const ModalRole = (props: IState) => {
         
         console.log("roleData line 81: ", roleData);
         if (roleData.id) {
-            await callUpdateRole(roleData, roleData.id).then((res) => {
-                if (res && res.data) {
-                    notification.success({
-                        message: 'Update Role Successfully',
-                        description: `Role ${roleData.roleName} has been updated successfully!`
-                    });
-                    setOpenModal(false);
-                    reloadTable();
-                    handleReset();
-                }
-            }).catch((error) => {
-                notification.error({
-                    message: 'Update Role Failed',
-                    description: `Role ${roleData.roleName} failed to update!`
+            const res = await callUpdateRole(roleData, roleData.id);
+            if (res && +res.status === 200) {
+                notification.success({
+                    message: 'Update Role Success!',
+                    description: `Role ${roleData.roleName} has been updated!`
                 });
-            });
+                reloadTable();
+                handleCancel();
+            } else if (res && +res.status !== 200) {
+                notification.error({
+                    message: res.error,
+                    description: res.message
+                });
+            } else {
+                notification.error({
+                    message: 'Update Role Failed!',
+                    description: 'Something went wrong! Please try again later!'
+                });
+            }
         } else {
-            await callCreateRole(roleData).then((res) => {
-                if (res && res.data) {
-                    notification.success({
-                        message: 'Create Role Successfully',
-                        description: `Role ${roleData.roleName} has been created successfully!`
-                    });
-                    setOpenModal(false);
-                    reloadTable();
-                    handleReset();
-                }
-            }).catch((error) => {
-                notification.error({
-                    message: 'Create Role Failed',
-                    description: `Role ${roleData.roleName} failed to create!`
+            const res = await callCreateRole(roleData);
+            if (res && +res.status === 201) {
+                notification.success({
+                    message: 'Create Role Success!',
+                    description: `Role ${roleData.roleName} has been created!`
                 });
-            });
+                reloadTable();
+                handleCancel();
+            } else if (res && +res.status !== 201) {
+                notification.error({
+                    message: res.error,
+                    description: res.message
+                });
+            } else {
+                notification.error({
+                    message: 'Create Role Failed!',
+                    description: 'Something went wrong! Please try again later!'
+                });
+            }
+
         }
     }
 

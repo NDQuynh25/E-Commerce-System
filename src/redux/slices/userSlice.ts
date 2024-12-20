@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { callFetchUser } from '../../api/userApi';
+import { callGetUser } from '../../api/userApi';
 
 import { IUser, IBackendRes, IModelPaginate } from '../../types/backend';
 
@@ -66,7 +66,7 @@ export const fetchUser = createAsyncThunk<
 >(
     'user/fetchUser',
     async ({ query }) => {
-        const response: IBackendRes<IModelPaginate<IUser>> = await callFetchUser(query);
+        const response: IBackendRes<IModelPaginate<IUser>> = await callGetUser(query);
         console.log(response);
         return response;
     }

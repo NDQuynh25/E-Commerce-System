@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { callFetchRole } from '../../api/roleApi';
+import { callGetRole } from '../../api/roleApi';
 
 import { IRole, IBackendRes, IModelPaginate } from '../../types/backend';
 
@@ -61,12 +61,12 @@ const roleSlice = createSlice({
 
 export const fetchRole = createAsyncThunk<
     IBackendRes<IModelPaginate<IRole>>,
-    { query: string },
+    {id?: string,  query?: any},
     {}
 >(
     'role/fetchRole',
-    async ({ query }) => {
-        const response: IBackendRes<IModelPaginate<IRole>> = await callFetchRole(query);
+    async ({ id, query }: { id?: string; query?: any }) => {
+        const response: IBackendRes<IModelPaginate<IRole>> = await callGetRole(id, query);
         return response;
     }
 );

@@ -1,0 +1,103 @@
+
+.header-client {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    background-color: white;
+    border-bottom: 2px solid black;
+}
+.header-client-container {
+    display: flex;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+    .header-client-content {
+        display: flex;
+       
+        width: 100%;
+        justify-content: space-between;
+        
+
+    }
+    .header-client-logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 16px;
+        
+    }
+    .header-client-menu-search {
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        align-items: center;
+        
+    }
+        .header-client-menu {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .header-client-search {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+    .header-client-account {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .header-client-menu-mobile {
+        display: none;
+    }
+    
+
+
+@media(max-width: 1024px) {
+    .header-client-menu {
+        /* margin-bottom: 10px; */
+        .ant-menu{
+            display: block;
+        }
+    }
+}
+
+@media(max-width: 768px) {
+    .header-client-container {
+        display: flex;
+        width: 96%;
+        margin-left: 2%;
+        margin-right: 2%;
+    }
+  
+    .header-client-menu-search {
+        display: flex;
+        
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .display-menu {
+        display: none;
+    }
+    .display-menu-mobile {
+        display: flex;
+        margin-left: 16px;
+        justify-content: center;
+        align-items: center;
+      
+    }
+}
+@media (max-width: 480px) {
+    .display-logo {
+        display: none;
+    }
+    
+}

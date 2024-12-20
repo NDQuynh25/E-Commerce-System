@@ -17,7 +17,7 @@ export const role = {
     ADMIN: 'ROLE_ADMIN',
     VENDOR: 'ROLE_VENDOR',
     USER: 'ROLE_USER'
-}
+};
 export function colorMethod(method: "POST" | "PUT" | "GET" | "DELETE" | string) {
     switch (method) {
         case "POST":
@@ -31,7 +31,7 @@ export function colorMethod(method: "POST" | "PUT" | "GET" | "DELETE" | string) 
         default:
             return grey[10];
     }
-}
+};
 
 export const groupByPermission = (data: any[]): { module: string; permissions: IPermission[] }[] => {
     const groupedData = groupBy(data, x => x.module);

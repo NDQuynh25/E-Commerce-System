@@ -69,7 +69,7 @@ const RoleManagement = () => {
             dataIndex: 'id',
             align: "center",
             sorter: true,
-            hideInSearch: true,
+            //hideInSearch: true,
 
         },
         {
@@ -187,8 +187,10 @@ const RoleManagement = () => {
             filter: ""
         }
 
+        
         const clone = { ...params };
-        if (clone.name) q.filter = `${sfLike("name", clone.name)}`;
+        if (clone.id) q.filter = `${sfLike("id", clone.id)}`;
+        if (clone.roleName) q.filter = `${sfLike("roleName", clone.roleName)}`;
         if (clone.email) {
             q.filter = clone.name ?
                 q.filter + " and " + `${sfLike("email", clone.email)}`
@@ -199,11 +201,11 @@ const RoleManagement = () => {
         let temp = queryString.stringify(q);
 
         let sortBy = "";
-        if (sort && sort.name) {
-            sortBy = sort.name === 'ascend' ? "sort=name,asc" : "sort=name,desc";
+        if (sort && sort.id) {
+            sortBy = sort.id === 'ascend' ? "sort=id,asc" : "sort=id,desc";
         }
-        if (sort && sort.email) {
-            sortBy = sort.email === 'ascend' ? "sort=email,asc" : "sort=email,desc";
+        if (sort && sort.roleName) {
+            sortBy = sort.roelName === 'ascend' ? "sort=roelName,asc" : "sort=roelName,desc";
         }
         if (sort && sort.createdAt) {
             sortBy = sort.createdAt === 'ascend' ? "sort=createdAt,asc" : "sort=createdAt,desc";
@@ -237,7 +239,7 @@ const RoleManagement = () => {
                     request={async (params, sort, filter): Promise<any> => {
                         const query = buildQuery(params, sort, filter);
                         console.log(query);
-                        dispatch(fetchRole({ query }));
+                        dispatch(fetchRole({query}));
                        
                         
                     }}

@@ -14,7 +14,7 @@ import ModalUser from "../../../components/admin/user/ModalUser";
 // import ViewDetailUser from "@/components/admin/user/view.user";
 // import Access from "@/components/share/access";
 // import { ALL_PERMISSIONS } from "@/config/permissions";
-import { sfLike } from "spring-filter-query-builder";
+import { sfEqual, sfLike } from "spring-filter-query-builder";
 import { fetchUser } from "../../../redux/slices/userSlice";
 
 const UserManagement = () => {
@@ -192,15 +192,15 @@ const UserManagement = () => {
         }
 
         const clone = { ...params };
-        if (clone.name) q.filter = `${sfLike("name", clone.name)}`;
-        if (clone.email) {
-            q.filter = clone.name ?
-                q.filter + " and " + `${sfLike("email", clone.email)}`
-                : `${sfLike("email", clone.email)}`;
+        if (clone.id) q.filter = `${"id=like:" + clone.id}`;
+        if (clone.fullName) {
+            q.filter = q.filter ? q.filter + "&" + `${"fullName=like:" + clone.fullName}` : `${"fullName=like:" + clone.fullName}`;
         }
-
-        if (!q.filter) delete q.filter;
-        let temp = queryString.stringify(q);
+        if (clone.email) {
+            q.filter = q.filter ? q.filter + "&" + `${"email=like:" + clone.email}` : `${"email=like:" + clone.email}`;
+        }
+        let temp = `page=${q.page}&size=${q.size}`;
+        if (q.filter) temp = q.filter + `&page=${q.page}&size=${q.size}`;
 
         let sortBy = "";
         if (sort && sort.id) {
@@ -243,8 +243,9 @@ const UserManagement = () => {
                     dataSource={users}
                     request={async (params, sort, filter): Promise<any> => {
                         const query = buildQuery(params, sort, filter);
+                        console.log("query: ", query);
                         dispatch(fetchUser({ query }));
-                        console.log(users);
+                        
                         
                     }}
                     scroll={{ x: true }}

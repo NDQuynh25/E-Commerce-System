@@ -1,68 +1,128 @@
+import React, { useState } from 'react';
+import {SearchOutlined, MenuOutlined, HomeOutlined } from '@ant-design/icons';
+import type { MenuProps } from 'antd';
+import { Badge, Button, Drawer, Menu } from 'antd';
+import '../styles/header.client.css';
+import { Input } from 'antd';
+import { useMediaQuery } from 'react-responsive';
+import { isMobile } from 'react-device-detect';
 
-import style from '../styles/header.client.module.css'; 
-import logo from '../../public/shopping-cart.png';
-import search from '../../public/search.png';
-import cart from '../../public/cart.png';
-const HeaderClient = () => {
+const { Search } = Input;
+
+
+type MenuItem = Required<MenuProps>['items'][number];
+
+const items: MenuItem[] = [
+    {
+        label: <p style={{fontSize: "1rem"}}>Trang chủ</p>,
+        key: 'home',
+        icon: <img src='/homepage.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
+    },
+
+    {
+        label: <p style={{fontSize: "1rem"}}>Nam</p>,
+        key: 'male',
+        icon: <img src='/man.png' alt='Product Icon' style={{ height: '18px', width: "auto" }}/>,
+    },
+    {
+        label: <p style={{fontSize: "1rem"}}>Nữ</p>,
+        key: 'female',
+        icon: <img src='/woman.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
+    },
+    {
+        label: <p style={{fontSize: "1rem"}}>Trẻ em</p>,
+        key: 'child',
+        icon: <img src='/children.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
+    },
+    {
+        label: <p style={{fontSize: "1rem"}}>Phụ kiện</p>,
+        key: 'accessories',
+        icon: <img src='/accessory.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
+    },
+    {
+        label: <p style={{fontSize: "1rem"}}>Ưu đãi</p>,
+        key: 'discount',
+        icon: <img src='/coupon.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
+    },
+    {
+        label: <p style={{fontSize: "1rem"}}>Liên hệ</p>,
+        key: 'contact',
+        icon: <img src='/contact-mail.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
+    },
+   
     
+];
+
+
+const HeaderClient = () => {
+    const [current, setCurrent] = useState('male');
+
+   
+    const onClick: MenuProps['onClick'] = (e) => {
+        console.log('click ', e);
+        setCurrent(e.key);
+    };
+    const [visible, setVisible] = useState(false);
+    const toggleDrawer = () => {
+        setVisible(!visible);
+    };
+    const isExtraSmallScreen = useMediaQuery({ query: '(max-width: 480px)' });
+   
+    const isSmallScreen = useMediaQuery({ query: '(min-width: 481px) and (max-width: 768px)' });
+    const isMediumScreen = useMediaQuery({ query: '(min-width: 768px) and (max-width: 1024px)' });
+    const isLargeScreen = useMediaQuery({ query: '(min-width: 1025px) and (max-width: 1200px)' });
 
     return (
-    <header className={style["header-client"]}>
-        <div className={style["header-container"]}>
-            {/* Top header links */}
-            <div className={style["header-top"]}>
-                <nav className={style["top-links"]}>
-                <a href="#">Kênh Người Bán</a>
-                <a href="#">Trở thành người bán Shopee</a>
-                <a href="#">Tải ứng dụng</a>
-                <a href="#">Kết nối</a>
-                </nav>
-                <div className={style["language-selector"]}>
-                <a href="#">Thông Báo</a>
-                <a href="#">Hỗ Trợ</a>
-                <a href="#">Tiếng Việt</a>
-                <a href="#">Đăng Nhập </a>
-                <span>|</span>
-                <a href="#">Đăng Ký</a>
+        <div className='header-client'>
+            <div className='header-client-container'>
+                <div className='header-client-content'>
+                    <div className='header-client-logo display-logo'>
+                        <img src='logo.png' style={{height: "70px", borderRadius: "100%"}} />
+                    </div>
+                   
+                    <div className='header-client-menu-search'>
+                        <div className='header-client-menu display-menu'>
+                            <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} style={{flexGrow: "1"}}/>
+                        </div>
+                        <div className='header-client-search'>
+                            <Search  placeholder="Bạn muốn tìm gì..." enterButton size="large" loading={false} />
+                        </div>
+                        
+                    </div>
+                    <div className='header-client-account'>
+                        <Button icon={<img src='account.png' alt='Product Icon' style={{ height: '28px', width: "auto", border: "none" }} />} size="large" style={{ marginLeft: 16 }}>
+                            
+                        </Button>
+                        <Badge count={99} overflowCount={99}>
+                            <Button icon={<img src='cart.png' alt='Product Icon' style={{ height: '28px', width: "auto", border: "none" }} />} size="large" style={{ marginLeft: 16 }}>
+                                
+                            </Button>
+                        </Badge>
+                    </div>
+                    <div className='header-client-menu-mobile display-menu-mobile'>
+                        <Button
+                            onClick={toggleDrawer}
+                            icon={<MenuOutlined />}
+                            style={{ height:"38px", width: "38px",  }}
+                           
+                        />
+                        <Drawer
+                            title="Menu"
+                            placement="left"
+                            onClose={toggleDrawer}
+                            visible={visible}
+                            width={"200px"}
+                        >
+                            <Menu onClick={onClick} selectedKeys={[current]} mode="inline" items={items} />
+                        </Drawer>
+                    </div>
+                    
+                    
                 </div>
             </div>
-
-            {/* Main header with logo, search bar, and cart */}
-            <div className={style["header-main"]}>
-                <div className={style["logo"]}>
-                    <img src={logo} alt="Shopee" />
-                    <p className={style['font-logo']}>A & Z</p>
-                </div>
-                <div className={style["search-bar"]}>
-                    <input type="text" placeholder="Shopee bao ship 0Đ - Đăng ký ngay!" />
-                    <button type="submit" className={style['search-button']}>
-                        <img src={search} alt="Search" />
-                    </button>
-                </div>
-                <div className={style["cart"]} style={{ position: 'relative' }}>
-                    <img src={cart} alt="Cart" />
-                    {/* Hiển thị số lượng sản phẩm trong giỏ hàng */}
-                    {120 > 0 && (
-                        <span style={{
-                            position: 'absolute',
-                            top: '-10px',
-                            right: '-18px',
-                            background: '#E53935',
-                            color: '#fff',
-                            borderRadius: '50%',
-                            padding: '2px 6px',
-                            fontSize: '13px',
-                        }}>
-                            {120}
-                        </span>
-                    )}
-                </div>
-            </div>
-
-            
         </div>
-    </header>
-  );
+        
+    );
 };
 
 export default HeaderClient;

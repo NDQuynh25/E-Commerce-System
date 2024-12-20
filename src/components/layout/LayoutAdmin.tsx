@@ -20,7 +20,6 @@ import { isMobile } from 'react-device-detect';
 import type { MenuProps } from 'antd';
 import { Footer } from 'antd/lib/layout/layout';
 import { setLogoutAction } from '../../redux/slices/authSlice';
-import { icons } from 'antd/es/image/PreviewGroup';
 // import { setLogoutAction } from '@/redux/slice/accountSlide';
 // import { ALL_PERMISSIONS } from '@/config/permissions';
 

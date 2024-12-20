@@ -88,55 +88,64 @@ const ModalRole = (props: IState) => {
     
 
     const handleSubmit = async () => {
-        console.log("permissionData line 79: ", permissionData);
+        console.log("permissionData:", permissionData);
         if (!validateForm(formValidation)) {
             return;
         }
-       
         
-        console.log("permissionData line 81: ", permissionData);
-        if (permissionData.id) {
-            await callUpdatePermission(permissionData, permissionData.id).then((res) => {
-                if (res && res.data) {
-                    notification.success({
-                        message: 'Update Permisson Successfully',
-                        description: `Permission ${permissionData.permissionName} has been updated successfully!`
-                    });
-                    setOpenModal(false);
-                    reloadTable();
-                    handleReset();
-                } else {
-                    notification.error({
-                        message: 'Update Permission Failed',
-                        description: 'Failed to update permission!'
-                    });
-                }
-            }).catch((error) => {
-                notification.error({
-                    message: 'Update Permission Failed',
-                    description: error.message
+        if (dataInit) {
+            const response = await callUpdatePermission(permissionData, permissionData.id);
+            console.log("response:", response);
+            if (response && +response.status === 200) {
+                notification.success({
+                    message: 'Update permission successfully',
+                    description: `Permission ${permissionData.permissionName} has been updated!`,
+                    placement: 'bottomRight',
                 });
-            });
+                setOpenModal(false);
+                reloadTable();
+                handleReset();
+            } else if (response && +response.status !== 200) {
+                notification.error({
+                    message: response.error,
+                    description: response.message,
+                    placement: 'bottomRight',
+                });
+            }
+            else {
+                notification.error({
+                    message: 'Update permission failed',
+                    description: 'Something went wrong. Please try again!',
+                    placement: 'bottomRight',
+                });
+            } 
         } else {
-            await callCreatePermission(permissionData).then((res) => {
-                if (res && res.data) {
-                    notification.success({
-                        message: 'Create Role Successfully',
-                        description: `Role ${permissionData.roleName} has been created successfully!`
-                    });
-                    setOpenModal(false);
-                    reloadTable();
-                    handleReset();
-                }
-            }).catch((error) => {
-                notification.error({
-                    message: 'Create Role Failed',
-                    description: `Role ${permissionData.roleName} failed to create!`
+            const response = await callCreatePermission(permissionData);
+            if (response && +response.status === 201) {
+                notification.success({
+                    message: 'Create permission successfully',
+                    description: `Permission ${permissionData.permissionName} has been created!`,
+                    placement: 'bottomRight',
                 });
-            });
+                setOpenModal(false);
+                reloadTable();
+                handleReset();
+            } else if (response && +response.status !== 201) {
+                notification.error({
+                    message: response.error,
+                    description: response.message,
+                    placement: 'bottomRight',
+                });
+            }
+            else {
+                notification.error({
+                    message: 'Create permission failed',
+                    description: 'Something went wrong. Please try again!',
+                    placement: 'bottomRight',
+                });
+            }
         }
     }
-
 
     const [validators, setValidators] = useState<Record<string, (value: any) => boolean>>({});
 
