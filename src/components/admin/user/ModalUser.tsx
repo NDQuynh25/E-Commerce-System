@@ -182,6 +182,8 @@ const ModalUser = (props: ModalUserProps) => {
             return;
         }
         
+        console.log(userData);
+        
         const formData = new FormData();
         formData.append('fullName', userData.fullName || '');
         formData.append('email', userData.email || ''); 
@@ -195,6 +197,7 @@ const ModalUser = (props: ModalUserProps) => {
         formData.append('isActive', userData.isActive || '1');
 
         if (fileList.length > 0 && fileList[0].originFileObj) {
+            console.log(fileList[0].originFileObj);
             formData.append('avatarFile', fileList[0].originFileObj as Blob);
         } 
 
@@ -256,6 +259,7 @@ const ModalUser = (props: ModalUserProps) => {
      * @returns validate password and confirm password
      */
     const validatePasswords = (password: string, confirmPassword: string) => {
+        console.log(password + "\n" + confirmPassword);
         if (password !== confirmPassword) {
             return false;
         }
@@ -441,7 +445,7 @@ const ModalUser = (props: ModalUserProps) => {
                                 rules={[
                                     { required: true, message: `Confirm password can't be left blank!`},
                                     { pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, message: 'Password must contain at least 8 characters, including letters and numbers!'},
-                                    { validator: (value: string) => validatePasswords(userData.password || '', value), message: 'Password and confirm password do not match!'}
+                                    // { validator: (value: string) => validatePasswords(userData.password || '', value), message: 'Password and confirm password do not match!'}
                                 ]}
                                 type="password"
                                 hight="45px"

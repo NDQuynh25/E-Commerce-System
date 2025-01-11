@@ -1,0 +1,3 @@
+.ant-upload-list-item:hover .image-upload-overlay {
+    display: flex !important; /* Hiển thị overlay khi hover vào item */
+  }

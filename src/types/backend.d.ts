@@ -90,3 +90,35 @@ export interface IRole {
     [key: string]: any; // Add dynamic key
 }
 
+
+export interface ICategory {
+    id?: string;
+    categoryName: string;
+    isActive: string;
+    createdBy?: string;
+    updatedBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    [key: string]: any; // Add dynamic key
+}
+
+export interface IProduct {
+    id?: string;
+    productName: string;
+    price: number;
+    quantity: number;
+    description: string;
+    image: string;
+    imageFile?: File | null;
+    category: {
+        id: string;
+        categoryName: string;
+    }
+    isActive: string;
+    createdBy?: string;
+    updatedBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    [key: string]: any; // Add dynamic key
+}
+

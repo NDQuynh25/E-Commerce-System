@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {SearchOutlined, MenuOutlined, HomeOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Badge, Button, Drawer, Menu } from 'antd';
-import '../styles/header.client.css';
+import '../../styles/header.client.css';
 import { Input } from 'antd';
 import { useMediaQuery } from 'react-responsive';
 import { isMobile } from 'react-device-detect';

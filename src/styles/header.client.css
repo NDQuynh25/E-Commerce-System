@@ -10,9 +10,7 @@
 }
 .header-client-container {
     display: flex;
-    width: 90%;
-    margin-left: 5%;
-    margin-right: 5%;
+    width: 100%;
 }
     .header-client-content {
         display: flex;
@@ -70,12 +68,7 @@
 }
 
 @media(max-width: 768px) {
-    .header-client-container {
-        display: flex;
-        width: 96%;
-        margin-left: 2%;
-        margin-right: 2%;
-    }
+  
   
     .header-client-menu-search {
         display: flex;

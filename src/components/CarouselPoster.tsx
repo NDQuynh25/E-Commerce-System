@@ -1,16 +1,16 @@
 import React from 'react';
 import { Carousel } from 'antd';
 import styled from 'styled-components';
-import ProductItem from './ProductItem';
 
-const contentStyle: React.CSSProperties = {
-    height: '270px',
-    
-    color: 'black',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-};
+
+
+interface IProps {
+    image?: string[];
+    height?: string;
+    width?: string;
+}
+
+
 const CarouselWrapper = styled(Carousel)`
     > .slick-dots li button {
         
@@ -29,49 +29,24 @@ const CarouselWrapper = styled(Carousel)`
     }
 `;
 
-const CarouselPoster: React.FC = () => (
-    <CarouselWrapper autoplay={false} arrows infinite={false} className="custom-carousel">
-        {/* <div >
-            <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-                <img src='poster-4.jpg' alt='poster1' style={{height:"270px"}}/>
-                <img src='poster-1.jpg' alt='poster1' style={{height:"270px"}}/>
-                <img src='poster-2.jpg' alt='poster1' style={{height:"270px"}}/>
-                
-               
-                
-            </div>  
-        </div> */}
-        <div>
-            <div style={{display:"flex", justifyContent:"center", alignItems:"center"}}>
-                <ProductItem 
-                    image='image 37.png'
-                />
-                <ProductItem
-                    image='test2.jpg'
-                />
-                <ProductItem
-                    image='test2.jpg'
-                />
-                <ProductItem
-                    image='test2.jpg'
-                />
-                <ProductItem
-                    image='test2.jpg'
-                />
-                <ProductItem
-                    image='test2.jpg'
-                />
-            </div>
-        </div>
-        <div>
-            <ProductItem
-                image='test2.jpg'
-            />
-        </div>
-        <div>
-        <h3 style={contentStyle}>4</h3>
-        </div>
-    </CarouselWrapper>
+const CarouselPoster: React.FC<IProps> = (props: IProps) => {
+    const { image, height = "270px", width = "100%" } = props;
+    
+
+    return (
+        <>
+        <CarouselWrapper autoplay={true} arrows infinite={true} className="custom-carousel" slidesToShow={1} slidesToScroll={1}>
+            {image?.map((item, index) => (
+                <div key={index}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: height, width: width, overflow: 'hidden' }}>
+                        <img src={item} alt="poster" style={{height: "100%", width: "100%", objectFit: 'cover'}} />
+                    </div>
+                </div>
+            ))}
+        
+        </CarouselWrapper>
+        </>
     );
+}
 
 export default CarouselPoster;

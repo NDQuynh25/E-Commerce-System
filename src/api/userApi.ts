@@ -10,7 +10,7 @@ export const callCreateUser = (userFormData: FormData) => {
 }
 
 export const callUpdateUser = (id: string, userFormData: FormData) => {
-    return axios.put<IBackendRes<IUser>>(`/api/v1/users/update/${id}`, userFormData, {
+    return axios.put<IBackendRes<IUser>>(`/api/v1/users/${id}`, userFormData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }

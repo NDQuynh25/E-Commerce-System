@@ -7,7 +7,6 @@ import { ProCard} from "@ant-design/pro-components";
 import ModuleApi from "./ModalApi";
 import FloatingLabelInput from "../../input/FloatingLabelInput";
 import "../../../styles/modal.role.css";
-import { set } from "lodash";
 
 
 interface IState {
