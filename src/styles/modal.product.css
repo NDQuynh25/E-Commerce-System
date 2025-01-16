@@ -79,13 +79,3 @@
     } 
 }
 
-@media (max-width: 768px) {
-    .modal-product-form {
-        .ant-row.ant-form-item-row {
-            display: grid !important;   
-            grid-template-columns: 20% 80% !important;
-            gap: 10px;
-            font-size: 1rem!important;
-        }
-    }
-}

@@ -59,8 +59,13 @@ const ModalProduct: React.FC = () => {
     const [form] = Form.useForm();
     const [newMaterial, setNewMaterial] = React.useState<string>('');
     const [variationCount, setVariationCount] = React.useState<number>(0);
-    
-   
+    const [price, setPrice] = React.useState<number>(0);
+
+    const onChange = (e: any): void => {
+        console.log("value", e.target.value);
+        setPrice(e.target.value);
+    }
+      
     const materialOptions = [
         {value: 'cotton', label: 'Cotton'}, 
         {value: 'fleece', label: 'Fleece'},
@@ -70,12 +75,6 @@ const ModalProduct: React.FC = () => {
         {value: 'chiffon', label: 'Chiffon'},
         {value: 'denim', label: 'Denim'},
         {value: 'down', label: 'Down'},
-    ];
-    const variationOptions = [
-        {value: 'size', label: 'Size'}, 
-        {value: 'color', label: 'Color'},
-        {value: 'style', label: 'Style'},
-        {value: 'gender', label: 'Gender'},
     ];
 
     const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>): void => {
@@ -155,7 +154,7 @@ const ModalProduct: React.FC = () => {
                                     <Row gutter={40} className='modal-product-part-form'>
                                         <Col lg={24} md={24} sm={24} xs={24} >
                                             <CustomItem label="Product Images" name="fileList" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
-                                                <ImageUpload enableAspectRatio={true} fileList={fileList} setFileList={setFileList} />
+                                                <ImageUpload enableAspectRatio={true} fileList={fileList} setFileList={setFileList} count={2} />
                                             </CustomItem>
                                         </Col>
                                        
@@ -242,7 +241,7 @@ const ModalProduct: React.FC = () => {
                                                 <AutoComplete
                                                     options={formattedOptions}
                                                     placeholder="Please select"
-                                                    filterOption={false} // Tắt tính năng tìm kiếm
+                                                    filterOption={false} 
                                                 >
                                                   
                                                 </AutoComplete>
@@ -312,8 +311,9 @@ const ModalProduct: React.FC = () => {
                                         </Col>
 
                                         <Col lg={24} md={24} sm={24} xs={24}>
-                                            <CustomItem label="Price" name="price" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
-                                                <Input 
+                                            <CustomItem label="Price" name="price"  labelCol={{ span: 24 }} wrapperCol={{ span: 24 }} >
+                                                <Input
+                                                   
                                                     type="number" 
                                                     addonAfter="VND" 
                                                     style={{width: "100%"}}
