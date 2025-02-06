@@ -3,16 +3,16 @@ import { Routes, Route } from 'react-router-dom';
 import UserManagement from '../pages/admin/user/UserManagement';
 import RoleManagement from '../pages/admin/user/RoleManagement';
 import PermissionManagement from '../pages/admin/user/PermissionManagement';
-import ModalProduct from '../components/admin/product/ModalProduct';
+import AddProduct from '../components/admin/product/AddProduct';
 
 
 const Admin = () => {
   return (
     <Routes>
-      <Route path="/user-management/user" element={<UserManagement />} />
-      <Route path="/user-management/role" element={<RoleManagement/>} />
-      <Route path="/user-management/permission" element={<PermissionManagement/>} />
-      <Route path="/product-management/product" element={<ModalProduct />} />
+      <Route path="/user-management/users" element={<UserManagement />} />
+      <Route path="/user-management/roles" element={<RoleManagement/>} />
+      <Route path="/user-management/permissions" element={<PermissionManagement/>} />
+      <Route path="/product-management/new-product" element={<AddProduct />} />
     </Routes>
   );
 };

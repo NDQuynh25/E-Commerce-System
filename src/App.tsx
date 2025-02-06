@@ -12,7 +12,7 @@ import Register from './pages/auth/Register';
 import LoginAdmin from './pages/auth/LoginAdmin';
 import LayoutAdmin from './components/layout/LayoutAdmin';
 import LayoutApp from './components/layout/LayoutApp';
-import HomePage from './pages/home/HomePage';
+import HomePage from './pages/customer/HomePage';
 
 function App() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);

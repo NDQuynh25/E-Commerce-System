@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Upload, Modal, Radio, Button, message } from "antd";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined} from "@ant-design/icons";
 import { base64ToBlob } from "../../utils/conversion";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import styled from "styled-components";
 import { UploadProps } from "antd/lib";
-import { set } from "lodash";
+
 
 
 interface ImageUploadProps {
@@ -140,11 +140,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     if (cropper) {
       const croppedImage = await cropper.getCroppedCanvas().toDataURL(); // Lấy Base64
       const croppedFile = base64ToBlob(croppedImage); // Chuyển Base64 sang File
-      const currentFileIndex = fileList.findIndex((file) => file.uid === fileCurrent.uid); // Tìm vị trí file gốc trong danh sách
+      const currentFileIndex = fileList?.findIndex((file) => file.uid === fileCurrent.uid); // Tìm vị trí file gốc trong danh sách
       const currentTime = Date.now();
 
       // Thay thế file gốc trong danh sách
-      const updatedFileList = fileList.map((file, index) => {
+      const updatedFileList = fileList?.map((file, index) => {
         if (index === currentFileIndex) {
           return {
             lastModified: currentTime, // Cập nhật lastModified để React nhận diện file mới
@@ -194,7 +194,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     setFileList(file.fileList);
 
   const onRemove = (file: any): void => {
-    setFileList(fileList.filter((item) => item.uid !== file.uid));
+    setFileList(fileList?.filter((item) => item.uid !== file.uid));
   };
 
   const uploadButton = (

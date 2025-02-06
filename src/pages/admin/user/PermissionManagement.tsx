@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { IPermission} from "../../../types/backend";
 import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
-import { Button, Modal, Popconfirm, Space, Tag, message, notification } from "antd";
+import { Button, Popconfirm, Space, Tag, message, notification } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import queryString from 'query-string';
@@ -14,7 +14,8 @@ import { fetchPermission } from "../../../redux/slices/permissionSlice";
 import { callDeletePermission } from "../../../api/permissionApi";
 import ViewDetailPermission from "../../../components/admin/permission/ViewDetailPermission";
 import ModalPermission from "../../../components/admin/permission/ModalPermission";
-import { createStyles } from 'antd-style';
+
+
 const PermissionManagement = () => {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [dataInit, setDataInit] = useState<IPermission | null>(null);
@@ -252,7 +253,7 @@ const PermissionManagement = () => {
     }
 
     return (
-        <div>
+        <div style={{ padding: 20 }}>
             {/* <Access
                 permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}
             > */}

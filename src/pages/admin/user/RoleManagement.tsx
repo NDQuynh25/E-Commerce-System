@@ -225,7 +225,7 @@ const RoleManagement = () => {
     }
 
     return (
-        <div>
+        <div style={{ padding: 20 }}>
             {/* <Access
                 permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}
             > */}

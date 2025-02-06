@@ -8,13 +8,13 @@ import { Button, Popconfirm, Space, message, notification } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import { callDeleteUser } from "../../../api/userApi";
-import queryString from 'query-string';
+
 import ViewDetailUser from "../../../components/admin/user/ViewDetailUser";
 import ModalUser from "../../../components/admin/user/ModalUser";
 // import ViewDetailUser from "@/components/admin/user/view.user";
 // import Access from "@/components/share/access";
 // import { ALL_PERMISSIONS } from "@/config/permissions";
-import { sfEqual, sfLike } from "spring-filter-query-builder";
+
 import { fetchUser } from "../../../redux/slices/userSlice";
 
 const UserManagement = () => {
@@ -230,7 +230,7 @@ const UserManagement = () => {
     }
 
     return (
-        <div>
+        <div style={{ padding: 20 }}>
             {/* <Access
                 permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}
             > */}

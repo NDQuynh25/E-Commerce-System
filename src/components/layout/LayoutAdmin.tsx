@@ -18,10 +18,11 @@ import { callLogout } from '../../api/authApi';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { isMobile } from 'react-device-detect';
 import type { MenuProps } from 'antd';
-import { Footer } from 'antd/lib/layout/layout';
 import { setLogoutAction } from '../../redux/slices/authSlice';
 // import { setLogoutAction } from '@/redux/slice/accountSlide';
 // import { ALL_PERMISSIONS } from '@/config/permissions';
+import { Footer } from 'antd/es/layout/layout';
+import { HeartTwoTone } from '@ant-design/icons';
 
 
 
@@ -84,7 +85,7 @@ const LayoutAdmin = (props: IProps) => {
 
             const full = [
                 {
-                    label: <Link to='/admin'>Dashboard</Link>,
+                    label: <Link to='/admin'><b>Dashboard</b>,</Link>,
                     key: '/admin',
                     icon: <AppstoreOutlined />
                 },
@@ -92,20 +93,20 @@ const LayoutAdmin = (props: IProps) => {
                 ...(viewUser || ACL_ENABLE === 'false' ? [{
                     label: <b>User Management</b>,
                     key: '/admin/user-management',
-                    icon: <img src='/project-manager.png' alt='Product Icon' style={{ width: '26px', height: '26px' }} />,
+                    //icon: <img src='/project-manager.png' alt='Product Icon' style={{ width: '26px', height: '26px' }} />,
                     children: [
                         {   
                             
-                            label: <Link to='/admin/user-management/user'>Users</Link>, // Quản lý tài khoản người dùng
-                            key: '/admin/user-management/user',
+                            label: <Link to='/admin/user-management/users'>Users</Link>, // Quản lý tài khoản người dùng
+                            key: '/admin/user-management/users',
                         },
                         {
-                            label: <Link to='/admin/user-management/role'>Roles</Link>, // Quản lý vai trò (Roles)
-                            key: '/admin/user-management/role',
+                            label: <Link to='/admin/user-management/roles'>Roles</Link>, // Quản lý vai trò (Roles)
+                            key: '/admin/user-management/roles',
                         },
                         {
-                            label: <Link to='/admin/user-management/permission'>Permissions</Link>, // Quản lý quyền hạn (Permissions)
-                            key: '/admin/user-management/permission',
+                            label: <Link to='/admin/user-management/permissions'>Permissions</Link>, // Quản lý quyền hạn (Permissions)
+                            key: '/admin/user-management/permissions',
                         },
                     ],
                 }] : []),
@@ -113,19 +114,19 @@ const LayoutAdmin = (props: IProps) => {
                 ...(viewRole || ACL_ENABLE === 'false' ? [{
                     label: <b>Product Management</b>,
                     key: '/admin/product-management',
-                    icon: <img src='/best-product.png' alt='Product Icon' style={{ width: '26px', height: '26px' }} />, // Icon hình ảnh,
-                    children: [ // Các tùy chọn con (selection)
+                    //icon: <img src='/best-product.png' alt='Product Icon' style={{ width: '26px', height: '26px' }} />, // Icon hình ảnh,
+                    children: [ 
                         {
-                            label: <Link to='/admin/product-management/product'>Products </Link>, // Tùy chọn 1
-                            key: '/admin/product/list',
+                            label: <Link to='/admin/product-management/products'>Products </Link>, 
+                            key: '/admin/product-management/products',
                         },
                         {
-                            label: <Link to='/admin/product/add'>Add Product</Link>, // Tùy chọn 2
-                            key: '/admin/product/add',
+                            label: <Link to='/admin/product-managment/new-product'>Add Product</Link>, 
+                            key: '/admin/product-managemnt/new-product',
                         },
                         {
-                            label: <Link to='/admin/product-management/category'>Categories</Link>, // Tùy chọn 3
-                            key: '/admin/product/categories',
+                            label: <Link to='/admin/product-management/category'>Categories</Link>, 
+                            key: '/admin/product-managemnt/category',
                         },
                     ],
                 }] : []),
@@ -178,14 +179,14 @@ const LayoutAdmin = (props: IProps) => {
     return (
         <>
             <Layout
-                style={{ minHeight: '98vh' }}
+                style={{ maxHeight: '100vh' }}
                 className="layout-admin"
             >
                 {!isMobile ?
                     <Sider
-                        style={{ height: '100vh'}}
+                        style={{ height: '100vh', position: 'sticky', top: 0, left: 0 }}
                         theme='light'
-                        width={256}
+                        width={220}
                         collapsible
                         collapsed={collapsed}
                         onCollapse={(value) => setCollapsed(value)}>
@@ -211,7 +212,7 @@ const LayoutAdmin = (props: IProps) => {
 
                 <Layout>
                     {!isMobile &&
-                        <div className='admin-header' style={{ display: "flex", justifyContent: "space-between", marginRight: 20 }}>
+                        <div className='admin-header' style={{ display: "flex", justifyContent: "space-between",  height: 64, width: "100%" ,alignItems: 'center', backgroundColor: 'white', marginBottom: 0, paddingRight: "25px" }}>
                             <Button
                                 type="text"
                                 icon={collapsed ? React.createElement(MenuUnfoldOutlined) : React.createElement(MenuFoldOutlined)}
@@ -231,7 +232,7 @@ const LayoutAdmin = (props: IProps) => {
                             </Dropdown>
                         </div>
                     }
-                    <Content style={{ padding: '15px' }}>
+                    <Content style={{ padding: '0px' }}>
                         {props.children}
                         
                         

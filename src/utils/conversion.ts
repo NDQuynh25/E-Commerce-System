@@ -27,3 +27,12 @@ export const base64ToBlob = (base64String: string): Blob | null => {
     // Tạo Blob từ dữ liệu nhị phân và MIME type
     return new Blob([u8arr], { type: mime });
 };
+
+
+export const getBase64 = (file: any): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+});

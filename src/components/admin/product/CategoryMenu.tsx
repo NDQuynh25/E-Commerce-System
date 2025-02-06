@@ -1,146 +1,103 @@
-import React, { useState } from "react";
-import { Layout, Menu, Modal } from "antd";
+import React from 'react';
+import type { CascaderProps } from 'antd';
+import { Cascader } from 'antd';
+import { Form } from 'antd';
+import styled from 'styled-components';
 
-const { Sider, Content } = Layout;
 
-// Định nghĩa kiểu dữ liệu cho danh mục
-interface Category {
+const CustomItem = styled(Form.Item)`
+    .ant-row.ant-form-item-row {
+        font-size: 1rem!important;
+        flex-wrap: wrap !important;
+    }
+    
+    .ant-form-item-label label::after {
+        content: none !important;
+    }
+   
+    .ant-form-item-label label {
+        height: 100% !important;
+        align-items: flex-start !important;
+        display: flex;
+        font-size: 0.95rem !important;
+        font-weight: 500 !important;
+        letter-spacing: 0px !important; 
+        text-align: right !important;
+        justify-content: left !important;
+        margin-top: 5px !important;
+        margin-right: 15px !important;
+      
+    }
 
-  id: number;
-  name: string;
-  children?: Category[];
+`;
+
+
+
+interface TreeNode {
+  id: string;
+  value: string;
+  label: string;
+  parent_id: string | null;
+  children?: TreeNode[];
 }
-interface CategoryMenuProps {
-    open: boolean;
-    setOpen: (open: boolean) => void;
+
+
+function buildTree(data: any[]): TreeNode[] {
+  const map: { [key: number]: TreeNode } = {};
+  const tree: TreeNode[] = [];
+
+  // Tạo một map để truy cập nhanh qua id
+  data.forEach(item => {
+    map[item.id] = { 
+        id: item.id, 
+        value: item.id, 
+        label: item.name, 
+        parent_id: item.parent_id, 
+        children: [] 
+    };
+  });
+  // Duyệt qua từng phần tử và gán vào cây hoặc làm con
+  data.forEach(item => {
+      if (item.parent_id === null) {
+          tree.push(map[item.id]); // Đây là node root
+      } else {
+          if (map[item.parent_id]) {
+              map[item.parent_id].children?.push(map[item.id]); // Gán làm con
+          }
+      }
+  });
+
+  return tree;
 }
 
-// Dữ liệu mẫu
-const categories: Category[] = [
-  {
-    id: 1,
-    name: "Thời Trang Nữ",
-    children: [
-      {
-        id: 11,
-        name: "Áo",
-        children: [
-          { id: 111, name: "Áo khoác mùa đông" },
-          { id: 112, name: "Áo choàng" },
-          { id: 113, name: "Áo blazer" },
-        ],
-      },
-      {
-        id: 12,
-        name: "Quần",
-        children: [{ id: 121, name: "Quần jeans" }],
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Thời Trang Nam",
-    children: [
-      {
-        id: 21,
-        name: "Áo",
-        children: [{ id: 211, name: "Áo sơ mi" }],
-      },
-    ],
-  },
+const onChange: CascaderProps<TreeNode>['onChange'] = (value) => {
+  console.log(value);
+
+  
+};
+
+const CategoryMenu: React.FC = () => {
+  // Ví dụ dữ liệu từ DB
+const data: any[] = [
+  { id: 1, name: "Zhejiang", parent_id: null },
+  { id: 2, name: "Jiangsu", parent_id: null },
+  { id: 3, name: "Hangzhou", parent_id: 1 },
+  { id: 4, name: "Nanjing", parent_id: 2 },
+  { id: 5, name: "West Lake", parent_id: 3 },
+  { id: 6, name: "Zhong Hua Men", parent_id: 4 },
 ];
 
-const CategoryMenu: React.FC<CategoryMenuProps> = ({open = false, setOpen}) => {
-  const [selectedParent, setSelectedParent] = useState<number | null>(null);
-  const [selectedChild, setSelectedChild] = useState<number | null>(null);
-
-  const handleParentSelect = (parentId: number) => {
-    setSelectedParent(parentId);
-    setSelectedChild(null); // Reset danh mục con khi chọn danh mục cha khác
-  };
-
-  const handleChildSelect = (childId: number) => {
-    setSelectedChild(childId);
-  };
-
-  const parentCategories: Category[] = categories;
-  const childCategories: Category[] =
-    parentCategories.find((cat) => cat.id === selectedParent)?.children || [];
-  const subCategories: Category[] =
-    childCategories.find((child) => child.id === selectedChild)?.children || [];
-
-  return (
-    <Modal
-        title="Chọn danh mục"
-        visible={true}
-        footer={null}
-        onCancel={() => {setOpen(false)}}
-        open={open}
-        width={800}
-        style={{height: "600px"}}
-    >
-        <Layout style={{minHeight: "600px", display: "flex" }}>
-        {/* Cột 1: Danh mục cha */}
-        <Sider
-            width="20%"
-            style={{
-            background: "#fff",
-            borderRight: "1px solid #ddd",
-            overflowY: "auto",
-            }}
-        >
-            <Menu
-            mode="vertical"
-            selectedKeys={[String(selectedParent)]}
-            onClick={(e) => handleParentSelect(Number(e.key))}
-            >
-            {parentCategories.map((parent) => (
-                <Menu.Item key={parent.id}>{parent.name}</Menu.Item>
-            ))}
-            </Menu>
-        </Sider>
-
-        {/* Cột 2: Danh mục con */}
-        <Sider
-            width="40%"
-            style={{
-            background: "#fff",
-            borderRight: "1px solid #ddd",
-            overflowY: "auto",
-            }}
-        >
-            <Menu
-            mode="vertical"
-            selectedKeys={[String(selectedChild)]}
-            onClick={(e) => handleChildSelect(Number(e.key))}
-            >
-            {childCategories.map((child) => (
-                <Menu.Item key={child.id}>{child.name}</Menu.Item>
-            ))}
-            </Menu>
-        </Sider>
-
-        {/* Cột 3: Danh mục nhỏ hơn */}
-        <Content
-            style={{
-            padding: "16px",
-            background: "#fff",
-            overflowY: "auto",
-            }}
-        >
-            {subCategories.length > 0 ? (
-            <Menu mode="vertical">
-                {subCategories.map((sub) => (
-                <Menu.Item key={sub.id}>{sub.name}</Menu.Item>
-                ))}
-            </Menu>
-            ) : (
-            <p>Chọn danh mục con để hiển thị danh mục nhỏ hơn.</p>
-            )}
-        </Content>
-        </Layout>
-    </Modal>
+const options = buildTree(data);
+console.log(options);
+  return(
+    <CustomItem label="Category" name="category" rules={[{ required: true, message: 'Please select a category!' }]} labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+      <Cascader
+        options={options}
+        onChange={onChange}
+        placeholder="Please select"
+      />
+    </CustomItem>
   );
-};
+}
 
 export default CategoryMenu;
