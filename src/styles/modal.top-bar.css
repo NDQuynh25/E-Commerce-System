@@ -1,0 +1,72 @@
+@import url('root.css');
+
+.top-bar {
+    display: flex;
+    width: 100%;
+    /* align-items: center; */
+    background-color: black;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    span {
+        color: var(--white);
+        font-size: 16px;
+        font-family: 'Commissioner', sans-serif;
+        
+    }
+    span:hover {
+        color: var(--yellow);
+    }
+
+    a {
+        display: flex;
+        gap: 10px;
+        text-decoration: none;
+        align-items: center;
+    }
+    a::after {
+        top: 5px;
+        content: "";
+        height: 15px;
+        left: auto;
+        right: 0;
+        width: 1px;
+        background-color: #5e5e5e;
+      
+       
+    }
+    .container {
+        display: flex;
+        width: 80%;
+        padding-left: 10%;
+        padding-right: 10%;
+
+        .top-bar-content {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            
+        
+            .top-bar-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+            }
+                
+            .top-bar-right {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+            }
+            .top-bar-item {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px;
+                cursor: pointer;
+            }
+        }
+    }
+}

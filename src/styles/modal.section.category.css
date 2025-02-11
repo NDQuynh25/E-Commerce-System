@@ -1,0 +1,32 @@
+.section-category-item {
+    display: flex;
+    flex-direction: center;
+    align-items: center;
+    width: 20%;
+}
+
+
+
+@media (max-width: 1200px) {
+    .section-category-item {
+        width: 33.33333%;
+    }
+}
+
+/* Khi màn hình nhỏ hơn 992px */
+@media (max-width: 992px) {
+    
+    
+}
+
+@media (max-width: 768px) {
+    .section-category-item {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 576px) {
+  
+
+}

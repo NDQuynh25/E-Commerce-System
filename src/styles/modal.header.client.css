@@ -1,0 +1,57 @@
+@import url('root.css');
+
+.header-client {
+    width: 100%;
+    min-height: 104px;
+    background-color: #ffffff;
+
+    .container {
+        display: flex;
+        width: 80%;
+        padding-left: 10%;
+        padding-right: 10%;
+        align-items: center;
+        height: 100%;
+        justify-content: center;
+
+        .header-client-content {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            
+            .header-client-logo {
+                
+            }
+            .header-client-logo img {
+                max-width: 200px;
+                width: auto; /* Giữ tỷ lệ ảnh */
+                height: auto; /* Đảm bảo không bị méo */
+                
+            }
+            .header-client-category {
+                span:hover {
+                    color: var(--yellow) !important;
+                }
+            }
+            .header-client-control {
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+            .header-client-menu {
+                
+            }
+
+            
+
+            
+        }
+    }
+
+   
+
+   
+}

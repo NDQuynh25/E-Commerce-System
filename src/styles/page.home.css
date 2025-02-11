@@ -1,0 +1,79 @@
+.homepage {
+   
+    width: 100%;
+    background-color: #f3f3f3;
+    
+    .homepage-container {
+        width: 100%;
+        background-color: #f3f3f3;
+
+
+        .homepage-body {
+            .homepage-section-slider {
+                width: 100%;
+                margin-bottom: 50px;
+            }
+
+            .homepage-section-category {
+                width: 80%;
+                margin-left: 10%;
+                margin-right: 10%;
+                margin-bottom: 50px;
+            }
+
+            .homepage-section-about {
+                margin-bottom: 50px;
+            }
+            .homepage-section-featured {
+                /* width: 80%; */
+                padding: 0px 12.5%;
+                margin-bottom: 50px;
+            }
+            .homepage-section-sale {
+                
+                margin-bottom: 50px;
+            }
+            .homepage-section-furniture {
+                padding: 0px 10%;
+                margin-bottom: 50px;
+            }
+        }
+       
+    }
+   
+}
+
+
+@media (max-width: 1400px) {
+    .homepage-section-furniture {
+        padding: 0px 5% !important;
+    }
+
+
+}
+
+/* @media (max-width: 1200px) {
+    .homepage-section-furniture {
+        padding: 0px 5% !important;
+    }
+
+
+}
+@media (max-width: 992px) {
+    .homepage-section-furniture {
+        padding: 0px 2% !important;
+    }
+
+
+} */
+
+@media (max-width: 768px) {
+    .homepage-section-furniture {
+        padding: 0px 10% !important;
+    }
+}
+@media (max-width: 576px) {
+    .homepage-section-furniture {
+        padding: 0px 5% !important;
+    }
+}

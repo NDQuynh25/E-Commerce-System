@@ -1,0 +1,72 @@
+@import url('root.css');
+
+.menu-product {
+    background: #fff;
+    padding: 10px 20px;
+    span {
+        font-size: 16px;
+        font-family: 'Commissioner', sans-serif;
+        
+    }
+    span:hover {
+        color: var(--yellow) !important;
+    
+    }
+    
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+}
+
+.menu-product ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.menu-product li {
+    position: relative;
+    padding: 10px;
+}
+.menu-product li:hover {
+    color: var(--yellow) !important;
+}
+
+
+.menu-product .active a, .menu-product .active span {
+    color: var(--yellow) !important;
+}
+
+.menu-product a, .menu-product span {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* Dropdown menu */
+.menu-product__dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 9999;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+   
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-product__dropdown-menu li {
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin: 0px !important;
+
+}
+
+.menu-product__dropdown-menu li:hover {
+    background: #f0f0f0;
+    span {
+        color: var(--yellow) !important;
+    }
+}

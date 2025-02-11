@@ -5,43 +5,44 @@ import styled from 'styled-components';
 
 
 interface IProps {
-    image?: string[];
-    height?: string;
-    width?: string;
+    children?: React.ReactNode[]
+    autoplay?: boolean
+    infinite?: boolean
+    slidesToShow?: number
+    slidesToScroll?: number
 }
 
 
 const CarouselWrapper = styled(Carousel)`
+
+    z-index: 1000;
     > .slick-dots li button {
-        
-        background: black; 
+        margin-top: 15px !important;
+        background: var(--yellow); 
     }
     > .slick-dots li.slick-active button { 
-        background: black;
+        background: var(--yellow);
     }
     > .slick-next {
-        color: black;
+        color: var(--yellow);
         font-size: 20px;
     }
     > .slick-prev {
-        color: black;
+        color: var(--yellow);
         font-size: 20px;
     }
+   
 `;
 
 const CarouselPoster: React.FC<IProps> = (props: IProps) => {
-    const { image, height = "270px", width = "100%" } = props;
+    const { children, autoplay = false, infinite = true, slidesToScroll = 1, slidesToShow = 3 } = props;
     
 
     return (
         <>
-        <CarouselWrapper autoplay={true} arrows infinite={true} className="custom-carousel" slidesToShow={1} slidesToScroll={1}>
-            {image?.map((item, index) => (
-                <div key={index}>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: height, width: width, overflow: 'hidden' }}>
-                        <img src={item} alt="poster" style={{height: "100%", width: "100%", objectFit: 'cover'}} />
-                    </div>
-                </div>
+        <CarouselWrapper autoplay={autoplay} arrows infinite={infinite} slidesToShow={slidesToShow} slidesToScroll={slidesToScroll}>
+            {children?.map((item, index) => (
+                <div key={index}>{item}</div>
             ))}
         
         </CarouselWrapper>

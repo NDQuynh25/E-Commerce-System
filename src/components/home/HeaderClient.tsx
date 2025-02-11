@@ -1,128 +1,74 @@
-import React, { useState } from 'react';
-import {SearchOutlined, MenuOutlined, HomeOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Badge, Button, Drawer, Menu } from 'antd';
-import '../../styles/header.client.css';
-import { Input } from 'antd';
-import { useMediaQuery } from 'react-responsive';
-import { isMobile } from 'react-device-detect';
-
-const { Search } = Input;
 
 
-type MenuItem = Required<MenuProps>['items'][number];
+import React from 'react';
 
-const items: MenuItem[] = [
-    {
-        label: <p style={{fontSize: "1rem"}}>Trang chủ</p>,
-        key: 'home',
-        icon: <img src='/homepage.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
-    },
+import { Link } from 'react-router-dom';
+import '../../styles/modal.header.client.css';
+import { Badge, Button, Dropdown, Menu, MenuProps, Space } from 'antd';
+import MenuProduct from './MenuProduct';
 
-    {
-        label: <p style={{fontSize: "1rem"}}>Nam</p>,
-        key: 'male',
-        icon: <img src='/man.png' alt='Product Icon' style={{ height: '18px', width: "auto" }}/>,
-    },
-    {
-        label: <p style={{fontSize: "1rem"}}>Nữ</p>,
-        key: 'female',
-        icon: <img src='/woman.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
-    },
-    {
-        label: <p style={{fontSize: "1rem"}}>Trẻ em</p>,
-        key: 'child',
-        icon: <img src='/children.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
-    },
-    {
-        label: <p style={{fontSize: "1rem"}}>Phụ kiện</p>,
-        key: 'accessories',
-        icon: <img src='/accessory.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
-    },
-    {
-        label: <p style={{fontSize: "1rem"}}>Ưu đãi</p>,
-        key: 'discount',
-        icon: <img src='/coupon.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
-    },
-    {
-        label: <p style={{fontSize: "1rem"}}>Liên hệ</p>,
-        key: 'contact',
-        icon: <img src='/contact-mail.png' alt='Product Icon' style={{ height: '18px', width: "auto" }} />,
-    },
-   
-    
+const items: MenuProps['items'] = [
+  {
+    key: '1',
+    label: (
+      <Link to="/product">1st menu item</Link>
+    ),
+  },
+  {
+    key: '2',
+    label: (
+      <Link to="/product">1st menu item</Link>
+    ),
+  },
+  {
+    key: '3',
+    label: (
+      <Link to="/product">1st menu item</Link>
+    ),
+  },
 ];
-
-
-const HeaderClient = () => {
-    const [current, setCurrent] = useState('male');
-
-   
-    const onClick: MenuProps['onClick'] = (e) => {
-        console.log('click ', e);
-        setCurrent(e.key);
-    };
-    const [visible, setVisible] = useState(false);
-    const toggleDrawer = () => {
-        setVisible(!visible);
-    };
-    const isExtraSmallScreen = useMediaQuery({ query: '(max-width: 480px)' });
-   
-    const isSmallScreen = useMediaQuery({ query: '(min-width: 481px) and (max-width: 768px)' });
-    const isMediumScreen = useMediaQuery({ query: '(min-width: 768px) and (max-width: 1024px)' });
-    const isLargeScreen = useMediaQuery({ query: '(min-width: 1025px) and (max-width: 1200px)' });
-
+const HeaderClient: React.FC = () => {
     return (
-        <div className='header-client'>
-            <div className='header-client-container'>
-                <div className='header-client-content'>
-                    <div className='header-client-logo display-logo'>
-                        <img src='logo.png' style={{height: "70px", borderRadius: "100%"}} />
+        <div className="header-client">
+            <div className="container">
+                <div className="header-client-content">
+                    <div className="header-client-logo">
+                        <Link to="/">
+                            <img src="//bizweb.dktcdn.net/100/480/479/themes/900388/assets/logo.png?1727161994343" alt="Dola Furniture"></img>
+                        </Link>
                     </div>
-                   
-                    <div className='header-client-menu-search'>
-                        <div className='header-client-menu display-menu'>
-                            <Menu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} style={{flexGrow: "1"}}/>
-                        </div>
-                        <div className='header-client-search'>
-                            <Search  placeholder="Bạn muốn tìm gì..." enterButton size="large" loading={false} />
-                        </div>
-                        
-                    </div>
-                    <div className='header-client-account'>
-                        <Button icon={<img src='account.png' alt='Product Icon' style={{ height: '28px', width: "auto", border: "none" }} />} size="large" style={{ marginLeft: 16 }}>
-                            
-                        </Button>
-                        <Badge count={99} overflowCount={99}>
-                            <Button icon={<img src='cart.png' alt='Product Icon' style={{ height: '28px', width: "auto", border: "none" }} />} size="large" style={{ marginLeft: 16 }}>
-                                
+                    <div className='header-client-category'>
+                        <Dropdown menu={{ items }} placement="bottom">
+                            <Button style={{fontSize: '16px', color: 'black', border: 'none', backgroundColor: '#f6f4f0', height: '38px', borderRadius: '5px'}}>
+                                <span>Danh mục nổi bật</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20">
+                                    <path fill="black" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z" ></path>
+                                </svg> 
                             </Button>
-                        </Badge>
+                        </Dropdown>
                     </div>
-                    <div className='header-client-menu-mobile display-menu-mobile'>
-                        <Button
-                            onClick={toggleDrawer}
-                            icon={<MenuOutlined />}
-                            style={{ height:"38px", width: "38px",  }}
-                           
-                        />
-                        <Drawer
-                            title="Menu"
-                            placement="left"
-                            onClose={toggleDrawer}
-                            visible={visible}
-                            width={"200px"}
-                        >
-                            <Menu onClick={onClick} selectedKeys={[current]} mode="inline" items={items} />
-                        </Drawer>
+                    <div className="header-client-menu">
+                        <MenuProduct />
                     </div>
-                    
-                    
+                    <div className="header-client-control">
+                        <div className="header-client-search">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="black" xmlns="http://www.w3.org/2000/svg"> <path fill="#" d="M14.1404 13.4673L19.852 19.1789C20.3008 19.6276 19.6276 20.3008 19.1789 19.852L13.4673 14.1404C12.0381 15.4114 10.1552 16.1835 8.09176 16.1835C3.6225 16.1835 0 12.5613 0 8.09176C0 3.6225 3.62219 0 8.09176 0C12.561 0 16.1835 3.62219 16.1835 8.09176C16.1835 10.1551 15.4115 12.038 14.1404 13.4673ZM0.951972 8.09176C0.951972 12.0356 4.14824 15.2316 8.09176 15.2316C12.0356 15.2316 15.2316 12.0353 15.2316 8.09176C15.2316 4.14797 12.0353 0.951972 8.09176 0.951972C4.14797 0.951972 0.951972 4.14824 0.951972 8.09176Z"></path> </svg>
+                        </div>
+                        <div className="header-client-cart">
+                            <Button className='cart-btn'>
+                                <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="17.5" height="20"><path fill="balck" d="M352 160v-32C352 57.42 294.579 0 224 0 153.42 0 96 57.42 96 128v32H0v272c0 44.183 35.817 80 80 80h288c44.183 0 80-35.817 80-80V160h-96zm-192-32c0-35.29 28.71-64 64-64s64 28.71 64 64v32H160v-32zm160 120c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24zm-192 0c-13.255 0-24-10.745-24-24s10.745-24 24-24 24 10.745 24 24-10.745 24-24 24z" ></path></svg>
+                                <span style={{fontSize: "14px"}}>Giỏ hàng</span>
+                                <Space size="middle">
+                                    <Badge count={4} style={{backgroundColor: 'black'}}></Badge>
+                                </Space>
+                            </Button>
+                        </div>
+
+                      
+                    </div>
                 </div>
             </div>
         </div>
-        
     );
 };
-
 export default HeaderClient;

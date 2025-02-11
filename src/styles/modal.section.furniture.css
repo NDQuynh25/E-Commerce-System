@@ -1,0 +1,41 @@
+.section-furniture {
+    display: flex;
+    justify-content: center;
+    gap: 4%;
+}
+
+.section-furniture__slider {
+    width: 48%;
+    
+}
+.section-furniture__carousel {
+    width: 48%;
+}
+
+
+@media (max-width: 992px) {
+    .section-furniture {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .section-furniture__slider {
+     
+        width: 97.666666666%!important;
+        order: 2!important;
+      
+    }
+    .section-furniture__carousel {
+        width: 100%!important;
+       
+
+    }
+}
+
+
+
+
+
+
+
+

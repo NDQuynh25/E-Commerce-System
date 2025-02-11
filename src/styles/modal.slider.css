@@ -1,0 +1,158 @@
+@import url('root.css');
+
+.slider {
+    width: 100%;
+    overflow: hidden; /* Ngăn chặn tràn nội dung */
+}
+
+.slider-container {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    
+}
+
+/* Ảnh tự động co theo kích thước màn hình */
+.slider-image, 
+.slider-image img,
+.slider-image source {
+    width: 100%;  
+    justify-content: center;
+    height: auto; /* Giữ tỷ lệ ảnh */
+    display: flex; /* Xóa khoảng trắng dư thừa */
+    object-fit: cover; /* Giữ ảnh luôn đầy đủ */
+}
+.slider-image img {
+    width: 100%;  
+    
+    justify-content: center;
+    height: auto; /* Giữ tỷ lệ ảnh */
+    display: flex; /* Xóa khoảng trắng dư thừa */
+    object-fit: cover; /* Giữ ảnh luôn đầy đủ */
+}
+
+.slider__content {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+
+.slider-text {
+    
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    padding: 20px;
+   
+
+    .slider-text-content {
+        text-align: left;
+        
+        border-radius: 5px;
+        color: var(--white);
+        padding: 30px;
+        display: inline-block;
+
+        h2 {
+            color: var(--yellow);
+            font-size: 35px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-family: 'Commissioner', sans-serif;
+        }
+        p {
+            font-size: 20px;
+            font-weight: 400;
+            font-family: 'Commissioner', sans-serif;
+        }
+
+        .slider-btn {
+            display: flex;
+            background-color: transparent;
+            border: 1px solid var(--white);
+            color: var(--white);
+            margin-top: 18px;
+            height: 38px;
+            width: 134px;
+        }
+        .slider-btn:hover {
+            background-color: var(--yellow);
+            color: var(--white) !important;
+            border: none;
+            transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+            
+        }
+        .slider-btn span:hover {
+            color: var(--white) !important;
+        }
+
+    }
+
+}
+
+
+@media (max-width: 1400px) {
+    
+}
+
+
+@media (max-width: 567px) {
+    .slider-text-content {
+        padding: 20px !important;
+    }
+    .slider-text-content h2 {
+        font-size: 25px !important;
+    }
+    .slider-text-content p {
+        font-size: 16px;
+    }
+    .slider-btn {
+        height: 30px;
+        width: 100px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 1200px) {
+   
+}
+
+/* Khi màn hình nhỏ hơn 992px */
+@media (max-width: 992px) {
+    
+    
+}
+
+@media (max-width: 768px) {
+   
+}
+
+
+@media (max-width: 576px) {
+  
+
+}
+

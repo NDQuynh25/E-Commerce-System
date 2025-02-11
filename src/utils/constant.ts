@@ -9,8 +9,15 @@ export const path = {
     LOGIN: '/login',
     REGISTER: '/register',
     LOGIN_ADMIN: '/admin/login',
+    PRODUCT: '/product',
+    INTRODUCE: '/introduce',
+    NEWS: '/news',
+    CONTACT: '/contact',
+    CART: '/cart',
+    
     ADMIN: '/admin/*',
-    SELL: '/sell'
+    USER: '/*',
+
 }
 
 export const role = {
@@ -39,3 +46,16 @@ export const groupByPermission = (data: any[]): { module: string; permissions: I
         return { module: key, permissions: value as IPermission[] };
     });
 };
+
+export const info = {
+    ADDRESS: 'Số 1',
+    EMAIL: 'nguyenquynhhy03@gmail.com',
+    PHONE: '1900 6750',
+    FACEBOOK: 'https://www.facebook.com/',
+    INSTAGRAM: 'https://www.instagram.com/',
+    YOUTUBE: 'https://www.youtube.com/',
+    TWITTER: 'https://twitter.com/',
+    LINKEDIN: 'https://www.linkedin.com/',
+    ZALO: 'https://zalo.me/',
+    GOOGLE: 'https://www.google.com/'
+}
