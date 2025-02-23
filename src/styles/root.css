@@ -1,6 +1,6 @@
 body {
     p {
-        color: var(--white);
+        color: #000;
         font-weight: 400;
         font-family: 'Commissioner', sans-serif;
         line-height: 1.5;
@@ -21,9 +21,15 @@ body {
         font-size: 16px;
 
     }
-    span:hover {
-        color: var(--yellow) !important;
-    }
+ 
+
+    /* h1 {
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 36px;
+        color: #000;
+        font-family: 'Commissioner', sans-serif;
+    } */
 
     h3 {
         color: var(--yellow);
@@ -49,6 +55,13 @@ body {
         font-size: 18px;
         font-weight: 700;
     }
+
+    h5 {
+        color: black;
+        font-family: 'Commissioner', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+    }
 }
 
 :root {
@@ -63,7 +76,8 @@ body {
     --teal: #20c997;
     --cyan: #17a2b8;
     --white: #fff;
-    --gray: #6c757d;
+    --gray-1: #6c757d;
+    --gray-2: #bfc3c8;
     --gray-dark: #343a40;
     --primary: #007bff;
     --secondary: #6c757d;

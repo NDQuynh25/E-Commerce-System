@@ -1,0 +1,35 @@
+.start-rating {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 21px;
+  
+
+    .start-gold {
+        span {
+            font-size: 21px;
+            color: gold;
+        }
+        span:hover {
+            color: gold !important;
+        }
+    }
+    .start-gray {
+        span {
+            font-size: 21px;
+            color: #ccc;
+        }
+        span:hover {
+            color: #ccc !important;
+        }
+    }
+    .start-half {
+        span {
+            font-size: 21px;
+           
+        }
+    }
+    .start-gold, .start-gray, .start-half {
+        /* font-size: 21px; */
+    }
+}

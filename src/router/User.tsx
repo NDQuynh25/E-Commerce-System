@@ -4,6 +4,7 @@ import { RootState } from "../redux/store"; // Đảm bảo định nghĩa RootS
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Cart from "../pages/user/Cart";
 import HomePage from "../pages/user/HomePage";
+import Product from "../pages/user/Product";
 
 const User = () => {
   const isAuthenticated = useSelector(
@@ -17,6 +18,7 @@ const User = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/product" element={<Product/>}/>
         </Routes>
       </div>
     </Fragment>

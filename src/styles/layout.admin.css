@@ -1,0 +1,25 @@
+
+
+
+.layout-admin__p {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--white);
+   
+}
+
+
+.layout-admin {
+    .ant-menu-submenu-title {
+        color: var(--white) !important;
+    }
+
+    .ant-menu-item-icon {
+        color: var(--white) !important;
+    }
+    .ant-layout-sider-trigger {
+        background-color: #000 !important;
+    }
+}

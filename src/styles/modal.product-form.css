@@ -1,0 +1,72 @@
+.product-form {
+    .ant-input-number-input-wrap {
+        display: flex;
+        justify-content: center;
+        min-height: 35px;
+        width: 100%;
+        font-size: 15px;
+    }
+    .ant-input-affix-wrapper {
+        padding: 4px 11px !important;
+        font-size: 15px !important;
+        
+    }
+    .ant-select-selector {
+        padding-block: 0px !important;
+        
+    }
+    .ant-select-selection-wrap {
+        align-self: center !important;
+        min-height: 35px !important;
+        .ant-select-selection-placeholder, .ant-select-selection-item-content {
+            font-size: 15px !important;
+            font-family: 'Commissioner', sans-serif !important;
+            
+        }
+        .ant-select-selection-search-input {
+            font-size: 15px !important;
+        }
+       
+        .anticon {
+            font-size: 15px !important;
+        }
+    }
+
+    span {
+        color: black;
+        margin-bottom: 0 !important;
+        padding-bottom: 0px !important;
+    }
+
+    span:hover {
+        color: black !important;
+    }
+
+
+
+    .ant-input-suffix {
+        border-left: 1px solid gray;
+        padding-left: 10px;
+        span {
+            color: black;
+        }
+    }
+}
+
+
+.product-form__text-btn {
+    color: #1890ff;
+    cursor: pointer;
+    margin-left: 10px;
+    span {
+        color: #1890ff;
+    }
+    &:hover {
+        background-color: var(--white) !important;
+        span {
+            color: #40a9ff !important;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+}

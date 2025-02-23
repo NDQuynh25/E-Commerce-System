@@ -1,17 +1,17 @@
-import React, { Fragment } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
+import * as React from "react";
+import  { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import { path } from "./utils/constant";
 import "./styles/app.module.css";
 import Admin from "./router/Admin";
-import Customer from "./router/User";
+import User from "./router/User";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import LoginAdmin from "./pages/auth/LoginAdmin";
 import LayoutAdmin from "./components/layout/LayoutAdmin";
 import LayoutApp from "./components/layout/LayoutApp";
-import HomePage from "./pages/user/HomePage";
 import LayoutUserWeb from "./components/layout/LayoutUserWeb";
 
 function App() {
@@ -21,7 +21,7 @@ function App() {
 
   return (
     <div className="content-app">
-      <Fragment>
+      <React.Fragment>
         <Router>
           <Routes>
             <Route
@@ -42,7 +42,7 @@ function App() {
               path={path.USER}
               element={
                 <LayoutUserWeb>
-                  <Customer />
+                  <User />
                 </LayoutUserWeb>
               }
             />
@@ -58,7 +58,7 @@ function App() {
             />
           </Routes>
         </Router>
-      </Fragment>
+      </React.Fragment>
     </div>
   );
 }

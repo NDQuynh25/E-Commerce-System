@@ -4,6 +4,7 @@ import {
     ProTableProps,
 } from '@ant-design/pro-components';
 import en_US from 'antd/locale/en_US';
+import vi_VI from 'antd/locale/vi_VN';
 import { ConfigProvider } from 'antd';
 
 const DataTable = <
@@ -31,7 +32,7 @@ const DataTable = <
     rowSelection,
 }: ProTableProps<T, U, ValueType>) => {
     return (
-        <ConfigProvider locale={en_US}>
+        <ConfigProvider locale={vi_VI}>
             <ProTable<T, U, ValueType>
                 columns={columns}
                 defaultData={defaultData}

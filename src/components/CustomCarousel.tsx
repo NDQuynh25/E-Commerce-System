@@ -18,23 +18,23 @@ const CarouselWrapper = styled(Carousel)`
     z-index: 1000;
     > .slick-dots li button {
         margin-top: 15px !important;
-        background: var(--yellow); 
+        background: var(--orange); 
     }
     > .slick-dots li.slick-active button { 
-        background: var(--yellow);
+        background: var(--orange);
     }
     > .slick-next {
-        color: var(--yellow);
-        font-size: 20px;
+        color: var(--orange);
+        font-size: 100px !important;
     }
     > .slick-prev {
-        color: var(--yellow);
-        font-size: 20px;
+        color: var(--orange);
+        font-size: 40px;
     }
    
 `;
 
-const CarouselPoster: React.FC<IProps> = (props: IProps) => {
+const CustomCarousel: React.FC<IProps> = (props: IProps) => {
     const { children, autoplay = false, infinite = true, slidesToScroll = 1, slidesToShow = 3 } = props;
     
 
@@ -50,4 +50,4 @@ const CarouselPoster: React.FC<IProps> = (props: IProps) => {
     );
 }
 
-export default CarouselPoster;
+export default CustomCarousel;

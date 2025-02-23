@@ -1,6 +1,7 @@
 { 
   "compilerOptions": {
-    
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "files": [],
   "references": [
@@ -12,4 +13,5 @@
     }
     
   ]
+  
 }

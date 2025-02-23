@@ -1,51 +1,59 @@
-import React from "react";
+import * as React from "react";
 import { Breadcrumb } from "antd";
 
-
 const BreadCurmb: React.FC = () => {
-    return (
-        <div className="bread-crumb" style={{width: '100%', height: '200px', marginBottom: '20px'}}>
-            <div 
-                className="bread-crumb__container" 
-                style={{
-                    height: '100%', 
-                    background: "linear-gradient(0deg, rgba(0,0,0,0.8), rgba(0,0,0,0.3)),  url(//bizweb.dktcdn.net/100/480/479/themes/900388/assets/breadcrumb.jpg?1727161994343) center no-repeat",
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <div className="" style={{color: '#fff', fontSize: '30px', fontWeight: 'bold', paddingBottom: '15px'}}>
-                    Giới thiệu
-                </div>
-                <Breadcrumb
-                    items={[
-                        {
-                        title: 'Trang chủ',
-                        },
-                        {
-                        title: <a href="">Application Center</a>,
-                        },
-                        {
-                        title: <a href="">Application List</a>,
-                        },
-                        {
-                        title: 'An Application',
-                        },
-                    ]}
-                >
-                    
-                </Breadcrumb>
-            </div>
-            
+  return (
+    <div
+      className="bread-crumb"
+      style={{ width: "100%", height: "200px", marginBottom: "20px" }}
+    >
+      <div
+        className="bread-crumb__container"
+        style={{
+          height: "100%",
+          background:
+            "linear-gradient(0deg, rgba(0,0,0,0.8), rgba(0,0,0,0.3)),  url(//bizweb.dktcdn.net/100/480/479/themes/900388/assets/breadcrumb.jpg?1727161994343) center no-repeat",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div
+          className=""
+          style={{
+            color: "#fff",
+            fontSize: "30px",
+            fontWeight: "bold",
+            paddingBottom: "15px",
+          }}
+        >
+          Giới thiệu
         </div>
-    );
+        <Breadcrumb
+          items={[
+            {
+              title: "Trang chủ",
+            },
+            {
+              title: <a href="">Application Center</a>,
+            },
+            {
+              title: <a href="">Application List</a>,
+            },
+            {
+              title: "An Application",
+            },
+          ]}
+        ></Breadcrumb>
+      </div>
+    </div>
+  );
 };
 export default BreadCurmb;
 
-
-{/* <section class="bread-crumb" style="background: ;">
+{
+  /* <section class="bread-crumb" style="background: ;">
 	
 	<div class="container">
 		<div class="title-bread-crumb">
@@ -61,4 +69,5 @@ export default BreadCurmb;
 			
 		</ul>
 	</div>
-</section> */}
+</section> */
+}

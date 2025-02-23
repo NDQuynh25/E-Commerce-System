@@ -104,28 +104,31 @@ export interface ICategory {
 
 export interface IProduct {
     id?: string;
-    imageURLs?: string[];
-    promotionImageURL: string;
+    imageURLs: string[];
+
     productName: string;
-    categoryId: string; 
-    description: string;
+    skuCode: string;
     brand: string;
-    materials: string[];
     countryOfOrigin: string;
-    price?: number;
+    materials: string[];
+    description: string;
+    originalPrice?: number;
+    sellingPrice?: number;
     stock?: number;
-    discount?: number;
+
     variation1?: string;
     options1?: string[];
     variation2?: string;
     options2?: string[];
     skus?: {
-        imageURL?: string;
+        skuCode: string;
         option1?: string;
         option2?: string;
-        price?: number;
-        stock?: number;
-        discount?: number;
+        originalPrice: number;
+        sellingPrice: number;
+        stock: number;
+
+      
     }[];
     
     isActive?: string;
@@ -143,12 +146,12 @@ export interface OProduct {
 
 export interface skuType {
     key: number;
-    imageFile?: FileUpload;
+    skuCode: string;
     option1?: string;
     option2?: string;
-    price: number;
+    originalPrice: number;
+    sellingPrice: number;
     stock: number;
-    discount: number;
 }
 
 export interface OSku {
