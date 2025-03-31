@@ -1,28 +1,28 @@
 import DataTable from "../../../components/DataTable";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { IPermission} from "../../../types/backend";
+import { CategoryType} from "../../../types/backend";
 import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
-import { Button, Popconfirm, Space, Tag, message, notification } from "antd";
-import { useState, useRef } from 'react';
+import { Button, Popconfirm, Space, Tag, Tooltip, message, notification } from "antd";
+import { useState, useRef, useEffect } from 'react';
 import dayjs from 'dayjs';
 import queryString from 'query-string';
 // import Access from "@/components/share/access";
 // import { ALL_PERMISSIONS } from "@/config/permissions";
 import { sfLike } from "spring-filter-query-builder";
-import { fetchPermission } from "../../../redux/slices/permissionSlice";
-import { callDeletePermission } from "../../../api/permissionApi";
-import { NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { fetchCategories, fetchCategory, setEdit } from "../../../redux/slices/categorySlice";
+import { NavLink } from "react-router-dom";
 
 
 const CategoryManagement = () => {
     
     const tableRef = useRef<ActionType>();
 
-    const isFetching = useAppSelector(state => state.permission.isFetching);
-    const meta = useAppSelector(state => state.permission.meta);
-    const permissions = useAppSelector(state => state.permission.results);
+    const isFetching = useAppSelector(state => state.category.isFetching);
+    const meta = useAppSelector(state => state.category.meta);
+    const categories = useAppSelector(state => state.category.results);
+    
     const dispatch = useAppDispatch();
     // const useStyle = createStyles(({ css, token }) => {
     //     const { antCls } = token;
@@ -48,10 +48,13 @@ const CategoryManagement = () => {
     const reloadTable = () => {
         tableRef?.current?.reload();
     }
+    useEffect(() => {
+        console.log('categories: ', categories);
+    }, [categories])
 
     
 
-    const columns: ProColumns<IPermission>[] = [
+    const columns: ProColumns<CategoryType>[] = [
         {
             title: <span style={{fontSize: '15px', fontWeight: '600'}}>Stt</span>,
             key: 'index',
@@ -76,16 +79,16 @@ const CategoryManagement = () => {
         },
         {
             title: <span style={{fontSize: '15px', fontWeight: '600'}}>Danh mục</span>,
-           
             dataIndex: 'categoryName',
             sorter: true,
             width: '20%',
+           
             
         },
 
         {
             title: <span style={{fontSize: '15px', fontWeight: '600'}}>Số lượng</span>,
-            dataIndex: 'quantity',
+            dataIndex: 'productQuantity',
             width: '10%',
             sorter: true,
             
@@ -109,7 +112,7 @@ const CategoryManagement = () => {
         {
             title: <span style={{fontSize: '15px', fontWeight: '600'}}>Thời gian tạo</span>,
             dataIndex: 'createdAt',
-            width: 200,
+            width: 150,
             sorter: true,
             render: (text, record, index, action) => {
                 return (
@@ -121,7 +124,7 @@ const CategoryManagement = () => {
         {
             title: <span style={{fontSize: '15px', fontWeight: '600'}}>Thời gian cập nhật</span>,
             dataIndex: 'updatedAt',
-            width: 200,
+            width: 150,
             sorter: true,
             render: (text, record, index, action) => {
                 return (
@@ -135,23 +138,26 @@ const CategoryManagement = () => {
             title: <span style={{fontSize: '15px', fontWeight: '600'}}>Thao tác</span>,
             hideInSearch: true,
             width: 100,
+            align: 'center',
             render: (_value, entity, _index, _action) => (
-                <Space>
+                <Space style={{display: 'flex', justifyContent: 'center', gap: '15px'}}>
                     {/* < Access
                         permission={ALL_PERMISSIONS.USERS.UPDATE}
                         hideChildren
                     > */}
-                        <EditOutlined
-                            style={{
-                                fontSize: 20,
-                                color: '#ffa500',
-                            }}
-                            type=""
-                            onClick={() => {
-                                // setOpenModal(true);
-                                // setDataInit(entity);
-                            }}
-                        />
+                    <NavLink to={`/admin/categories/${entity.id}`} >
+                        <Tooltip title="Chỉnh sửa hoặc xem chi tiết danh mục">
+                            <EditOutlined
+                                style={{
+                                    fontSize: 20,
+                                    color: '#ffa500',
+                                }}
+                                type=""
+                                onClick={() => {dispatch(setEdit(true))}}
+                                
+                            />
+                        </Tooltip>
+                    </NavLink>
                     {/* </Access > */}
 
                     {/* <Access
@@ -164,16 +170,21 @@ const CategoryManagement = () => {
                             title={"Confirm deletion permission"}
                             description={"Are you sure you want to delete this permission?"}
                             onConfirm={() => {}}
-                            okText="Confirm"
+                            okText="Confirm" 
                             cancelText="Cancel"
+                            
                         >
+                            
                             <span style={{ cursor: "pointer", margin: "0 0px" }}>
-                                <DeleteOutlined
-                                    style={{
-                                        fontSize: 20,
-                                        color: '#ff4d4f',
-                                    }}
-                                />
+                                <Tooltip title="Xóa vĩnh viễn danh mục">
+                                    <DeleteOutlined
+                                        
+                                        style={{
+                                            fontSize: 20,
+                                            color: '#ff4d4f',
+                                        }}
+                                    />
+                                </Tooltip>
                             </span>
                         </Popconfirm>
                     {/* </Access> */}
@@ -190,23 +201,24 @@ const CategoryManagement = () => {
             filter: ""
         }
 
+        
         const clone = { ...params };
-        if (clone.name) q.filter = `${sfLike("name", clone.name)}`;
-        if (clone.email) {
-            q.filter = clone.name ?
-                q.filter + " and " + `${sfLike("email", clone.email)}`
-                : `${sfLike("email", clone.email)}`;
-        }
+        if (clone.id) q.filter = `${sfLike("id", clone.id)}`;
+        if (clone.categoryName) q.filter = `${sfLike("categoryName", clone.categoryName)}`;
+        
+        let temp = "";
+        // if (q.filter) temp = q.filter + `&page=${q.page}&size=${q.size}`;
 
         if (!q.filter) delete q.filter;
-        let temp = queryString.stringify(q);
+            temp += queryString.stringify(q);
+       
 
         let sortBy = "";
-        if (sort && sort.name) {
-            sortBy = sort.name === 'ascend' ? "sort=name,asc" : "sort=name,desc";
+        if (sort && sort.id) {
+            sortBy = sort.id === 'ascend' ? "sort=id,asc" : "sort=id,desc";
         }
-        if (sort && sort.email) {
-            sortBy = sort.email === 'ascend' ? "sort=email,asc" : "sort=email,desc";
+        if (sort && sort.categoryName) {
+            sortBy = sort.categoryName === 'ascend' ? "sort=categoryName,asc" : "sort=categoryName,desc";
         }
         if (sort && sort.createdAt) {
             sortBy = sort.createdAt === 'ascend' ? "sort=createdAt,asc" : "sort=createdAt,desc";
@@ -224,27 +236,32 @@ const CategoryManagement = () => {
 
         return temp;
     }
-
+    
+    
     return (
+        
         <div style={{ padding: 20 }}>
             {/* <Access
                 permission={ALL_PERMISSIONS.USERS.GET_PAGINATE}
             > */}
-                <DataTable<IPermission>
+                <DataTable<CategoryType>
+                    
                     
                     actionRef={tableRef}
                     headerTitle="Danh sách danh mục"
                     rowKey="id"
                     loading={isFetching}
                     columns={columns}
-                    dataSource={permissions}
+                    dataSource={categories}
                     request={async (params, sort, filter): Promise<any> => {
-                        const query = buildQuery(params, sort, filter);
-                        await dispatch(fetchPermission({ query }));
+                        let query = "";
+                        query += buildQuery(params, sort, filter);
+                        console.log('query: ', query);
+                        await dispatch(fetchCategories({ query }));
                        
                         
                     }}
-                    scroll={{ x: true }}
+                    scroll={{ x: 1300 }}
                     pagination={
                         {
                             pageSize: meta.page_size,
@@ -254,14 +271,14 @@ const CategoryManagement = () => {
                         }
                     }
                     rowSelection={false}
+                   
                     toolBarRender={(_action, _rows): any => {
                         return (
-                            <Link to="/admin/categories/create">
+                            <Link to="/admin/categories/create"  >
                                 <Button
                                     icon={<PlusOutlined style={{color: '#fff'}}/>}
                                     type="primary"
-                                    
-                                    
+                                    onClick={() => {dispatch(setEdit(false))}}   
                                 >
                                     <span style={{color: "#fff" }}>Thêm mới</span>
                                 </Button>

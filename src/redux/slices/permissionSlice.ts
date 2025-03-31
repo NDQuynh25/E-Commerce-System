@@ -20,7 +20,7 @@ export interface IState {
 const initialState: IState = {
     isFetching: true,
     meta: {
-        page: 1,
+        page: 0,
         page_size: 10,
         total_elements: 0,
         total_pages: 0
@@ -47,10 +47,11 @@ const permissionSlice = createSlice({
         builder.addCase(fetchPermission.fulfilled, (state, action) => {
             console.log(action.payload.data?.results);
             if (action.payload && action.payload.data) {
-                console.log(action.payload.data.results);
+                
                 state.isFetching = false;
                 state.meta = action.payload.data.meta;
                 state.results = action.payload.data.results;
+                console.log(action.payload.data.meta);
             }
         });
 

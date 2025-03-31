@@ -191,21 +191,18 @@ const RoleManagement = () => {
         const clone = { ...params };
         if (clone.id) q.filter = `${sfLike("id", clone.id)}`;
         if (clone.roleName) q.filter = `${sfLike("roleName", clone.roleName)}`;
-        if (clone.email) {
-            q.filter = clone.name ?
-                q.filter + " and " + `${sfLike("email", clone.email)}`
-                : `${sfLike("email", clone.email)}`;
-        }
+       
 
         if (!q.filter) delete q.filter;
         let temp = queryString.stringify(q);
+        
 
         let sortBy = "";
         if (sort && sort.id) {
             sortBy = sort.id === 'ascend' ? "sort=id,asc" : "sort=id,desc";
         }
         if (sort && sort.roleName) {
-            sortBy = sort.roelName === 'ascend' ? "sort=roelName,asc" : "sort=roelName,desc";
+            sortBy = sort.roleName === 'ascend' ? "sort=roleName,asc" : "sort=roleName,desc";
         }
         if (sort && sort.createdAt) {
             sortBy = sort.createdAt === 'ascend' ? "sort=createdAt,asc" : "sort=createdAt,desc";

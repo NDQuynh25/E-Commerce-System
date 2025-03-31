@@ -2,6 +2,9 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { callGetRole } from '../../api/roleApi';
 
 import { IRole, IBackendRes, IModelPaginate } from '../../types/backend';
+import { showMessage } from '../../utils/message';
+
+
 
 // First, create the thunk
 
@@ -14,21 +17,22 @@ export interface IState {
         total_elements: number;
         total_pages: number;
     },
-    results: IRole[]
-}
+    results: IRole[],
+    result: IRole
+};
+    
 
 const initialState: IState = {
     isFetching: true,
     meta: {
-        page: 1,
+        page: 0,
         page_size: 10,
         total_elements: 0,
         total_pages: 0
     },
-    results: []
+    results: [] as IRole[],
+    result: {} as IRole
 };
-
-
 
 
 const roleSlice = createSlice({
@@ -42,19 +46,25 @@ const roleSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(fetchRole.pending, (state, action) => {
             state.isFetching = true;
+            
         });
         
         builder.addCase(fetchRole.fulfilled, (state, action) => {
-            if (action.payload && action.payload.data) {
-                console.log(action.payload.data.results);
-                state.isFetching = false;
-                state.meta = action.payload.data.meta;
-                state.results = action.payload.data.results;
-            }
+            state.isFetching = false;
+            if (action.payload && action.payload.status === 404) {
+                showMessage('error', "Không tìm thấy dữ liệu");
+                state.results = [];
+            } else if (action.payload && action.payload.status === 200 && action.payload.data) {
+                state.meta = action.payload.data?.meta ? action.payload.data.meta : state.meta;
+                state.results = action.payload.data?.results ? action.payload.data.results : state.results;
+            } else {
+                showMessage('error', "Lỗi hệ thống");
+            }         
         });
 
         builder.addCase(fetchRole.rejected, (state, action) => {
             state.isFetching = false;
+            showMessage('error', "Lỗi hệ thống");
         });
     },
 });
@@ -65,8 +75,8 @@ export const fetchRole = createAsyncThunk<
     {}
 >(
     'role/fetchRole',
-    async ({ id, query }: { id?: string; query?: any }) => {
-        const response: IBackendRes<IModelPaginate<IRole>> = await callGetRole(id, query);
+    async ({ query }: { query?: any }) => {
+        const response: IBackendRes<IModelPaginate<IRole>> = await callGetRole(query);
         return response;
     }
 );

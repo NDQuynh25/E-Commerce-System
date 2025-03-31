@@ -1,51 +1,12 @@
-import React, { useState } from "react";
-import { Form, Dropdown, Checkbox, Input, Button, Divider } from "antd";
+import React, { useEffect, useState } from "react";
+import { Form, Dropdown, Checkbox, Input, Button, Divider, Spin, Flex } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import styled from "styled-components";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { fetchCategories, fetchCategory } from "../../../redux/slices/categorySlice";
+import { sfEqual, sfIsNotNull, sfIsNull, sfLike, sfNotEqual } from "spring-filter-query-builder";
+import queryString from 'query-string';
 
-
-const CustomItem = styled(Form.Item)`
-    .ant-row.ant-form-item-row {
-        font-size: 1rem!important;
-        flex-wrap: wrap !important;
-    }
-    
-    .ant-form-item-label label::after {
-        content: none !important;
-    }
-   
-    .ant-form-item-label label {
-        height: 100% !important;
-        align-items: flex-start !important;
-        display: flex;
-        font-family: Inter, -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;;
-        font-size: 15px !important;
-        font-weight: 450 !important;
-        letter-spacing: 0px !important; 
-        text-align: right !important;
-        justify-content: left !important;
-        margin-top: 5px !important;
-        margin-right: 15px !important;
-      
-    }
-    .ant-form-item-required:not(.ant-form-item-required-mark-optional)::before{
-        display: none !important;
-    }
-    .ant-form-item-required:not(.ant-form-item-required-mark-optional)::after{
-        display: inline-block !important;
-        margin-top: 5px !important;
-        margin-inline-start: 4px !important;
-        color: #ff4d4f !important;
-        font-size: 14px !important;
-        font-family: SimSun, sans-serif !important;
-        line-height: 1 !important;
-        content: "*" !important;
-        visibility: visible !important;
-         display: none !important;
-    }
-
-
-`;
 
 
 const StyledCheckbox = styled(Checkbox)<{ $isSelected: boolean }>`
@@ -58,6 +19,7 @@ const StyledCheckbox = styled(Checkbox)<{ $isSelected: boolean }>`
     margin-bottom: 2px;
     border-radius: 5px;
     cursor: pointer;
+    Z-index: 1000;
     transition: background-color 0.2s ease-in-out;
 
     /* Màu nền mặc định khi chưa chọn */
@@ -81,66 +43,108 @@ interface Category {
   name: string;
 }
 interface CategoryFormProps {
+  
   form: any;
+  categoryIds?: number[];
+  id?: number | string;
+  queryNumber?: number;
 }
 
-const categoryOptions: Category[] = [
-  { id: 1, name: "Tất cả sản phẩm" },
-  { id: 2, name: "Sản phẩm mới" },
-  { id: 3, name: "Sản phẩm khuyến mãi" },
-  { id: 4, name: "Sữa rửa mặt" },
-  { id: 5, name: "Sữa tắm" },
-  { id: 6, name: "Sản phẩm nổi bật" },
-  { id: 7, name: "Kem dưỡng da" },
-  { id: 8, name: "Dầu gội" },
-];
 
-const CategoryForm: React.FC<CategoryFormProps> = ({form}) => {
+const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, id, queryNumber = 0}) => {
  
-  const [searchText, setSearchText] = useState<string>("");
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+    const [searchText, setSearchText] = useState<string>("");
+    const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+    const dispatch = useAppDispatch();
+    const category = useAppSelector((state) => state.category);
+    const categories = useAppSelector((state) => state.category.results);
+    const isFetching = useAppSelector((state) => state.category.isFetching);
 
-  // Cập nhật giá trị đã chọn vào form
-  const handleChange = (checkedValues: number[]) => {
-    setSelectedCategories(checkedValues);
-    form.setFieldsValue({ categoryIds: checkedValues });
-  };
-
-  // Lọc danh mục theo từ khóa
-  const filteredCategories = categoryOptions.filter((cat) =>
-    cat.name.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  // Nội dung dropdown
-  const menu = (
-    <div style={{ padding: "10px"}}>
-      {/* Ô tìm kiếm */}
-      <Input
+    const queries = [
+      `${sfLike("isActive", '1')}` 
+        + " and " + `${sfNotEqual('id', id as number)}` 
+        + " and " + `(${sfIsNull('parentCategory')} or (${sfIsNotNull('parentCategory')} and ${sfEqual('parentCategory.id', id as number)}))`
+      ,
         
-        placeholder="Tìm kiếm"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        style={{ marginBottom: "10px"}}
-      />
+      `${sfLike("isActive", '1')}` 
+    ];
+
+
+    // Cập nhật giá trị đã chọn vào form
+    const handleChange = (checkedValues: number[]) => {
+      setSelectedCategories(checkedValues);
+      form.setFieldsValue({ categoryIds: checkedValues });
+    };
+
+    useEffect(() => {
+      
+        setSelectedCategories(categoryIds || []);
+       
+      
+    }, [category]);
+
+    // Lọc danh mục theo từ khóa
+    const filteredCategories = categories.filter((cat) => {
+      const matchesSearch = cat.categoryName.toLowerCase().includes(searchText.toLowerCase());
      
-      {/* Danh sách checkbox */}
-      <Checkbox.Group
-        value={selectedCategories}
-        onChange={(values) => handleChange(values as number[])}
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        {filteredCategories.map((category) => (
-          <StyledCheckbox 
-            key={category.id} 
-            value={category.id}
-            $isSelected={selectedCategories.includes(category.id)} // Kiểm tra nếu đã chọn
+        
+        return matchesSearch && (!cat.parentId || (category.result?.subCategories || []).some(subCat => subCat.id === cat.id));
+      
+    
+    });
+    useEffect(() => {
+
+      let query = queryString.stringify({ filter: queries[queryNumber] }) + '&page=0&size=100&isSummary=true&sort=categoryName,asc';
+
+      console.log('query', query);
+      dispatch(fetchCategories({ query: query }));
+    }, []);
+
+    useEffect(() => {
+      console.log('category', categories);
+    }, [categories]);
+
+
+
+
+    // Nội dung dropdown
+    const menu = (
+      <div style={{ padding: "10px" }}>
+        {/* Ô tìm kiếm */}
+        <Input
+          
+          placeholder="Tìm kiếm"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          style={{ marginBottom: "20px"}}
+        />
+      
+        {/* Danh sách checkbox */}
+        <div style={{ maxHeight: "300px", minHeight: '100px' , borderRadius: "5px", display: "flex", flexDirection: "column", justifyContent: "center", }}>
+          <Checkbox.Group
+            value={selectedCategories}
+            onChange={(values) => handleChange(values as number[])}
+            style={{ display: "flex", flexDirection: "column", overflowY: "auto"}}
           >
-            {category.name}
-          </StyledCheckbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
+            
+            <Spin spinning={isFetching}>
+             
+              {filteredCategories.map((category) => (
+                <StyledCheckbox 
+
+                  key={category.id} 
+                  value={category.id}
+                  $isSelected={selectedCategories.includes(category.id as number)} // Kiểm tra nếu đã chọn
+                >
+                  {category.categoryName}
+                </StyledCheckbox>
+              ))}
+            </Spin>
+          
+          </Checkbox.Group>
+        </div>
+      </div>
+    );
 
   return (
     <>
@@ -159,4 +163,4 @@ const CategoryForm: React.FC<CategoryFormProps> = ({form}) => {
   );
 };
 
-export default CategoryForm;
+export default CategorySelect;

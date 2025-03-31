@@ -55,6 +55,8 @@ const DataTable = <
                 actionRef={actionRef}
                 dateFormatter={dateFormatter}
                 rowSelection={rowSelection}
+                
+                
             />
         </ConfigProvider>
     );

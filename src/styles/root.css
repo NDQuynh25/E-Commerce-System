@@ -76,6 +76,7 @@ body {
     --teal: #20c997;
     --cyan: #17a2b8;
     --white: #fff;
+    --white-gray-medium: hsla(0, 0%, 100%, .65);
     --gray-1: #6c757d;
     --gray-2: #bfc3c8;
     --gray-dark: #343a40;

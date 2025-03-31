@@ -1,8 +1,11 @@
 
+import globalReducer from './slices/globalSlice';
 import authReducer from './slices/authSlice';
 import userReducer from './slices/userSlice';
 import roleReducer from './slices/roleSlice';
+import categoryReducer from './slices/categorySlice';
 import permissionReducer from './slices/permissionSlice';
+import productReducer from './slices/productSlice';
 import {
   Action,
   combineReducers,
@@ -13,7 +16,9 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 
-
+interface GlobalState {
+    loading: boolean;
+}
 
 
 // Cấu hình persist
@@ -22,12 +27,21 @@ const persistConfig = {
   storage,
   whitelist: ['auth'], // Chỉ persist reducer account (nơi lưu thông tin auth)
 };
+const categoryPersistConfig = {
+  key: 'category',
+  storage,
+  whitelist: ['isEdit'], // Chỉ lưu trạng thái isEdit
+};
+
 
 const rootReducer = combineReducers({
+    global: globalReducer,
     auth: authReducer,
     user: userReducer,
     role: roleReducer,
     permission: permissionReducer,
+    category: persistReducer(categoryPersistConfig, categoryReducer),
+    product: productReducer,
   
 });
 

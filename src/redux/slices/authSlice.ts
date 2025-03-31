@@ -3,14 +3,14 @@ import { callFetchAccount } from '../../api/authApi';
 import { IGetAccount } from '../../types/backend';
 
 
-// //First, create the thunk
-const fetchAccount: AsyncThunk<IGetAccount | undefined, void, {}> = createAsyncThunk(
+export const fetchAccount = createAsyncThunk<IGetAccount | undefined, void>(
     'account/fetchAccount',
     async () => {
         const response = await callFetchAccount();
-        return response.data;
+        return response.data ?? undefined; // Chuyển `null` thành `undefined`
     }
 );
+
 
 export interface IState {
     isAuthenticated: boolean;

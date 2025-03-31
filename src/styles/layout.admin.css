@@ -1,25 +1,143 @@
 
 
 
-.layout-admin__p {
-    font-family: Inter, -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 1.5;
-    color: var(--white);
+
+
+.layout-admin__sider {
+
+    
+    a {
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--white-gray-medium) !important;
+        white-space: normal; /* Cho phép xuống dòng */
+        word-wrap: break-word; /* Ngắt từ khi cần thiết */
+        word-break: break-word; /* Ngắt từ nếu không vừa */
+        
+    
+    }
    
+
+    span {
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--white-gray-medium) !important;
+        white-space: normal; /* Cho phép xuống dòng */
+        word-wrap: break-word; /* Ngắt từ khi cần thiết */
+        word-break: break-word; /* Ngắt từ nếu không vừa */
+    }
+
+    .ant-menu-item, .ant-menu-submenu-title {
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+        min-height: 40px !important;
+        height: auto !important;
+
+    }
+    
+    .ant-menu-item:hover {
+        a {
+            color: var(--white) !important;
+        }
+        .ant-menu-item-icon {
+            color: var(--white) !important;
+        }
+        .ant-menu-submenu-title {
+            color: var(--white) !important;
+        }
+    }
+   
+    .ant-menu-submenu:hover, .ant-menu-submenu-title[aria-expanded=true] {
+        span {
+            color: var(--white) !important;
+        }
+        .ant-menu-item-icon {
+            color: var(--white) !important;
+        }
+        .ant-menu-submenu-title {
+            color: var(--white) !important;
+        }
+        color: var(--white) !important;
+    }
 }
 
+   
 
-.layout-admin {
+.layout-admin__menu {
     .ant-menu-submenu-title {
-        color: var(--white) !important;
+        color: var(--white-gray-medium) !important;
+       
     }
 
     .ant-menu-item-icon {
-        color: var(--white) !important;
+        color: var(--white-gray-medium) !important;
     }
     .ant-layout-sider-trigger {
         background-color: #000 !important;
+    }
+    .ant-menu-item-selected {
+        background-color: var(--blue) !important;
+        border-radius: 5px !important;
+        a {
+            color: var(--white) !important;
+        }
+        .ant-menu-item-icon {
+            color: var(--white) !important;
+        }
+       
+    }
+    .ant-menu-sub {
+        background-color: #000 !important;
+        border-radius: 8px !important;
+    }
+    .ant-menu-submenu:has(.ant-menu-item-selected) .ant-menu-submenu-title {
+        a {
+            color: var(--white) !important;
+        }
+        span {
+            color: var(--white) !important;
+        }
+        color: var(--white) !important;
+
+        .ant-menu-item-icon {
+            color: var(--white) !important;
+        }
+    }
+ 
+}
+
+.layout-admin__mobile {
+    .ant-menu-submenu-title {
+        padding-left: 10px !important;
+    }
+    .ant-menu-item {
+        padding-left: 29px !important;
+        
+    }
+    .ant-menu-item:has(svg) {
+        padding-left: 10px !important;
+    }
+    .ant-drawer-body {
+        padding: 0px !important;
+    }
+
+}
+
+.layout-admin {
+    .ant-layout-sider-collapsed {
+        .ant-menu-item, .ant-menu-submenu-title {
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+            
+            height: 40px !important;
+        }
+        .ant-menu-title-content {
+            display: none !important;
+        }
+    
     }
 }

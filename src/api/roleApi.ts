@@ -23,8 +23,8 @@ export const callDeleteRole = (id: string) => {
     return axios.delete<IBackendRes<IRole>>(`/api/v1/roles/delete/${id}`);
 }
 
-export const callGetRole = (id?: string, query?: string) => {
-
-    return axios.get<IBackendRes<IModelPaginate<IRole>>>(`/api/v1/roles/get?${id}${query}`);
+export const callGetRole = (query?: string) => {
+    console.log('res', axios.get<IBackendRes<IModelPaginate<IRole>>>(`/api/v1/roles?${query}`));
+    return axios.get<IBackendRes<IModelPaginate<IRole>>>(`/api/v1/roles?${query}`);
 }
 

@@ -1,8 +1,10 @@
+import { is } from "tinymce";
+
 export interface IBackendRes<T> {
-    error?: string;
+    error?: string | null;
     message: string | string[];
     status: number | string;
-    data?: T;
+    data?: T | null;
 }
 
 export interface IModelPaginate<T> {
@@ -140,9 +142,7 @@ export interface IProduct {
 }
 
 
-export interface OProduct {
-    id: string;
-}
+
 
 export interface skuType {
     key: number;
@@ -161,4 +161,40 @@ export interface OSku {
     price: number;
     stock: number;
     discount: number;
+}
+
+export interface CategoryType {
+    id?: string | number;
+    categoryName: string;
+    categoryIds?: string[];
+    subCategories?: {
+        id: number;
+        categoryName: string;
+        isActive: string;
+    }[];
+    isActive: string;
+    createdBy?: string;
+    updatedBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    [key: string]: any; // Add dynamic key
+
+}
+
+export interface ProductType {
+    id?: string;
+    imageURLs?: string[];
+    productName: string;
+    originalPrice?: number;
+    sellingPrice?: number;
+    quantitySold: number;
+
+    isActive: string;
+    createdBy?: string;
+    updatedBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    [key: string]: any; // Add dynamic key
+    
+
 }

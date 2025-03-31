@@ -18,7 +18,7 @@ import { message, notification } from "antd";
 import { IProduct } from "../../../types/backend";
 import CategorySelect from "./CategorySelect";
 import '../../../styles/modal.product-form.css';
-import { CheckCard } from "@ant-design/pro-components";
+
 
 
 
@@ -595,6 +595,7 @@ const categories = [
                             
                                 <CategorySelect
                                     form={form}
+                                    queryNumber={1}
                                 />
                             </Col>
                         </Row>
