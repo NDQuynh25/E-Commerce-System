@@ -2,9 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 
 import { IBackendRes, IModelPaginate, CategoryType } from '../../types/backend';
-import { callCreateCategory, callGetCategories, callGetCategory } from '../../api/categoryApi';
+import { callGetCategories, callGetCategory } from '../../api/categoryApi';
 import { showMessage } from '../../utils/message';
-import { set } from 'lodash';
 
 // First, create the thunk
 

@@ -79,9 +79,9 @@ interface CategoryFormProps {
 
 const CategoryForm: React.FC<CategoryFormProps> = ({isEdit}) => {
     const [categoryData, setCategoryData] = React.useState<CategoryType | null>(null);
-    const [categoryIds, setCategoryIds] = React.useState<number[]>([]);
+   
     const [form] = Form.useForm();
-    const loading = useAppSelector(state => state.global.loading);
+   
     const dispatch = useAppDispatch();
 
     const category = useAppSelector(state => state.category);
@@ -174,13 +174,16 @@ const CategoryForm: React.FC<CategoryFormProps> = ({isEdit}) => {
    
 
     useEffect(() => {
-        dispatch(setLoading(false));
-
-        if(id && isEdit === true) {
-            dispatch(fetchCategory({'id': id})); 
-        }
+       
+            dispatch(setLoading(false));
+            console.log('>>> id', id);
+            console.log('>>> isEdit', isEdit);
+            if (id && isEdit === true) {
+                dispatch(fetchCategory({ id }));
+            }
+       
     }, []);
-
+    
     useEffect(() => {
         if (category.result === null) {
           navigate("/admin/categories"); // Chuyển hướng về danh sách
@@ -200,12 +203,12 @@ const CategoryForm: React.FC<CategoryFormProps> = ({isEdit}) => {
                 updatedAt: category.result?.updatedAt ? dayjs(category.result?.updatedAt).format('DD-MM-YYYY HH:mm:ss') : "",
                 updatedBy: category.result?.updatedBy,
             });
-            console.log('>>> category', category.result?.isActive);
+          
         }
        
 
     }, [category]);
-   
+  
     return (
         
         <div className="category-form" style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
@@ -285,17 +288,28 @@ const CategoryForm: React.FC<CategoryFormProps> = ({isEdit}) => {
 
                                 </CustomItem>
                             </Col>
-                            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-                                <CustomItem
-                                    label={<RequiredLabel label="Danh mục phụ thuộc" tooltip="Chọn các danh mục con" />}
-                                    name="categoryIds" 
-                                    labelCol={{ span: 24 }} 
-                                    wrapperCol={{ span: 24 }}
-                                    style={{width: '100%'}}
-                                >
-                                    <CategorySelect form={form} categoryIds={category.result?.subCategories?.map((item) => item.id) || []} id={id} />
-                                </CustomItem>
-                            </Col>
+                            {/* // Kiểm tra nếu category.result?.id có giá trị thì mới render component bên trong
+                                // Điều này đảm bảo rằng dữ liệu danh mục đã được tải trước khi hiển thị CategorySelect */}
+                            {category.result?.id && ( 
+                                <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+                                    <CustomItem
+                                        label={<RequiredLabel label="Danh mục phụ thuộc" tooltip="Chọn các danh mục con" />}
+                                        name="categoryIds" 
+                                        labelCol={{ span: 24 }} 
+                                        wrapperCol={{ span: 24 }}
+                                        style={{width: '100%'}}
+                                    >
+                                        <CategorySelect 
+                                            form={form} 
+                                            categoryIds={category.result?.subCategories?.map((item) => item.id) || []} 
+                                            categoryId={category.result?.id}
+                                            parentId={category.result?.parentId}
+                                            queryNumber={isEdit ? 0 : 1} 
+                                        />
+                                    </CustomItem>
+                                </Col>
+                            )}
+
                             {isEdit && (
                                 <>
                                     <Col xl={12} lg={24} md={24} sm={24} xs={24}>

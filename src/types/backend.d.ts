@@ -172,6 +172,7 @@ export interface CategoryType {
         categoryName: string;
         isActive: string;
     }[];
+    parentId?: string | number;
     isActive: string;
     createdBy?: string;
     updatedBy?: string;

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Form, Dropdown, Checkbox, Input, Button, Divider, Spin, Flex } from "antd";
+import {  Dropdown, Checkbox, Input, Button, Spin} from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { fetchCategories, fetchCategory } from "../../../redux/slices/categorySlice";
-import { sfEqual, sfIsNotNull, sfIsNull, sfLike, sfNotEqual } from "spring-filter-query-builder";
+import { fetchCategories} from "../../../redux/slices/categorySlice";
+import { sfEqual, sfIsNull, sfNotEqual } from "spring-filter-query-builder";
 import queryString from 'query-string';
+
 
 
 
@@ -38,20 +39,18 @@ const StyledCheckbox = styled(Checkbox)<{ $isSelected: boolean }>`
     }
 `;
 
-interface Category {
-  id: number;
-  name: string;
-}
+
 interface CategoryFormProps {
   
   form: any;
   categoryIds?: number[];
-  id?: number | string;
+  categoryId?: number | string ;
+  parentId?: number | string;
   queryNumber?: number;
 }
 
 
-const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, id, queryNumber = 0}) => {
+const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, categoryId, parentId, queryNumber = 0}) => {
  
     const [searchText, setSearchText] = useState<string>("");
     const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
@@ -59,15 +58,40 @@ const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, id, que
     const category = useAppSelector((state) => state.category);
     const categories = useAppSelector((state) => state.category.results);
     const isFetching = useAppSelector((state) => state.category.isFetching);
-
+    
     const queries = [
-      `${sfLike("isActive", '1')}` 
-        + " and " + `${sfNotEqual('id', id as number)}` 
-        + " and " + `(${sfIsNull('parentCategory')} or (${sfIsNotNull('parentCategory')} and ${sfEqual('parentCategory.id', id as number)}))`
+      `${sfEqual("isActive", 1)}` 
+        + " and " + `${sfNotEqual('id', categoryId as number)}` 
+        + " and " + `(${sfIsNull('parentCategory')} or ${sfEqual('parentCategory.id', categoryId as number)})`
+        + " and " + `(${sfNotEqual('id', parentId as number)})`
       ,
         
-      `${sfLike("isActive", '1')}` 
+      `${sfEqual("isActive", 1)}` 
     ];
+
+    useEffect(() => {
+     
+      // Chỉ thực hiện query khi có id hợp lệ
+      
+      let query = queryString.stringify({ filter: queries[0] }) + '&page=0&size=100&isSummary=true&sort=categoryName,asc';
+     
+      dispatch(fetchCategories({ query: query }));
+      if (category.isFetching === false) {
+        console.log('id', category.result?.id)
+      }
+      
+    
+    }, []);
+
+    useEffect(() => {
+      console.log('category', categories);
+    }, [categories]);
+
+    useEffect(() => {
+      
+      setSelectedCategories(categoryIds || []);
+    }, [category]);
+
 
 
     // Cập nhật giá trị đã chọn vào form
@@ -76,12 +100,7 @@ const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, id, que
       form.setFieldsValue({ categoryIds: checkedValues });
     };
 
-    useEffect(() => {
-      
-        setSelectedCategories(categoryIds || []);
-       
-      
-    }, [category]);
+    
 
     // Lọc danh mục theo từ khóa
     const filteredCategories = categories.filter((cat) => {
@@ -92,18 +111,9 @@ const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, id, que
       
     
     });
-    useEffect(() => {
+    
 
-      let query = queryString.stringify({ filter: queries[queryNumber] }) + '&page=0&size=100&isSummary=true&sort=categoryName,asc';
-
-      console.log('query', query);
-      dispatch(fetchCategories({ query: query }));
-    }, []);
-
-    useEffect(() => {
-      console.log('category', categories);
-    }, [categories]);
-
+    
 
 
 
