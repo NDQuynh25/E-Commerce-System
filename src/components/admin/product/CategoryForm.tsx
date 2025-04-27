@@ -7,7 +7,7 @@ import runes from 'runes';
 import RequiredLabel from "../../input/RequiredLabel";
 import CategorySelect from "./CategorySelect";
 import { CategoryType } from "../../../types/backend";
-import { callCreateCategory, callUpdateCategory } from "../../../api/categoryApi";
+import { callCreateCategory, callUpdateCategory, callDeleteCategory } from "../../../api/categoryApi";
 import { notification } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setLoading } from "../../../redux/slices/globalSlice";
@@ -169,18 +169,17 @@ const CategoryForm: React.FC<CategoryFormProps> = ({isEdit}) => {
             });
         }
     }
+
+    
  
 
    
 
     useEffect(() => {
-       
-            dispatch(setLoading(false));
-            console.log('>>> id', id);
-            console.log('>>> isEdit', isEdit);
-            if (id && isEdit === true) {
-                dispatch(fetchCategory({ id }));
-            }
+        dispatch(setLoading(false));
+        if (id && isEdit === true) {
+            dispatch(fetchCategory({ id }));
+        }
        
     }, []);
     
@@ -290,7 +289,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({isEdit}) => {
                             </Col>
                             {/* // Kiểm tra nếu category.result?.id có giá trị thì mới render component bên trong
                                 // Điều này đảm bảo rằng dữ liệu danh mục đã được tải trước khi hiển thị CategorySelect */}
-                            {category.result?.id && ( 
+                            {(category.result?.id || !isEdit ) && ( 
                                 <Col xl={12} lg={24} md={24} sm={24} xs={24}>
                                     <CustomItem
                                         label={<RequiredLabel label="Danh mục phụ thuộc" tooltip="Chọn các danh mục con" />}

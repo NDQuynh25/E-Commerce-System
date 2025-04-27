@@ -2,7 +2,7 @@
 import { Routes, Route } from 'react-router-dom';
 import UserManagement from '../pages/admin/user/UserManagement';
 import RoleManagement from '../pages/admin/user/RoleManagement';
-import PermissionManagement from '../pages/admin/user/PermissionManagement';
+
 
 import CategoryManagement from '../pages/admin/product/CategoryManagement';
 import CategoryForm from '../components/admin/product/CategoryForm';
@@ -20,8 +20,8 @@ const Admin = () => {
       <Route path='/categories/:id' element={<CategoryForm isEdit={true} />} />
 
       <Route path='products' element={<ProductManagement />} />
-      <Route path='products/create' element={<ProductForm /> } />
-      <Route path='products/:id' element={<ProductForm />} />
+      <Route path='products/create' element={<ProductForm isEdit={false} /> } />
+      <Route path='products/:id' element={<ProductForm isEdit={true} />} />
 
       {/* <Route path='*' element={<PermissionManagement />} /> */}
     </Routes>

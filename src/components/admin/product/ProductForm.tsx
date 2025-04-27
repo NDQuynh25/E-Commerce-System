@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { Col, Form, Button, Row, Input, AutoComplete, Space, Select, Divider, Tooltip } from "antd";
+import { Col, Form, Button, Row, Input, AutoComplete, Space, Select, Divider } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import TextEditor from "../../TextEditor";
@@ -14,10 +14,16 @@ import ProductVariations from "./ProductVariations";
 import SKU from "./SKU";
 import { callCreateProduct } from "../../../api/productApi";
 import { callUploadFile } from "../../../api/fileApi";
-import { message, notification } from "antd";
+import {  notification } from "antd";
 import { IProduct } from "../../../types/backend";
 import CategorySelect from "./CategorySelect";
 import '../../../styles/modal.product-form.css';
+import { useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { fetchProduct } from "../../../redux/slices/productSlice";
+import { UploadFile } from "antd/lib";
+import { extractAllBase64FromHTML, urlToBlob } from "../../../utils/conversion";
+
 
 
 
@@ -65,12 +71,14 @@ const CustomItem = styled(Form.Item)`
 
 `;
 
-
+interface ProductFormProps {
+    isEdit?: boolean;
+}
 type variation = {
     variation: string;
     options: string[];
 };
-const ProductForm: React.FC = () => {
+const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
     const countryOfOriginOptions = [
         'Vietnam',       
         'China',       
@@ -120,6 +128,8 @@ const ProductForm: React.FC = () => {
     const [newMaterial, setNewMaterial] = React.useState<string>('');
     const [productImages, setProductImages] = useState<any[]>([]);
     const [promotionImages, setPromotionImages] = useState<any[]>([]);
+    const [descriptionImages, setDescriptionImages] = useState<any[]>([]);
+    
     const [variationsData, setVariationsData] = useState<variation[]>([]);
     const [skusData, setSkusData] = useState<any[]>([]);
     const [productData, setProductData] = React.useState<IProduct>({
@@ -142,7 +152,6 @@ const ProductForm: React.FC = () => {
         skus: [],
        
     });
-    const [loading, setLoading] = React.useState<boolean>(false);
     const materialOptions = [
         {value: 'cotton', label: 'Cotton'}, 
         {value: 'fleece', label: 'Fleece'},
@@ -153,7 +162,10 @@ const ProductForm: React.FC = () => {
         {value: 'denim', label: 'Denim'},
         {value: 'down', label: 'Down'},
     ];
-    const key = 'updatable';  
+    // const key = 'updatable'; 
+    const dispatch = useAppDispatch(); 
+    const {id} = useParams();
+    const product = useAppSelector((state) => state.product.result);
 
 
     const onChanges = (e: any): void => {
@@ -175,17 +187,83 @@ const ProductForm: React.FC = () => {
         console.log('changed', value);
     };
 
+    const processHTMLWithBase64 = async (html: string) => {
+        const extractedBase64List = extractAllBase64FromHTML(html);
+
+        const base64Files = await Promise.all(
+            extractedBase64List.map(async (base64Image, index) => {
+                const image_id = `${new Date().getTime()}_${index}`;
+                html = html.replace(base64Image.base64, `https://example.com/image_${image_id}.jpg`);
+
+                const { base64, mimeType } = base64Image;
+                const blob = await urlToBlob(base64);
+                const file = new File([blob], `image_${image_id}.jpg`, { type: mimeType });
+                return file;
+            })
+        );
+        console.log("html", html);
+        const descriptionImageFiles = base64Files.map((file, index) => ({   
+            uid: `${Date.now() + index}`,
+            name: file.name,
+            status: 'done',
+            url: URL.createObjectURL(file),
+            originFileObj: file,
+        } as UploadFile));
+
+        return {
+            renewDescription: html,
+            descriptionImageFiles: descriptionImageFiles,
+        };
+    }
+
     const onFinish = async (values: any) => {
         console.log("values", values);
-        // console.log("values", values);
-        // console.log("skusData", skusData);
-        console.log("variationsData", variationsData);
-        message.open({
-            key,
-            type: 'loading',
-            content: <span style={{fontSize: '16px'}}>Loading...</span>,
+        console.log(values.description);
+        let newDescription = '';
+        let descriptionImages = [] as UploadFile[];
+
+        await processHTMLWithBase64(values.description).then((result) => {
+            newDescription = result.renewDescription;
+            descriptionImages = result.descriptionImageFiles;
+            
+            // setDescriptionImages(descriptionImageFiles);
+            // form.setFieldsValue({ description: renewDescription });
+        }).catch((error) => {
+            console.error("Error processing HTML:", error);
         });
-        setLoading(true);
+        console.log("new description", newDescription);
+
+        const productPayload = {
+            skuCode: values.skuCode,
+            productName: values.productName,
+            description: newDescription,
+            brand: values.brand,
+            countryOfOrigin: values.countryOfOrigin,
+            originalPrice: values.originalPrice,
+            sellingPrice: values.sellingPrice,
+            materials: values.materials,
+            categoryIds: values.categoryId,
+            stock: values.stock,
+        
+            variation1: variationsData[0]?.variation || '',
+            options1: variationsData[0]?.options || [],
+            variation2: variationsData[1]?.variation || '',
+            options2: variationsData[1]?.options || [],
+            skus: skusData.map((sku) => ({
+                skuCode: sku.skuCode,
+                option1: sku.option1,
+                option2: sku.option2,
+                originalPrice: sku.originalPrice,
+                sellingPrice: sku.sellingPrice,
+                stock: sku.stock,
+            })),
+        };
+
+           
+
+
+        
+        
       
         const updatedSKUs = skusData.map(sku => ({
             skuCode: sku.skuCode,
@@ -197,66 +275,45 @@ const ProductForm: React.FC = () => {
 
         }));
 
-        const productImageFiles = new FormData();
+        const formData = new FormData();
         
 
         promotionImages.forEach((file: any) => {
-            productImageFiles.append('files', file.originFileObj as Blob);
-        })
+            formData.append('promotionImages', file.originFileObj as Blob);
+        });
+
         productImages.forEach((file: any) => {
-            productImageFiles.append('files', file.originFileObj as Blob);
+            formData.append('productImages', file.originFileObj as Blob);
         });
-        skusData.forEach((sku) => {
-            if (sku.imageFile) productImageFiles.append('files', sku.imageFile?.originFileObj as Blob);
+        console.log("descriptionImages", descriptionImages.length);
+        descriptionImages.forEach((file: any) => {
+            formData.append('descriptionImages', file.originFileObj as Blob);
         });
+       
 
-        const resProductImage = await callUploadFile(productImageFiles);
+
         
-        if (resProductImage.status === 201) {
-            
-           
-
-            setProductData(prevData => {
-                const newData = {
-                    ...prevData,
-                    imageURLs: resProductImage.data || [],
-                    skuCode: values.skuCode,
-                    productName: values.productName,
-                    description: values.description,
-                    brand: values.brand,
-                    materials: values.materials,
-                    countryOfOrigin: values.countryOfOrigin,
-                    originalPrice: values.originalPrice,
-                    sellingPrice: values.sellingPrice,
-                    stock: values.stock,
-                    skus: updatedSKUs,
-                    variation1: variationsData[0].variation,
-                    options1: variationsData[0].options,
-                    variation2: variationsData[1]?.variation,
-                    options2: variationsData[1]?.options,
-                };
-                createProduct(newData);
-                return newData;
-            });
-        } else {
-            notification.error({
-                message: 'Error',
-                description: 'Failed to upload images',
-            });
-        }
+        formData.append('productData', JSON.stringify(productPayload));
+        
+     
+        
+        createProduct(formData);
+       
+         
+        
     };
 
-    const createProduct = async (newData: IProduct) => {
+    const createProduct = async (formData: FormData) => {
         //console.log("productData", newData);
-        const res = await callCreateProduct(newData);
+        const res = await callCreateProduct(formData);
         if (res.status === 201) {
-            setLoading(false);
+           
             notification.success({
                 message: 'Success',
                 description: 'Product created successfully',
             });
         } else {
-            setLoading(false);
+          
             notification.error({
                 message: 'Error',
                 description: 'Failed to create product',
@@ -264,12 +321,47 @@ const ProductForm: React.FC = () => {
         }
     }
 
-const categories = [
-    { id: 1, name: "Điện thoại" },
-    { id: 2, name: "Laptop" },
-    { id: 3, name: "Phụ kiện" },
-  ];
+
     const [selectedCategory, setSelectedCategory] = React.useState<number[]>([]);  
+
+    const handleCategoryChange = (selected: number[]) => {
+        setSelectedCategory(selected);
+        form.setFieldsValue({ categoryId: selected });
+    };
+
+    useEffect(() => {
+        if (id) {
+            dispatch(fetchProduct({id: id as string}));
+        }
+    }, []);
+
+    
+
+    const loadImages = async (
+        imageURLs: string[],
+        setImages: React.Dispatch<React.SetStateAction<UploadFile[]>>
+    ) => {
+        const timestamp = Date.now();
+    
+        const files = await Promise.all(
+            imageURLs.map(async (url, index) => {
+                const blob = await urlToBlob(url);
+                const file = new File([blob], `image_${timestamp + index}.jpg`, { type: blob.type });
+    
+                return {
+                    uid: `${timestamp + index}`,
+                    name: file.name,
+                    status: 'done',
+                    url,
+                    originFileObj: file,
+                } as UploadFile;
+            })
+        );
+    
+        setImages(files);
+    };
+    
+
 
 
     useEffect(() => {
@@ -279,13 +371,65 @@ const categories = [
         });
     }, [productImages, promotionImages]);
 
-    // useEffect(() => {
-    //     console.log ('okok');
-    // }, [form.getFieldValue('variations')]);
-
+  
     useEffect(() => {
-        console.log('variationsData', variationsData);
-    }, [variationsData]);
+        if (product && isEdit) {
+            const variation1 = product.variation1 || '';
+            const options1 = product.options1 || [];
+            const variation2 = product.variation2 || '';
+            const options2 = product.options2 || [];
+            const variations = [
+                { variation: variation1, options: options1 },
+                { variation: variation2, options: options2 },
+            ].filter(variation => variation.variation !== '' && variation.options.length > 0);
+            
+            loadImages(product.imageURLs || [], setProductImages);
+            loadImages(product.promotionImageURLs || [], setPromotionImages);
+
+            form.setFieldsValue({
+                productName: product.productName,
+                skuCode: product.skuCode,
+                description: product.description,
+                brand: product.brand,
+                countryOfOrigin: product.countryOfOrigin,
+                originalPrice: product.originalPrice,
+                sellingPrice: product.sellingPrice,
+                materials: product.materials,
+                categoryId: product.categoryId,
+                stock: product.stock,
+                variations: variations
+                
+            });
+          
+            
+            
+            setSkusData(product.skus || []);
+            setVariationsData(variations);
+           
+        
+        } else {
+            form.setFieldsValue({
+                productName: '',
+                skuCode: '',
+                description: '',
+                brand: '',
+                countryOfOrigin: '',
+                originalPrice: 0,
+                sellingPrice: 0,
+                materials: [],
+                categoryId: [],
+                stock: 0,
+                variations: [],
+            });
+            setProductImages([]);
+            setPromotionImages([]);
+            setSkusData([]);
+            setVariationsData([]);
+        }
+    }, [product]);
+    
+    
+    
   return (
       <div className="product-form">
           
@@ -459,11 +603,11 @@ const categories = [
                                     wrapperCol={{ span: 24 }}
                                     //rules={[{ required: true, message: 'Product description cannot be left blank!' }]}
                                 >
-                                    <TextEditor  />   
+                                    <TextEditor form={form} />   
                                 </CustomItem>
                             </Col>
                         </Row>
-
+                        {variationsData.length == 0 && (
                         <Row gutter={20} style={{padding: "20px", border: '1px solid blue', background: '#fff'}}>
 
                             <Col xl={24} lg={24} md={24} sm={24} xs={24}><h5 style={{marginBottom: "20px"}}>Thông tin giá sản phẩm</h5></Col>
@@ -529,25 +673,30 @@ const categories = [
                                 </CustomItem>
                                 
                             </Col>
-                        </Row>
+                        </Row>)}
 
                         <Row gutter={20} style={{padding: "20px", border: '1px solid blue', background: '#fff'}}>
                             <Col xl={24} lg={24} md={24} sm={24} xs={24}><h5 style={{marginBottom: "20px"}}>Thuộc tính</h5></Col>
                             <Col xl={24} lg={24} md={24} sm={24} xs={24} style={{marginBottom: '10px'}}> Sản phẩm có nhiều thuộc tính khác nhau. Ví dụ: kích thước, màu sắc...</Col>
 
                             <Col lg={24} md={24} sm={24} xs={24}>     
-                                <ProductVariations
-                                    variationsData={variationsData}
-                                />
+                                {
+                                    <ProductVariations
+                                        variationsData={variationsData}
+                                    />
+                                }
                             </Col>
                         </Row>
                         <Row gutter={20} style={{padding: "20px", border: '1px solid blue', background: '#fff'}}>
                             <Col xl={24} lg={24} md={24} sm={24} xs={24}><h5 style={{marginBottom: "20px"}}>Phiên bản</h5></Col>
-                            <SKU
-                                variationsData={variationsData}
-                                skusData={skusData}
-                                setSkusData={setSkusData}
-                            />
+                            {(variationsData.length > 0 && skusData.length > 0) && 
+                                <SKU
+                                    form={form}
+                                    variationsData={variationsData}
+                                    skusData={skusData}
+                                    setSkusData={setSkusData}
+                                />
+                            }
                         </Row>
                     </Col>
 
@@ -571,7 +720,7 @@ const categories = [
                                     //rules={[{ required: true, message: 'Please upload promotion image' }]}
                                 >
                                     
-                                    <ImageUpload fileList={promotionImages} setFileList={setPromotionImages} />
+                                    <ImageUpload fileList={promotionImages} setFileList={setPromotionImages} count={2} />
 
                                 </CustomItem>
                             </Col>

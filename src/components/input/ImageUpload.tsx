@@ -118,9 +118,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   }, [fileCurrent]);
 
   const handleBeforeUpload = (file: any): boolean | string => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
+    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/jpg" || file.type === "image/webp";
     if (!isJpgOrPng) {
-      message.error("Bạn chỉ có thể tải lên tệp JPG/PNG!");
+      message.error("Bạn chỉ có thể tải lên tệp JPG/PNG/WEBP!");
       return Upload.LIST_IGNORE;
     }
     const isLt2M = file.size / 1024 / 1024 < 2;
@@ -230,7 +230,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         
         listType="picture-card"
         size={size}
-        aspectRatio={aspectRatio}
+        //aspectRatio={aspectRatio}
         name="avatar"
         maxCount={count}
         fileList={fileList}

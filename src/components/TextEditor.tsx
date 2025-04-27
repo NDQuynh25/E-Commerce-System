@@ -2,15 +2,24 @@ import { Editor } from '@tinymce/tinymce-react';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import '../styles/modal.text-editor.css';
+import { set } from 'lodash';
 
-const TextEditor = () => {
+interface TextEditorProps {
+  form: any;
+}
+const TextEditor: React.FC<TextEditorProps> = ({form}) => {
   const [content, setContent] = useState('');
   useEffect(() => {
     console.log(content);
+    form.setFieldsValue({
+      description: content,
+    });
   }, [content]);
+
+  
   return (
     <Editor
-        apiKey="sz3qkaugehioy4h3nr1hl4kyl06h8rcyxywlmujdh5zek7s6"
+        apiKey={import.meta.env.VITE_TINYMCE_API_KEY as string}
         value={content}
         onEditorChange={(newContent) => setContent(newContent)}
         init={{

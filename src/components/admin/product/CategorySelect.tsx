@@ -63,7 +63,7 @@ const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, categor
       `${sfEqual("isActive", 1)}` 
         + " and " + `${sfNotEqual('id', categoryId as number)}` 
         + " and " + `(${sfIsNull('parentCategory')} or ${sfEqual('parentCategory.id', categoryId as number)})`
-        + " and " + `(${sfNotEqual('id', parentId as number)})`
+        + (parentId ? ` and ${sfNotEqual('id', parentId as number)}` : "")
       ,
         
       `${sfEqual("isActive", 1)}` 
@@ -73,7 +73,7 @@ const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, categor
      
       // Chỉ thực hiện query khi có id hợp lệ
       
-      let query = queryString.stringify({ filter: queries[0] }) + '&page=0&size=100&isSummary=true&sort=categoryName,asc';
+      let query = queryString.stringify({ filter: queries[queryNumber] }) + '&page=0&size=100&isSummary=true&sort=categoryName,asc';
      
       dispatch(fetchCategories({ query: query }));
       if (category.isFetching === false) {

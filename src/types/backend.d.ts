@@ -106,7 +106,9 @@ export interface ICategory {
 
 export interface IProduct {
     id?: string;
+    skuCode?: string;
     imageURLs: string[];
+    promotionImageURLs?: string[];
 
     productName: string;
     skuCode: string;
@@ -123,6 +125,7 @@ export interface IProduct {
     variation2?: string;
     options2?: string[];
     skus?: {
+        id?: string;
         skuCode: string;
         option1?: string;
         option2?: string;
@@ -185,6 +188,7 @@ export interface CategoryType {
 export interface ProductType {
     id?: string;
     imageURLs?: string[];
+
     productName: string;
     originalPrice?: number;
     sellingPrice?: number;

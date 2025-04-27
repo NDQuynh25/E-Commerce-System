@@ -15,6 +15,7 @@ import { ConfigProvider } from 'antd';
 
 
 createRoot(document.getElementById('root')!).render(
+  // Strict mode helps to identify potential problems in the application
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>

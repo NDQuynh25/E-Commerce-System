@@ -6,6 +6,8 @@ import { ActionType, ProColumns } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, Tag, Tooltip, message, notification } from "antd";
 import { useState, useRef, useEffect } from 'react';
 import dayjs from 'dayjs';
+import { callDeleteCategory } from "../../../api/categoryApi";
+import { setLoading } from "../../../redux/slices/globalSlice";
 import queryString from 'query-string';
 // import Access from "@/components/share/access";
 // import { ALL_PERMISSIONS } from "@/config/permissions";
@@ -42,7 +44,34 @@ const CategoryManagement = () => {
     //     };
     //   });
 
-
+    const deleteCategory = async (id: number) => {
+            dispatch(setLoading(true));
+            try {
+                const res = await callDeleteCategory(id.toString());
+    
+                
+                if (res.status === 200) {
+                    dispatch(setLoading(false));
+                    notification.success({
+                        message: 'Success',
+                        description: 'Category deleted successfully',
+                    });
+                } else {
+                    dispatch(setLoading(false));
+                    notification.error({
+                        message: 'Error',
+                        description: 'Failed to delete category',
+                    });
+                }
+            }
+            catch (err) {
+                dispatch(setLoading(false));
+                notification.error({
+                    message: 'Error',
+                    description: 'Failed to delete category'
+                });
+            }
+        }
   
 
     const reloadTable = () => {
@@ -112,7 +141,7 @@ const CategoryManagement = () => {
         {
             title: <span style={{fontSize: '15px', fontWeight: '600'}}>Thời gian tạo</span>,
             dataIndex: 'createdAt',
-            width: 150,
+            width: 125,
             sorter: true,
             render: (text, record, index, action) => {
                 return (
@@ -124,7 +153,7 @@ const CategoryManagement = () => {
         {
             title: <span style={{fontSize: '15px', fontWeight: '600'}}>Thời gian cập nhật</span>,
             dataIndex: 'updatedAt',
-            width: 150,
+            width: 125,
             sorter: true,
             render: (text, record, index, action) => {
                 return (
@@ -167,11 +196,14 @@ const CategoryManagement = () => {
                         
                         <Popconfirm
                             placement="leftTop"
-                            title={"Confirm deletion permission"}
-                            description={"Are you sure you want to delete this permission?"}
-                            onConfirm={() => {}}
-                            okText="Confirm" 
-                            cancelText="Cancel"
+                            title={"Xác nhận xóa danh mục"}
+                            description={"Bạn có chắc chắn muốn xóa danh mục này không?"}
+                            onConfirm={() => {
+                                deleteCategory(entity.id as number); 
+                                reloadTable()
+                            }}
+                            okText={<p>Xác nhận</p>} 
+                            cancelText={<p>Hủy</p>}
                             
                         >
                             

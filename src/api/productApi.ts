@@ -4,7 +4,7 @@ import axios from "../config/axios";
 export const callCreateProduct = (data: any) => {
     return axios.post<IBackendRes<IProduct>>('/api/v1/products', data, {
         headers: {
-           'Content-Type': 'application/json'
+           'Content-Type': 'form-data'
         }
     });
 }
@@ -18,14 +18,8 @@ export const callUploadImages = (data: FormData) => {
 }
 
 export const callGetProducts = (query: string) => {
-    console.log("res", axios.get<IBackendRes<IModelPaginate<ProductType>>>(`/api/v1/products?${query}`, {
-            
-            headers: {
-                'Content-Type': 'application/json'
-            }   
-        }
-    ));
-    return axios.get<IBackendRes<IModelPaginate<ProductType>>>(`/api/v1/products?${query}`, {
+    
+    return axios.get<IBackendRes<IModelPaginate<IProduct>>>(`/api/v1/products?${query}`, {
         
         headers: {
             'Content-Type': 'application/json'
@@ -34,7 +28,7 @@ export const callGetProducts = (query: string) => {
 }
 
 export const callGetProduct = (id: string) => {
-    return axios.get<IBackendRes<ProductType>>(`/api/v1/products/${id}`, {
+    return axios.get<IBackendRes<IProduct>>(`/api/v1/products/${id}`, {
         headers: {
             'Content-Type': 'application/json'
         }

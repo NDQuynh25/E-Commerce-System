@@ -139,7 +139,7 @@ const ProductManagement = () => {
                         permission={ALL_PERMISSIONS.USERS.UPDATE}
                         hideChildren
                     > */}
-                    <NavLink to={`/admin/categories/${entity.id}`} >
+                    <NavLink to={`/admin/products/${entity.id}`} >
                         <Tooltip title="Chỉnh sửa hoặc xem chi tiết sản phẩm">
                             <EditOutlined
                                 style={{

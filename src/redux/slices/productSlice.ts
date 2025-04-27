@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { IBackendRes, IModelPaginate, ProductType } from '../../types/backend';
+import { IBackendRes, IModelPaginate, IProduct } from '../../types/backend';
 import { callGetProducts, callGetProduct } from '../../api/productApi';
 import { showMessage } from '../../utils/message';
 
@@ -11,8 +11,8 @@ export interface IState {
         total_elements: number;
         total_pages: number;
     },
-    results: ProductType[],
-    result: ProductType
+    results: IProduct[],
+    result: IProduct
 }
 
 const initialState: IState = {
@@ -23,8 +23,8 @@ const initialState: IState = {
         total_elements: 0,
         total_pages: 0
     },
-    results: [] as ProductType[],
-    result: {} as ProductType
+    results: [] as IProduct[],
+    result: {} as IProduct
 };
 
 const productSlice = createSlice({
@@ -68,8 +68,9 @@ const productSlice = createSlice({
             state.isFetching = false;
             if (action.payload && action.payload.status === 404) {
                 showMessage('error', "Không tìm thấy dữ liệu");
-                state.result = {} as ProductType;
+                state.result = {} as IProduct;
             } else if (action.payload && action.payload.status === 200 && action.payload.data) {
+                console.log('>>> action.payload.data', action.payload.data);
                 state.result = action.payload.data;
             } else {
                 showMessage('error', "Lỗi hệ thống");
@@ -84,25 +85,25 @@ const productSlice = createSlice({
 });
 
 export const fetchProducts = createAsyncThunk<
-    IBackendRes<IModelPaginate<ProductType>>,
+    IBackendRes<IModelPaginate<IProduct>>,
     { query: string },
     {}
 >(
     'products/fetchProducts',
     async ({ query }) => {
-        const response: IBackendRes<IModelPaginate<ProductType>> = await callGetProducts(query);
+        const response: IBackendRes<IModelPaginate<IProduct>> = await callGetProducts(query);
         return response;
     }
 );
 
 export const fetchProduct = createAsyncThunk<
-    IBackendRes<ProductType>,
+    IBackendRes<IProduct>,
     { id: string },
     {}
 >(
     'product/fetchProduct',
     async ({ id }) => {
-        const response: IBackendRes<ProductType> = await callGetProduct(id);
+        const response: IBackendRes<IProduct> = await callGetProduct(id);
         return response;
     }
 );

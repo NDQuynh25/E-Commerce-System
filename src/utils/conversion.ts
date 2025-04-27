@@ -1,4 +1,4 @@
-
+import { UploadFile } from "antd/es/upload/interface";
 
 export const base64ToBlob = (base64String: string): Blob | null => {
     const arr = base64String.split(',');
@@ -36,3 +36,58 @@ export const getBase64 = (file: any): Promise<string> =>
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
 });
+
+export const urlToBlob = (url: string): Promise<Blob> => {
+    return fetch(url)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.blob();
+        })
+        .catch((error) => {
+            console.error('Error fetching the image:', error);
+            throw error;
+        });
+}
+
+interface Base64Image {
+  base64: string;
+  mimeType: string;
+}
+
+export const extractAllBase64FromHTML = (htmlString: string): Base64Image[] => {
+  const imgRegex = /<img[^>]+src="(data:image\/[^;]+;base64,[^"]+)"/g;
+  const matches: Base64Image[] = [];
+  let match: RegExpExecArray | null;
+  
+  while ((match = imgRegex.exec(htmlString)) !== null) {
+    try {
+      const base64 = match[1];
+      const typeMatch = base64.match(/data:(image\/\w+);/);
+      
+      if (typeMatch && typeMatch[1]) {
+        matches.push({
+          base64,
+          mimeType: typeMatch[1]
+        });
+      }
+    } catch (error) {
+      console.warn('Error processing image match:', error);
+      continue;
+    }
+  }
+  
+  return matches;
+};
+
+
+export const base64ToFile = (base64Data: string, mimeType: string, fileName: string): File => {
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new File([byteArray], fileName, { type: mimeType });
+}

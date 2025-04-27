@@ -6,7 +6,9 @@ import { Badge, Form, Input } from 'antd';
 import styled from 'styled-components';
 import { skuType } from '../../../types/backend';
 
-import RequiredLabel from '../../input/RequiredLabel';
+
+import { useAppSelector } from '../../../redux/hooks';
+import { FormInstance } from 'antd/lib';
 
 
 
@@ -58,6 +60,7 @@ type variation = {
 };
 
 interface SKUProps {
+    form: FormInstance<any>;
     variationsData: variation[];
     skusData: skuType[];
     setSkusData: React.Dispatch<React.SetStateAction<skuType[]>>;   
@@ -65,7 +68,7 @@ interface SKUProps {
 }
 
 
-const SKU: React.FC<SKUProps> = ({variationsData, skusData, setSkusData }) => {
+const SKU: React.FC<SKUProps> = ({form, variationsData, skusData, setSkusData }) => {
 
 
 
@@ -154,7 +157,7 @@ const SKU: React.FC<SKUProps> = ({variationsData, skusData, setSkusData }) => {
             dataIndex: "skuCode",
             render: (text, record) => (
                 <CustomItem 
-                  name={`skuCode-${record.key}`} 
+                  name={`skuCode_${record.key}`} 
                   rules={[{ required: true, message: "Mã SKU không được trống" }]}
                 >
                  <Input
@@ -171,7 +174,7 @@ const SKU: React.FC<SKUProps> = ({variationsData, skusData, setSkusData }) => {
           dataIndex: "originalPrice",
           render: (text, record) => (
             <Form.Item
-              name={`originalPrice-${record.key}`}
+              name={`originalPrice_${record.key}`}
               key={record.key}
               rules={[
                 { required: true, message: "Không được để trống ô" },
@@ -207,7 +210,7 @@ const SKU: React.FC<SKUProps> = ({variationsData, skusData, setSkusData }) => {
           dataIndex: "sellingPrice",
           render: (text, record) => (
             <CustomItem 
-              name={`sellingPrice-${record.key}`} 
+              name={`sellingPrice_${record.key}`} 
               key={record.key}
               rules={[
                 { required: true, message: "Không được để trống ô" },
@@ -242,7 +245,7 @@ const SKU: React.FC<SKUProps> = ({variationsData, skusData, setSkusData }) => {
           dataIndex: "stock",
           render: (text, record) => (
             <CustomItem 
-              name={`stock-${record.key}`} 
+              name={`stock_${record.key}`} 
               rules={[
                 { required: true, message: "Không được để trống ô" },
                 {
@@ -272,9 +275,25 @@ const SKU: React.FC<SKUProps> = ({variationsData, skusData, setSkusData }) => {
           ),
           align: "center",
         },
+        
     ];
-    console.log("variationsData: ", variationsData);
-    console.log("skusData: ", skusData);
+
+    useEffect(() => {
+      console.log(">>> skusData: ", skusData);
+      skusData.forEach((sku, index) => {
+        console.log(">>> sku: ", sku);
+        console.log(">>> index: ", index);
+        form.setFieldsValue({
+          [`skuCode_${index}`]: sku.skuCode,
+          [`originalPrice_${index}`]: sku.originalPrice,
+          [`sellingPrice_${index}`]: sku.sellingPrice,
+          [`stock_${index}`]: sku.stock,
+        });
+      });
+    }, []);
+  
+
+
 
     const onSKUChange = (key: number, value: string | number | null, field: string) => {
         const newSkusData = skusData.map((sku) => {
@@ -292,6 +311,7 @@ const SKU: React.FC<SKUProps> = ({variationsData, skusData, setSkusData }) => {
     useEffect(() => {
       console.log("skusData: ", skusData);
     }, [skusData]); 
+
     useEffect(() => {
         let data: skuType[] = [];
         let count1 = variationsData[0]?.options?.length || 0;
@@ -324,10 +344,10 @@ const SKU: React.FC<SKUProps> = ({variationsData, skusData, setSkusData }) => {
           }
         }
         setSkusData(data);
-      }, [variationsData]);
+    }, [variationsData]);
 
    
-    
+
     return (
       <>
         <Table

@@ -19,6 +19,11 @@ export const callUpdateCategory = (id: string, data: CategoryType) => {
     });
 }
 
+export const callDeleteCategory = (id: string) => {
+    return axios.delete<IBackendRes<CategoryType>>(`/api/v1/categories/${id}`);
+}
+
+
 export const callGetCategories = (query: string) => {
     
     return axios.get<IBackendRes<IModelPaginate<CategoryType>>>(`/api/v1/categories?${query}`);
