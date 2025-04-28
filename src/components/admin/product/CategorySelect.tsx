@@ -97,6 +97,7 @@ const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, categor
     // Cập nhật giá trị đã chọn vào form
     const handleChange = (checkedValues: number[]) => {
       setSelectedCategories(checkedValues);
+      console.log("Selected categories:", checkedValues);
       form.setFieldsValue({ categoryIds: checkedValues });
     };
 

@@ -81,43 +81,44 @@ type variation = {
 const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
     const countryOfOriginOptions = [
         'Vietnam',       
-        'China',       
-        'Thailand',
-        'Indonesia',
-        'India',
-        'Bangladesh',
+        'China',        
+        'Thailand',     
+        'Indonesia',   
+        'India',       
+        'Bangladesh',   
         'Italy',         
-        'Portugal',      
-        'Spain',         
-        'France',        
-        'USA',          
+        'Portugal',     
+        'Spain',        
+        'France',       
+        'USA',           
         'South Korea',   
-        'Japan',
+        'Japan',         
+        'Poland',       
+        'Germany',     
+        'Turkey',        
         'Other',        
-    ];   
-    const brandOptions = [
-        'Adidas', 
-        'Nike', 
-        'Puma', 
-        'Converse', 
-        'Vans', 
-        'New Balance', 
-        'Reebok', 
-        'Fila', 
-        'Under Armour', 
-        'Skechers', 
-        'Asics', 
-        'Crocs', 
-        'Birkenstock', 
-        'Dr. Martens', 
-        'Timberland', 
-        'Clarks', 
-        'Hush Puppies', 
-        'Saucony', 
-        'Merrell',
-        'No Brand',
-        'Other',
     ];
+       
+    const brandOptions = [
+        'IKEA',
+        'Pottery Barn',
+        'Restoration Hardware',
+        'Crate & Barrel',
+        'Poltrona Frau',
+        'B&B Italia',
+        'Kartell',
+        'Hülsta',
+        'Nolte',
+        'MiiR',
+        'SB Furniture',
+        'Ligne Roset',
+        'Thiên Thanh',
+        'Đại Lộc',
+        'Xoài Furniture',
+        'Vietwood',
+        'Không thương hiệu',
+        'Khác',
+    ];   
     const formatted1Options = brandOptions.map((option) => {
         return {value: option, label: option};
     });
@@ -153,15 +154,64 @@ const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
        
     });
     const materialOptions = [
-        {value: 'cotton', label: 'Cotton'}, 
-        {value: 'fleece', label: 'Fleece'},
-        {value: 'nylon', label: 'Nylon'},
-        {value: 'velvet', label: 'Velvet'},
-        {value: 'leather', label: 'Leather'},
-        {value: 'chiffon', label: 'Chiffon'},
-        {value: 'denim', label: 'Denim'},
-        {value: 'down', label: 'Down'},
+        // Gỗ
+        { value: 'wood', label: 'Gỗ tự nhiên' },
+        { value: 'mdf', label: 'Gỗ MDF (gỗ công nghiệp)' },
+        { value: 'plywood', label: 'Ván ép (Plywood)' },
+        { value: 'veneer', label: 'Veneer (Gỗ lạng phủ bề mặt)' },
+        { value: 'hdf', label: 'Gỗ HDF (gỗ ép mật độ cao)' },
+        { value: 'chipboard', label: 'Ván dăm (Chipboard)' },
+        { value: 'bamboo', label: 'Tre' },
+        { value: 'rattan', label: 'Mây tự nhiên' },
+        { value: 'synthetic_rattan', label: 'Mây nhựa (Synthetic Rattan)' },
+        { value: 'water_hyacinth', label: 'Lục bình (Water Hyacinth)' },
+    
+        // Đá
+        { value: 'marble', label: 'Đá cẩm thạch (Marble)' },
+        { value: 'granite', label: 'Đá granite' },
+        { value: 'quartz', label: 'Đá thạch anh (Quartz)' },
+        { value: 'onyx', label: 'Đá onyx tự nhiên' },
+        { value: 'solid_surface', label: 'Đá nhân tạo Solid Surface' },
+    
+        // Kim loại
+        { value: 'metal', label: 'Kim loại' },
+        { value: 'iron', label: 'Sắt' },
+        { value: 'steel', label: 'Thép' },
+        { value: 'stainless_steel', label: 'Thép không gỉ' },
+        { value: 'aluminum', label: 'Nhôm' },
+    
+        // Vải / Da
+        { value: 'fabric', label: 'Vải' },
+        { value: 'cotton', label: 'Vải cotton' },
+        { value: 'velvet', label: 'Vải nhung (Velvet)' },
+        { value: 'linen', label: 'Vải lanh (Linen)' },
+        { value: 'felt', label: 'Nỉ (Felt)' },
+        { value: 'leather', label: 'Da thật' },
+        { value: 'full_grain_leather', label: 'Da bò nguyên tấm' },
+        { value: 'suede', label: 'Da lộn (Suede)' },
+        { value: 'nubuck', label: 'Da nubuck (Da bò mài mịn)' },
+        { value: 'pu_leather', label: 'Da PU (giả da tổng hợp)' },
+    
+        // Nhựa
+        { value: 'plastic', label: 'Nhựa' },
+        { value: 'polypropylene', label: 'Polypropylene (Nhựa PP)' },
+        { value: 'resin', label: 'Nhựa Resin' },
+        { value: 'fiberglass', label: 'Sợi thủy tinh (Fiberglass)' },
+        { value: 'acrylic', label: 'Acrylic (Nhựa bóng gương)' },
+    
+        // Khác
+        { value: 'glass', label: 'Kính' },
+        { value: 'tempered_glass', label: 'Kính cường lực' },
+        { value: 'frosted_glass', label: 'Kính mờ' },
+        { value: 'mirror', label: 'Gương' },
+        { value: 'ceramic', label: 'Gốm sứ (Ceramic)' },
+        { value: 'porcelain', label: 'Sứ cao cấp (Porcelain)' },
+        { value: 'concrete', label: 'Bê tông' },
+        { value: 'cement', label: 'Xi măng' },
+        { value: 'paperboard', label: 'Giấy ép (Paperboard)' },
     ];
+    
+    
     // const key = 'updatable'; 
     const dispatch = useAppDispatch(); 
     const {id} = useParams();
@@ -242,9 +292,9 @@ const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
             originalPrice: values.originalPrice,
             sellingPrice: values.sellingPrice,
             materials: values.materials,
-            categoryIds: values.categoryId,
+            categoryIds: values.categoryIds,
             stock: values.stock,
-        
+            
             variation1: variationsData[0]?.variation || '',
             options1: variationsData[0]?.options || [],
             variation2: variationsData[1]?.variation || '',
@@ -281,18 +331,12 @@ const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
         promotionImages.forEach((file: any) => {
             formData.append('promotionImages', file.originFileObj as Blob);
         });
-
         productImages.forEach((file: any) => {
             formData.append('productImages', file.originFileObj as Blob);
         });
-        console.log("descriptionImages", descriptionImages.length);
         descriptionImages.forEach((file: any) => {
             formData.append('descriptionImages', file.originFileObj as Blob);
-        });
-       
-
-
-        
+        }); 
         formData.append('productData', JSON.stringify(productPayload));
         
      
@@ -741,11 +785,18 @@ const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
                         <Row gutter={20} style={{padding: "20px", border: '1px solid blue', background: '#fff'}}>
                             <Col xl={24} lg={24} md={24} sm={24} xs={24}><h5 style={{marginBottom: "20px"}}>Danh mục</h5></Col>
                             <Col xl={24} lg={24} md={24} sm={24} xs={24}>
-                            
+                                <CustomItem 
+                                    label={<RequiredLabel label="Danh mục" tooltip="Danh mục sẽ được hiển thị trên trang sản phẩm" />} 
+                                    name="categoryIds" 
+                                    labelCol={{ span: 24 }} 
+                                    wrapperCol={{ span: 24 }}
+                                    //rules={[{ required: true, message: 'Category cannot be left blank!' }]}
+                                >
                                 <CategorySelect
                                     form={form}
                                     queryNumber={1}
                                 />
+                                </CustomItem>
                             </Col>
                         </Row>
                     </Col>
