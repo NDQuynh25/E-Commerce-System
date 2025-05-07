@@ -130,7 +130,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
     const [productImages, setProductImages] = useState<any[]>([]);
     const [promotionImages, setPromotionImages] = useState<any[]>([]);
     const [descriptionImages, setDescriptionImages] = useState<any[]>([]);
-    
+    const [description, setDescription] = useState<string>('');
     const [variationsData, setVariationsData] = useState<variation[]>([]);
     const [skusData, setSkusData] = useState<any[]>([]);
     const [productData, setProductData] = React.useState<IProduct>({
@@ -365,6 +365,10 @@ const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
         }
     }
 
+    const handleChangeDescription = (value: string) => {
+        form.setFieldsValue({ description: value });
+    };
+
 
     const [selectedCategory, setSelectedCategory] = React.useState<number[]>([]);  
 
@@ -427,7 +431,7 @@ const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
                 { variation: variation2, options: options2 },
             ].filter(variation => variation.variation !== '' && variation.options.length > 0);
             
-            loadImages(product.imageURLs || [], setProductImages);
+            loadImages(product.productImageURLs || [], setProductImages);
             loadImages(product.promotionImageURLs || [], setPromotionImages);
 
             form.setFieldsValue({
@@ -640,6 +644,9 @@ const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
                                 </CustomItem>
                             </Col>                    
                             <Col lg={24} md={24} sm={24} xs={24}>
+                                {/* Ant Design tự động inject value và onChange vào TextEditor thông qua Form.Item
+                                => Không cần truyền form hoặc dùng useEffect để sync dữ liệu
+                                Miễn là TextEditor nhận props: `value` và `onChange`, thì nó hoạt động như một controlled component */}
                                 <CustomItem 
                                     label={<RequiredLabel label="Mô tả sản phẩm" tooltip="Mô tả sản phẩm sẽ được hiển thị trên trang sản phẩm" />} 
                                     name="description" 
@@ -647,7 +654,10 @@ const ProductForm: React.FC<ProductFormProps> = ({isEdit}) => {
                                     wrapperCol={{ span: 24 }}
                                     //rules={[{ required: true, message: 'Product description cannot be left blank!' }]}
                                 >
-                                    <TextEditor form={form} />   
+                                    <TextEditor 
+                                        value={form.getFieldValue('description')} 
+                                        setValue={handleChangeDescription}
+                                    />   
                                 </CustomItem>
                             </Col>
                         </Row>

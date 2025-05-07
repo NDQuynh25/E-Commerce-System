@@ -77,8 +77,8 @@ const ProductManagement = () => {
         },
 
         {
-            title: <span style={{fontSize: '15px', fontWeight: '600', display: 'flex', justifyContent: 'center'}}>Đã bán</span>,
-            dataIndex: 'quantitySold',
+            title: <span style={{fontSize: '15px', fontWeight: '600', display: 'flex', justifyContent: 'center'}}>Tồn kho</span>,
+            dataIndex: 'stock',
             width: 75,
             sorter: true,
             align: 'center',

@@ -107,7 +107,7 @@ export interface ICategory {
 export interface IProduct {
     id?: string;
     skuCode?: string;
-    imageURLs: string[];
+    productImageURLs?: string[];
     promotionImageURLs?: string[];
 
     productName: string;

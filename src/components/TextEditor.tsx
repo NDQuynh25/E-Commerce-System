@@ -1,27 +1,27 @@
 import { Editor } from '@tinymce/tinymce-react';
-import { useEffect, useRef } from 'react';
-import { useState } from 'react';
+
 import '../styles/modal.text-editor.css';
-import { set } from 'lodash';
+
 
 interface TextEditorProps {
-  form: any;
+  value?: string;
+  setValue?: (value: string) => void;
+  
 }
-const TextEditor: React.FC<TextEditorProps> = ({form}) => {
-  const [content, setContent] = useState('');
-  useEffect(() => {
-    console.log(content);
-    form.setFieldsValue({
-      description: content,
-    });
-  }, [content]);
+const TextEditor: React.FC<TextEditorProps> = ({value, setValue}) => {
+  
+  
+
+  
 
   
   return (
     <Editor
         apiKey={import.meta.env.VITE_TINYMCE_API_KEY as string}
-        value={content}
-        onEditorChange={(newContent) => setContent(newContent)}
+        value={value}
+        onEditorChange={(newContent) => {
+          if (setValue) setValue(newContent);
+        }}
         init={{
           language_url: '/tinymce/langs/vi.js',
           language: 'vi',
