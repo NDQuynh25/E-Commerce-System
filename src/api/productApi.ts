@@ -8,6 +8,13 @@ export const callCreateProduct = (data: any) => {
         }
     });
 }
+export const callUpdateProduct = (id: string, formData: FormData) => {
+    return axios.put<IBackendRes<IProduct>>(`/api/v1/products/${id}`, formData, {
+        headers: {
+            'Content-Type': 'form-data'
+        }
+    });
+}
 
 export const callUploadImages = (data: FormData) => {
     return axios.post<IBackendRes<any>>('/api/v1/products/images', data, {

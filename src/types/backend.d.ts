@@ -148,8 +148,9 @@ export interface IProduct {
 
 
 export interface skuType {
+
     key: number;
-    skuCode: string;
+    id?: string;
     option1?: string;
     option2?: string;
     originalPrice: number;

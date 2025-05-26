@@ -7,7 +7,7 @@ import runes from 'runes';
 import RequiredLabel from "../../input/RequiredLabel";
 import CategorySelect from "./CategorySelect";
 import { CategoryType } from "../../../types/backend";
-import { callCreateCategory, callUpdateCategory, callDeleteCategory } from "../../../api/categoryApi";
+import { callCreateCategory, callUpdateCategory } from "../../../api/categoryApi";
 import { notification } from "antd";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { setLoading } from "../../../redux/slices/globalSlice";

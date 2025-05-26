@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {  Dropdown, Checkbox, Input, Button, Spin} from "antd";
+import {  Dropdown, Checkbox, Input, Button, Spin, Alert} from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
@@ -76,21 +76,26 @@ const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, categor
       let query = queryString.stringify({ filter: queries[queryNumber] }) + '&page=0&size=100&isSummary=true&sort=categoryName,asc';
      
       dispatch(fetchCategories({ query: query }));
-      if (category.isFetching === false) {
-        console.log('id', category.result?.id)
-      }
+     
       
     
     }, []);
 
-    useEffect(() => {
-      console.log('category', categories);
-    }, [categories]);
+    // useEffect(() => {
+    //   console.log('category', categories);
+    // }, [categories]);
 
     useEffect(() => {
       
       setSelectedCategories(categoryIds || []);
     }, [category]);
+
+    useEffect(() => {
+      if (categoryIds) {
+        setSelectedCategories(categoryIds);
+        //console.log("Selected categories:", categoryIds);
+      }
+    }, [categoryIds]);
 
 
 
@@ -167,7 +172,24 @@ const CategorySelect: React.FC<CategoryFormProps> = ({form, categoryIds, categor
             : "Chọn danh mục"}{" "}
           <DownOutlined />
         </Button>
+        
       </Dropdown>
+      {
+        // Hiển thị danh sách đã chọn bên dưới dropdown
+        selectedCategories.length > 0 && (
+          <div style={{ marginTop: "10px", display: "flex", flexWrap: "wrap"}}>
+            {selectedCategories.map((id) => {
+              const category = categories.find((cat) => cat.id === id);
+              return category ? (
+                <div key={id} style={{ display: "inline", alignItems: "center", marginBottom: "5px", marginRight: "10px", }}>
+                  <Alert message={<p style={{fontSize: "14px"}}>{category.categoryName}</p>} type="info" />
+                </div>
+                ) : null;
+            })}
+          </div>
+        )
+      }
+      
      
 
     </>

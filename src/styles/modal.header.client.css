@@ -1,3 +1,4 @@
+
 @import url('root.css');
 
 .header-client {
@@ -40,6 +41,10 @@
                 display: flex;
                 gap: 20px;
                 align-items: center;
+                .cart-btn:hover {
+                    background-color: var(--yellow) !important;
+
+                }
             }
             .header-client-menu {
                 
