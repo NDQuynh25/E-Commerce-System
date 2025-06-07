@@ -10,6 +10,7 @@ import {
   Space,
   Select,
   Divider,
+  Badge,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
@@ -18,12 +19,10 @@ import ImageUpload from "../../input/ImageUpload";
 import styled from "styled-components";
 import runes from "runes";
 import RequiredLabel from "../../input/RequiredLabel";
-import { InputNumber } from "antd";
 import { InputNumberProps } from "antd/lib/input-number";
 import ProductVariations from "./ProductVariations";
 import SKU from "./SKU";
 import { callCreateProduct, callUpdateProduct } from "../../../api/productApi";
-
 import { notification } from "antd";
 import { IProduct } from "../../../types/backend";
 import CategorySelect from "./CategorySelect";
@@ -33,6 +32,13 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { fetchProduct } from "../../../redux/slices/productSlice";
 import { UploadFile } from "antd/lib";
 import { extractAllBase64FromHTML, urlToBlob } from "../../../utils/conversion";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import { text } from "stream/consumers";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const CustomItem = styled(Form.Item)`
   .ant-row.ant-form-item-row {
@@ -315,6 +321,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
         sellingPrice: sku.sellingPrice,
         stock: sku.stock,
       })),
+      isActive: values.isActive,
     };
 
     console.log("productPayload", productPayload);
@@ -449,6 +456,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
         categoryIds: product.categoryIds,
         stock: product.stock,
         variations: variations,
+
+        createdAt: product.createdAt
+          ? dayjs(product.createdAt)
+              .tz("Asia/Ho_Chi_Minh")
+              .format("DD/MM/YYYY HH:mm:ss")
+          : "",
+
+        createdBy: product.createdBy,
+        updatedAt: product.updatedAt
+          ? dayjs(product.updatedAt)
+              .tz("Asia/Ho_Chi_Minh")
+              .format("DD/MM/YYYY HH:mm:ss")
+          : "",
+        updatedBy: product.updatedBy,
+        isActive: product.isActive?.toString() || "1",
       });
       setVariationsData(variations);
       setSkusData(product?.skus || []);
@@ -477,6 +499,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
         categoryIds: [],
         stock: 0,
         variations: [],
+        createdAt: "",
+        createdBy: "",
+        updatedAt: "",
+        updatedBy: "",
+        isActive: "1",
       });
       setProductImages([]);
       setPromotionImages([]);
@@ -507,13 +534,19 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
             }
           }}
         >
-          <Row gutter={[50, 20]}>
+          <Row gutter={[25, 25]}>
             <Col xl={16} lg={24} md={24} sm={24} xs={24}>
               <Row
                 gutter={20}
                 style={{
                   padding: "20px",
-                  border: "1px solid blue",
+                  overflow: "clip",
+                  backgroundColor: "rgb(255, 255, 255)",
+                  borderRadius: "8px",
+                  margin: "20px 0px",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.1) 0px 1px 3px 1px, rgba(0, 0, 0, 0.15) 0px 1px 2px 0px",
+                  outline: "transparent solid 1px",
                   background: "#fff",
                 }}
               >
@@ -547,7 +580,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
                   </CustomItem>
                 </Col>
 
-                <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+                <Col xl={9} lg={24} md={24} sm={24} xs={24}>
                   <CustomItem
                     label={<span>Thương hiệu</span>}
                     name="brand"
@@ -568,7 +601,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
                     ></AutoComplete>
                   </CustomItem>
                 </Col>
-                <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+                <Col xl={8} lg={24} md={24} sm={24} xs={24}>
                   <CustomItem
                     label={<span>Xuất xứ</span>}
                     name="countryOfOrigin"
@@ -587,6 +620,38 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
                         letterSpacing: 0,
                       }}
                     />
+                  </CustomItem>
+                </Col>
+                <Col xl={7} lg={24} md={24} sm={24} xs={24}>
+                  <CustomItem
+                    label={
+                      <RequiredLabel
+                        label="Trạng thái"
+                        tooltip="Chọn trạng thái để kiểm soát việc hiển thị danh mục trên trang sản phẩm"
+                      />
+                    }
+                    name="isActive"
+                    initialValue={"1"}
+                    labelCol={{ span: 24 }}
+                    wrapperCol={{ span: 24 }}
+                    rules={[
+                      { required: true, message: "Không được bỏ trống ô" },
+                    ]}
+                  >
+                    <Select style={{ height: 35 }} optionLabelProp="label">
+                      <Select.Option
+                        value="1"
+                        label={<Badge status="success" text="Hoạt động" />}
+                      >
+                        <Badge status="success" text="Hoạt động" />
+                      </Select.Option>
+                      <Select.Option
+                        value="0"
+                        label={<Badge status="error" text="Vô hiệu" />}
+                      >
+                        <Badge status="error" text="Vô hiệu" />
+                      </Select.Option>
+                    </Select>
                   </CustomItem>
                 </Col>
                 <Col xl={24} lg={24} md={24} sm={24} xs={24}>
@@ -669,7 +734,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
                 gutter={20}
                 style={{
                   padding: "20px",
-                  border: "1px solid blue",
+                  overflow: "clip",
+                  backgroundColor: "rgb(255, 255, 255)",
+                  borderRadius: "8px",
+                  margin: "20px 0px",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.1) 0px 1px 3px 1px, rgba(0, 0, 0, 0.15) 0px 1px 2px 0px",
+                  outline: "transparent solid 1px",
                   background: "#fff",
                 }}
               >
@@ -705,9 +776,15 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
               <Row
                 gutter={20}
                 style={{
-                  background: "#fff",
                   padding: "20px",
-                  border: "1px solid blue",
+                  overflow: "clip",
+                  backgroundColor: "rgb(255, 255, 255)",
+                  borderRadius: "8px",
+                  margin: "20px 0px",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.1) 0px 1px 3px 1px, rgba(0, 0, 0, 0.15) 0px 1px 2px 0px",
+                  outline: "transparent solid 1px",
+                  background: "#fff",
                 }}
               >
                 <Col>
@@ -775,12 +852,17 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
                   </CustomItem>
                 </Col>
               </Row>
-
               <Row
                 gutter={20}
                 style={{
                   padding: "20px",
-                  border: "1px solid blue",
+                  overflow: "clip",
+                  backgroundColor: "rgb(255, 255, 255)",
+                  borderRadius: "8px",
+                  margin: "20px 0px",
+                  boxShadow:
+                    "rgba(0, 0, 0, 0.1) 0px 1px 3px 1px, rgba(0, 0, 0, 0.15) 0px 1px 2px 0px",
+                  outline: "transparent solid 1px",
                   background: "#fff",
                 }}
               >
@@ -808,21 +890,104 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
                   </CustomItem>
                 </Col>
               </Row>
+              {isEdit ? (
+                <Row
+                  gutter={20}
+                  style={{
+                    padding: "20px",
+                    overflow: "clip",
+                    backgroundColor: "rgb(255, 255, 255)",
+                    borderRadius: "8px",
+                    margin: "20px 0px",
+                    boxShadow:
+                      "rgba(0, 0, 0, 0.1) 0px 1px 3px 1px, rgba(0, 0, 0, 0.15) 0px 1px 2px 0px",
+                    outline: "transparent solid 1px",
+                    background: "#fff",
+                  }}
+                >
+                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+                    <h5 style={{ marginBottom: "20px" }}>Thông tin theo dõi</h5>
+                  </Col>
+                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+                    <CustomItem
+                      label={<span>ID sản phẩm</span>}
+                      name="id"
+                      labelCol={{ span: 24 }}
+                    >
+                      <Input
+                        placeholder="Nhập ID sản phẩm"
+                        disabled={true}
+                        value={form.getFieldValue("id")}
+                        style={{
+                          height: "35px",
+                          fontSize: "0.9rem",
+                          fontWeight: 400,
+                          letterSpacing: 0,
+                        }}
+                      />
+                    </CustomItem>
+                  </Col>
+                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+                    <CustomItem
+                      label={<span>Thời gian tạo</span>}
+                      name="createdAt"
+                      labelCol={{ span: 24 }}
+                    >
+                      <Input
+                        disabled={true}
+                        style={{
+                          height: "35px",
+                          fontSize: "0.9rem",
+                          fontWeight: 400,
+                          letterSpacing: 0,
+                        }}
+                      />
+                    </CustomItem>
+                  </Col>
+                  <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+                    <CustomItem
+                      label={<span>Thời gian cập nhật</span>}
+                      name="updatedAt"
+                      labelCol={{ span: 24 }}
+                    >
+                      <Input
+                        disabled={true}
+                        style={{
+                          height: "35px",
+                          fontSize: "0.9rem",
+                          fontWeight: 400,
+                          letterSpacing: 0,
+                        }}
+                      />
+                    </CustomItem>
+                  </Col>
+                </Row>
+              ) : null}
             </Col>
           </Row>
 
           <Row>
             <Row
-              gutter={20}
+              gutter={0}
               style={{
                 width: "100%",
                 padding: "20px",
-                border: "1px solid blue",
+                overflow: "clip",
+                backgroundColor: "rgb(255, 255, 255)",
+                borderRadius: "8px",
+                margin: "20px 0px",
+                boxShadow:
+                  "rgba(0, 0, 0, 0.1) 0px 1px 3px 1px, rgba(0, 0, 0, 0.15) 0px 1px 2px 0px",
+                outline: "transparent solid 1px",
                 background: "#fff",
               }}
             >
               <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                 <h5 style={{ marginBottom: "20px" }}>Phiên bản</h5>
+              </Col>
+              <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+                Thông tin chi tiết về các phiên bản của sản phẩm, giúp quản lý
+                và phân biệt các biến thể như size, màu, hoặc cấu hình.
               </Col>
               {variationsData.length > 0 && (
                 <SKU
@@ -837,11 +1002,29 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
             </Row>
           </Row>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{ marginTop: "20px", width: "100%" }}
-          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: "20px",
+            }}
+          >
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ marginTop: "20px", width: "120px", height: "40px" }}
+            >
+              <span
+                style={{
+                  fontSize: "16px",
+                  fontWeight: 500,
+                  letterSpacing: 0,
+                }}
+              >
+                {isEdit ? "Cập nhật" : "Thêm"}
+              </span>
+            </Button>
+          </div>
         </Form>
       </div>
     </div>
