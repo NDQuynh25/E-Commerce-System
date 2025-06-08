@@ -14,7 +14,7 @@ export const globalSlice = createSlice({
     initialState,
     reducers: {
         setLoading: (state, action: PayloadAction<boolean>) => {
-        state.loading= action.payload;
+            state.loading= action.payload;
         },
     },
 });

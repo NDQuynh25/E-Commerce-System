@@ -1,4 +1,4 @@
-import { IBackendRes, IModelPaginate, IProduct, OSku, ProductType } from "../types/backend";
+import { IBackendRes, IModelPaginate, IProduct,  ProductType } from "../types/backend";
 import axios from "../config/axios";
 
 export const callCreateProduct = (data: any) => {

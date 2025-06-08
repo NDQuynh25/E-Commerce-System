@@ -6,6 +6,7 @@ import roleReducer from './slices/roleSlice';
 import categoryReducer from './slices/categorySlice';
 import permissionReducer from './slices/permissionSlice';
 import productReducer from './slices/productSlice';
+import skuReducer from './slices/skuSlice';
 import {
   Action,
   combineReducers,
@@ -42,6 +43,7 @@ const rootReducer = combineReducers({
     permission: permissionReducer,
     category: persistReducer(categoryPersistConfig, categoryReducer),
     product: productReducer,
+    sku: skuReducer, // Thêm reducer sk
   
 });
 

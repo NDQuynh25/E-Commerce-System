@@ -35,7 +35,7 @@ import { extractAllBase64FromHTML, urlToBlob } from "../../../utils/conversion";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { text } from "stream/consumers";
+import { setLoading } from "../../../redux/slices/globalSlice";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -139,88 +139,98 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
   const [newMaterial, setNewMaterial] = React.useState<string>("");
   const [productImages, setProductImages] = useState<any[]>([]);
   const [promotionImages, setPromotionImages] = useState<any[]>([]);
-  const [descriptionImages, setDescriptionImages] = useState<any[]>([]);
-  const [description, setDescription] = useState<string>("");
+  // const [descriptionImages, setDescriptionImages] = useState<any[]>([]);
+  // const [description, setDescription] = useState<string>("");
   const [variationsData, setVariationsData] = useState<variation[]>([]);
   const [skusData, setSkusData] = useState<any[]>([]);
-  const [productData, setProductData] = React.useState<IProduct>({
-    imageURLs: [],
-    skuCode: "",
-    productName: "",
-    description: "",
-    categoryId: "",
-    brand: "",
-    materials: [],
-    countryOfOrigin: "",
-    originalPrice: 0,
-    sellingPrice: 0,
-    stock: 0,
-    variation1: "",
-    options1: [],
-    variation2: "",
-    options2: [],
-    skus: [],
-  });
+  // const [productData, setProductData] = React.useState<IProduct>({
+  //   imageURLs: [],
+  //   skuCode: "",
+  //   productName: "",
+  //   description: "",
+  //   categoryId: "",
+  //   brand: "",
+  //   materials: [],
+  //   countryOfOrigin: "",
+  //   originalPrice: 0,
+  //   sellingPrice: 0,
+  //   stock: 0,
+  //   variation1: "",
+  //   options1: [],
+  //   variation2: "",
+  //   options2: [],
+  //   skus: [],
+  // });
   const materialOptions = [
     // Gỗ
-    { value: "wood", label: "Gỗ tự nhiên" },
-    { value: "mdf", label: "Gỗ MDF (gỗ công nghiệp)" },
-    { value: "plywood", label: "Ván ép (Plywood)" },
-    { value: "veneer", label: "Veneer (Gỗ lạng phủ bề mặt)" },
-    { value: "hdf", label: "Gỗ HDF (gỗ ép mật độ cao)" },
-    { value: "chipboard", label: "Ván dăm (Chipboard)" },
-    { value: "bamboo", label: "Tre" },
-    { value: "rattan", label: "Mây tự nhiên" },
-    { value: "synthetic_rattan", label: "Mây nhựa (Synthetic Rattan)" },
-    { value: "water_hyacinth", label: "Lục bình (Water Hyacinth)" },
+    { value: "Gỗ tự nhiên", label: "Gỗ tự nhiên" },
+    { value: "Gỗ MDF (gỗ công nghiệp)", label: "Gỗ MDF (gỗ công nghiệp)" },
+    { value: "Ván ép (Plywood)", label: "Ván ép (Plywood)" },
+    {
+      value: "Veneer (Gỗ lạng phủ bề mặt)",
+      label: "Veneer (Gỗ lạng phủ bề mặt)",
+    },
+    { value: "Gỗ HDF (gỗ ép mật độ cao)", label: "Gỗ HDF (gỗ ép mật độ cao)" },
+    { value: "Ván dăm (Chipboard)", label: "Ván dăm (Chipboard)" },
+    { value: "Tre", label: "Tre" },
+    { value: "Mây tự nhiên", label: "Mây tự nhiên" },
+    {
+      value: "Mây nhựa (Synthetic Rattan)",
+      label: "Mây nhựa (Synthetic Rattan)",
+    },
+    { value: "Lục bình (Water Hyacinth)", label: "Lục bình (Water Hyacinth)" },
 
     // Đá
-    { value: "marble", label: "Đá cẩm thạch (Marble)" },
-    { value: "granite", label: "Đá granite" },
-    { value: "quartz", label: "Đá thạch anh (Quartz)" },
-    { value: "onyx", label: "Đá onyx tự nhiên" },
-    { value: "solid_surface", label: "Đá nhân tạo Solid Surface" },
+    { value: "Đá cẩm thạch (Marble)", label: "Đá cẩm thạch (Marble)" },
+    { value: "Đá granite", label: "Đá granite" },
+    { value: "Đá thạch anh (Quartz)", label: "Đá thạch anh (Quartz)" },
+    { value: "Đá onyx tự nhiên", label: "Đá onyx tự nhiên" },
+    { value: "Đá nhân tạo Solid Surface", label: "Đá nhân tạo Solid Surface" },
 
     // Kim loại
-    { value: "metal", label: "Kim loại" },
-    { value: "iron", label: "Sắt" },
-    { value: "steel", label: "Thép" },
-    { value: "stainless_steel", label: "Thép không gỉ" },
-    { value: "aluminum", label: "Nhôm" },
+    { value: "Kim loại", label: "Kim loại" },
+    { value: "Sắt", label: "Sắt" },
+    { value: "Thép", label: "Thép" },
+    { value: "Thép không gỉ", label: "Thép không gỉ" },
+    { value: "Nhôm", label: "Nhôm" },
 
     // Vải / Da
-    { value: "fabric", label: "Vải" },
-    { value: "cotton", label: "Vải cotton" },
-    { value: "velvet", label: "Vải nhung (Velvet)" },
-    { value: "linen", label: "Vải lanh (Linen)" },
-    { value: "felt", label: "Nỉ (Felt)" },
-    { value: "leather", label: "Da thật" },
-    { value: "full_grain_leather", label: "Da bò nguyên tấm" },
-    { value: "suede", label: "Da lộn (Suede)" },
-    { value: "nubuck", label: "Da nubuck (Da bò mài mịn)" },
-    { value: "pu_leather", label: "Da PU (giả da tổng hợp)" },
+    { value: "Vải", label: "Vải" },
+    { value: "Vải cotton", label: "Vải cotton" },
+    { value: "Vải nhung (Velvet)", label: "Vải nhung (Velvet)" },
+    { value: "Vải lanh (Linen)", label: "Vải lanh (Linen)" },
+    { value: "Nỉ (Felt)", label: "Nỉ (Felt)" },
+    { value: "Da thật", label: "Da thật" },
+    { value: "Da bò nguyên tấm", label: "Da bò nguyên tấm" },
+    { value: "Da lộn (Suede)", label: "Da lộn (Suede)" },
+    { value: "Da nubuck (Da bò mài mịn)", label: "Da nubuck (Da bò mài mịn)" },
+    { value: "Da PU (giả da tổng hợp)", label: "Da PU (giả da tổng hợp)" },
 
     // Nhựa
-    { value: "plastic", label: "Nhựa" },
-    { value: "polypropylene", label: "Polypropylene (Nhựa PP)" },
-    { value: "resin", label: "Nhựa Resin" },
-    { value: "fiberglass", label: "Sợi thủy tinh (Fiberglass)" },
-    { value: "acrylic", label: "Acrylic (Nhựa bóng gương)" },
+    { value: "Nhựa", label: "Nhựa" },
+    { value: "Polypropylene (Nhựa PP)", label: "Polypropylene (Nhựa PP)" },
+    { value: "Nhựa Resin", label: "Nhựa Resin" },
+    {
+      value: "Sợi thủy tinh (Fiberglass)",
+      label: "Sợi thủy tinh (Fiberglass)",
+    },
+    { value: "Acrylic (Nhựa bóng gương)", label: "Acrylic (Nhựa bóng gương)" },
 
     // Khác
-    { value: "glass", label: "Kính" },
-    { value: "tempered_glass", label: "Kính cường lực" },
-    { value: "frosted_glass", label: "Kính mờ" },
-    { value: "mirror", label: "Gương" },
-    { value: "ceramic", label: "Gốm sứ (Ceramic)" },
-    { value: "porcelain", label: "Sứ cao cấp (Porcelain)" },
-    { value: "concrete", label: "Bê tông" },
-    { value: "cement", label: "Xi măng" },
-    { value: "paperboard", label: "Giấy ép (Paperboard)" },
+    { value: "Kính", label: "Kính" },
+    { value: "Kính cường lực", label: "Kính cường lực" },
+    { value: "Kính mờ", label: "Kính mờ" },
+    { value: "Gương", label: "Gương" },
+    { value: "Gốm sứ (Ceramic)", label: "Gốm sứ (Ceramic)" },
+    { value: "Sứ cao cấp (Porcelain)", label: "Sứ cao cấp (Porcelain)" },
+    { value: "Bê tông", label: "Bê tông" },
+    { value: "Xi măng", label: "Xi măng" },
+    { value: "Giấy ép (Paperboard)", label: "Giấy ép (Paperboard)" },
   ];
 
   // const key = 'updatable';
   const dispatch = useAppDispatch();
+
   const { id } = useParams();
   const product = useAppSelector((state) => state.product.result);
 
@@ -282,6 +292,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
   };
 
   const onFinish = async (values: any) => {
+    dispatch(setLoading(true));
     console.log("values", values);
 
     let newDescription = "";
@@ -318,8 +329,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
         option1: sku.option1,
         option2: sku.option2,
         originalPrice: sku.originalPrice,
-        sellingPrice: sku.sellingPrice,
+        discount: sku.discount,
         stock: sku.stock,
+        isActive: sku.isActive,
       })),
       isActive: values.isActive,
     };
@@ -347,6 +359,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
   };
   const updateProduct = async (formData: FormData, id: string) => {
     const res = await callUpdateProduct(id, formData);
+    dispatch(setLoading(false));
+    setLoading(false);
     if (res.status === 200) {
       notification.success({
         message: "Success",
@@ -363,6 +377,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
   const createProduct = async (formData: FormData) => {
     //console.log("productData", newData);
     const res = await callCreateProduct(formData);
+    dispatch(setLoading(false));
     if (res.status === 201) {
       notification.success({
         message: "Success",
@@ -985,7 +1000,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ isEdit }) => {
               <Col xl={24} lg={24} md={24} sm={24} xs={24}>
                 <h5 style={{ marginBottom: "20px" }}>Phiên bản</h5>
               </Col>
-              <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+              <Col
+                xl={24}
+                lg={24}
+                md={24}
+                sm={24}
+                xs={24}
+                style={{ marginBottom: "10px" }}
+              >
                 Thông tin chi tiết về các phiên bản của sản phẩm, giúp quản lý
                 và phân biệt các biến thể như size, màu, hoặc cấu hình.
               </Col>

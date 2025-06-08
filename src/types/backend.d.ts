@@ -106,35 +106,22 @@ export interface ICategory {
 
 export interface IProduct {
     id?: string;
-    skuCode?: string;
     productImageURLs?: string[];
     promotionImageURLs?: string[];
 
     productName: string;
-    skuCode: string;
     brand: string;
     countryOfOrigin: string;
     materials: string[];
     description: string;
-    originalPrice?: number;
-    sellingPrice?: number;
-    stock?: number;
-
+    skuDisplay?: skuType;
+    totalStock?: number;
+    totalQuantitySold?: number;
     variation1?: string;
     options1?: string[];
     variation2?: string;
     options2?: string[];
-    skus?: {
-        id?: string;
-        skuCode: string;
-        option1?: string;
-        option2?: string;
-        originalPrice: number;
-        sellingPrice: number;
-        stock: number;
-
-      
-    }[];
+    skus?: skuType[];
     
     isActive?: string;
     createdBy?: string;
@@ -154,18 +141,13 @@ export interface skuType {
     option1?: string;
     option2?: string;
     originalPrice: number;
-    sellingPrice: number;
-    stock: number;
-}
-
-export interface OSku {
-    productId: string;
-    option1?: string;
-    option2?: string;
-    price: number;
+    sellingPrice?: number;
     stock: number;
     discount: number;
+    isActive?: string;
+    [key: string]: any; // Add dynamic key
 }
+
 
 export interface CategoryType {
     id?: string | number;

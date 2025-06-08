@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { Col, InputNumber, Modal, Row, Table } from "antd";
+import { Col, InputNumber, Modal, Row, Table, Select } from "antd";
 import { TableProps } from "antd/es/table";
 import { Badge, Form, Input } from "antd";
 import styled from "styled-components";
@@ -192,11 +192,11 @@ const SKU: React.FC<SKUProps> = ({
       align: "center",
     },
     {
-      title: "Giá bán",
-      dataIndex: "sellingPrice",
+      title: "Giảm giá",
+      dataIndex: "discount",
       render: (text, record) => (
         <CustomItem
-          name={`sellingPrice_${record.key}`}
+          name={`discount_${record.key}`}
           key={record.key}
           rules={[
             { required: true, message: "Không được để trống ô" },
@@ -206,8 +206,14 @@ const SKU: React.FC<SKUProps> = ({
                   return Promise.resolve();
                 }
                 const numericValue = parseFloat(value);
-                if (isNaN(numericValue) || numericValue < 1000) {
-                  return Promise.reject("Giá bán tối thiểu là 1000 VND");
+                if (
+                  isNaN(numericValue) ||
+                  numericValue < 0 ||
+                  numericValue > 100
+                ) {
+                  return Promise.reject(
+                    "Giảm giá tối thiểu là 0% và tối đa là 100%"
+                  );
                 }
                 return Promise.resolve();
               },
@@ -218,9 +224,9 @@ const SKU: React.FC<SKUProps> = ({
             type="number"
             style={{ width: "100%", height: "35px" }}
             //value={record.discount.toString()}
-            prefix="₫"
-            onChange={(e) => onSKUChange(record.key, e, "sellingPrice")}
-            placeholder="Nhập giá bán"
+            prefix="%"
+            onChange={(e) => onSKUChange(record.key, e, "discount")}
+            placeholder="Nhập giảm giá"
           />
         </CustomItem>
       ),
@@ -262,6 +268,39 @@ const SKU: React.FC<SKUProps> = ({
       ),
       align: "center",
     },
+    {
+      title: "Trạng thái",
+      dataIndex: "isActive",
+      render: (text, record) => (
+        <CustomItem
+          name={`isActive_${record.key}`}
+          //initialValue={"1"}
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24 }}
+          rules={[{ required: true, message: "Không được bỏ trống ô" }]}
+        >
+          <Select
+            style={{ height: 35 }}
+            optionLabelProp="label"
+            onChange={(e) => onSKUChange(record.key, e, "isActive")}
+          >
+            <Select.Option
+              value="1"
+              label={<Badge status="success" text="Hoạt động" />}
+            >
+              <Badge status="success" text="Hoạt động" />
+            </Select.Option>
+            <Select.Option
+              value="0"
+              label={<Badge status="error" text="Vô hiệu" />}
+            >
+              <Badge status="error" text="Vô hiệu" />
+            </Select.Option>
+          </Select>
+        </CustomItem>
+      ),
+      align: "center",
+    },
   ];
 
   useEffect(() => {
@@ -270,8 +309,9 @@ const SKU: React.FC<SKUProps> = ({
       console.log(">>> sku: ", sku);
       form.setFieldsValue({
         [`originalPrice_${index}`]: sku.originalPrice,
-        [`sellingPrice_${index}`]: sku.sellingPrice,
+        [`discount_${index}`]: sku.discount,
         [`stock_${index}`]: sku.stock,
+        [`isActive_${index}`]: sku.isActive?.toString() ?? "1",
       });
     });
   }, []);
@@ -300,51 +340,62 @@ const SKU: React.FC<SKUProps> = ({
   useEffect(() => {
     let data: skuType[] = [];
     if (
-      variationsData[0]?.variation == "Mặc định" ||
-      variationsData[1]?.variation == "Mặc định"
+      variationsData[0]?.variation === "Mặc định" ||
+      variationsData[1]?.variation === "Mặc định"
     ) {
       data.push({
         key: 0,
         id: skusData[0]?.id || "",
         option1: "Mặc định",
         option2: "",
-        originalPrice: skusData[0]?.originalPrice || 0,
-        sellingPrice: skusData[0]?.sellingPrice || 0,
-        stock: skusData[0]?.stock || 0,
+        originalPrice: skusData[0]?.originalPrice ?? 0,
+        discount: skusData[0]?.discount ?? 0,
+        stock: skusData[0]?.stock ?? 0,
+        isActive: skusData[0]?.isActive?.toString() ?? "1",
       });
     } else {
       let count1 = variationsData[0]?.options?.length || 0;
       let count2 = variationsData[1]?.options?.length || 0;
       if (count2 === 0) {
-        for (let i = data.length; i < count1; i++) {
+        for (let i = 0; i < count1; i++) {
           data.push({
             key: i,
             id: skusData[i]?.id || "",
             option1: variationsData[0]?.options[i] || "",
             option2: "",
-            originalPrice: skusData[i]?.originalPrice || 0,
-            sellingPrice: skusData[i]?.sellingPrice || 0,
-            stock: skusData[i]?.stock || 0,
+            originalPrice: skusData[i]?.originalPrice ?? 0,
+            discount: skusData[i]?.discount ?? 0,
+            stock: skusData[i]?.stock ?? 0,
+            isActive: skusData[i]?.isActive?.toString() ?? "1",
           });
         }
       } else {
         for (let i = 0; i < count1; i++) {
           for (let j = 0; j < count2; j++) {
+            const index = i * count2 + j;
             data.push({
-              key: i * count2 + j,
-              id: skusData[i * count2 + j]?.id || "",
+              key: index,
+              id: skusData[index]?.id || "",
               option1: variationsData[0]?.options[i] || "",
               option2: variationsData[1]?.options[j] || "",
-              originalPrice: skusData[i * count2 + j]?.originalPrice || 0,
-              sellingPrice: skusData[i * count2 + j]?.sellingPrice || 0,
-              stock: skusData[i * count2 + j]?.stock || 0,
+              originalPrice: skusData[index]?.originalPrice ?? 0,
+              discount: skusData[index]?.discount ?? 0,
+              stock: skusData[index]?.stock ?? 0,
+              isActive: skusData[index]?.isActive?.toString() ?? "1",
             });
           }
         }
       }
     }
     setSkusData(data);
-    console.log("được gọi");
+    data.forEach((sku, index) => {
+      form.setFieldsValue({
+        [`originalPrice_${index}`]: sku.originalPrice,
+        [`discount_${index}`]: sku.discount,
+        [`stock_${index}`]: sku.stock,
+        [`isActive_${index}`]: sku.isActive?.toString() ?? "1",
+      });
+    });
   }, [variationsData]);
 
   return (

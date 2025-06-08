@@ -18,7 +18,7 @@ const User = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/product" element={<Product/>}/>
+          <Route path="/product/:id" element={<Product />} />
         </Routes>
       </div>
     </Fragment>
