@@ -1,4 +1,4 @@
-import { AsyncThunk, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { callFetchAccount } from '../../api/authApi';
 import { IGetAccount } from '../../types/backend';
 
@@ -22,6 +22,7 @@ export interface IState {
         email: string;
         fullname: string;
         avatar?: string;
+        cartId?: string;
         role: {
             id: number | string;
             roleName: string;
@@ -46,6 +47,7 @@ const initialState: IState = {
         email: "",
         fullname: "",
         avatar: "",
+        cartId: "",
         role: {
             id: "",
             roleName: "",
@@ -73,6 +75,7 @@ export const authSlice = createSlice({
                 email: "",
                 fullname: "",
                 avatar: "",
+                cartId: "",
                 role: {
                     id: "",
                     roleName: "",
@@ -87,6 +90,7 @@ export const authSlice = createSlice({
             state.user.email = action.payload?.email;
             state.user.fullname = action.payload?.fullname;
             state.user.avatar = action.payload?.avatar;
+            state.user.cartId = action.payload?.cartId;
             state.user.role.id = action?.payload?.role?.id ?? -1;
             state.user.role.roleName = action?.payload?.role?.roleName ?? "";
             state.user.role.permissions = action?.payload?.role?.permissions ?? [];
@@ -105,7 +109,6 @@ export const authSlice = createSlice({
             if (action.payload) {
                 state.isAuthenticated = true;
                 state.isLoading = false;
-                
             }
         })
 

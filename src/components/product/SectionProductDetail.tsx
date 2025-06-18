@@ -15,10 +15,12 @@ import CustomCarousel from "../CustomCarousel";
 import { useMediaQuery } from "react-responsive";
 import "../../styles/product/modal.section.product.detail.css";
 import StarRating from "../StarRating";
-import { IProduct, skuType } from "../../types/backend";
+import { ICartItem, IProduct, skuType } from "../../types/backend";
 import styled from "styled-components";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { fetchSku } from "../../redux/slices/skuSlice";
+import { RootState } from "../../redux/store";
+import { callAddItemToCart } from "../../api/cartApi";
 
 // ant-radio-button-wrapper
 const CustomRadio = styled(Radio.Group)`
@@ -57,6 +59,11 @@ const SectionProductDetail: React.FC<SectionProductDetailProps> = ({
   const [checkVariantSelection, setCheckVariantSelection] =
     React.useState<boolean>(false);
   const [stock, setStock] = React.useState<number>();
+  const dispatch = useAppDispatch();
+  const cartId = useAppSelector((state: RootState) => state.auth.user.cartId);
+  const userId = useAppSelector((state: RootState) => state.auth.user.id);
+
+  const productId = product.id;
 
   const [skuData, setSkuData] = React.useState<skuType>();
   React.useEffect(() => {
@@ -140,6 +147,26 @@ const SectionProductDetail: React.FC<SectionProductDetailProps> = ({
       }
     }
     setCheckVariantSelection(false);
+  };
+
+  const addToCart = async (): Promise<void> => {
+    checkBeforeBuying();
+    if (checkVariantSelection) return;
+    const payload: ICartItem = {
+      cartId: cartId || "",
+      productId: productId || "",
+      skuId: skuData?.id || "",
+      option1: option1,
+      option2: option2,
+      quantity,
+    };
+    console.log("payload", payload);
+    const res = await callAddItemToCart(userId as string, payload);
+    if (res && res?.status === 200) {
+      message.success("Thêm vào giỏ hàng thành công");
+    } else {
+      message.error("Thêm vào giỏ hàng thất bại");
+    }
   };
 
   return (
@@ -506,7 +533,10 @@ const SectionProductDetail: React.FC<SectionProductDetailProps> = ({
                 )}
               </div>
               <div className="section-product-details__btn">
-                <Button className="section-product-details__btn-add-cart">
+                <Button
+                  className="section-product-details__btn-add-cart"
+                  onClick={() => addToCart()}
+                >
                   <img
                     style={{
                       width: "18px",
@@ -519,7 +549,6 @@ const SectionProductDetail: React.FC<SectionProductDetailProps> = ({
                   <p>Thêm Vào Giỏ Hàng</p>
                 </Button>
                 <Button
-                  onClick={() => checkBeforeBuying()}
                   className="section-product-details__btn-buy-now"
                   //disabled={}
                 >

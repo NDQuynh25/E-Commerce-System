@@ -7,41 +7,44 @@ import { role } from "../../utils/constant";
 import { RootState } from "../../redux/store";
 
 interface IProps {
-    children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const LayoutApp = (props: IProps) => {
-    const isAuthenticated = useAppSelector((state: RootState) => state.auth.isAuthenticated);
-    const userRole = useAppSelector((state: RootState) => state.auth.user.role.roleName);
-    const isRefreshToken = useAppSelector(state => state.auth.isRefreshToken);
-    const errorRefreshToken = useAppSelector(state => state.auth.errorRefreshToken);
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+  const userRole = useAppSelector(
+    (state: RootState) => state.auth.user.role.roleName
+  );
+  const isRefreshToken = useAppSelector(
+    (state: RootState) => state.auth.isRefreshToken
+  );
+  const errorRefreshToken = useAppSelector(
+    (state: RootState) => state.auth.errorRefreshToken
+  );
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-    //handle refresh token error
-    useEffect(() => {
-        if (isRefreshToken === true) {
-            localStorage.removeItem('access_token')
-            message.error(errorRefreshToken);
-            dispatch(setRefreshTokenAction({ status: false, message: "" }))
-            navigate('/admin/login');
-        }
-        
-    }, [isRefreshToken]);
-
-    if (!isAuthenticated) {
-        return <Navigate to="/admin/login" />;
-      }
-    
-    if (userRole !== role.ADMIN) {
-        return <Navigate to="/unauthorized" />;
+  //handle refresh token error
+  useEffect(() => {
+    if (isRefreshToken === true) {
+      localStorage.removeItem("access_token");
+      message.error(errorRefreshToken);
+      dispatch(setRefreshTokenAction({ status: false, message: "" }));
+      navigate("/admin/login");
     }
-    
-    return (
-        <>
-            {props.children}
-        </>
-    )
-}
+  }, [isRefreshToken]);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" />;
+  }
+
+  if (userRole !== role.ADMIN) {
+    return <Navigate to="/unauthorized" />;
+  }
+
+  return <>{props.children}</>;
+};
 
 export default LayoutApp;

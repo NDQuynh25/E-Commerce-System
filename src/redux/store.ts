@@ -7,6 +7,7 @@ import categoryReducer from './slices/categorySlice';
 import permissionReducer from './slices/permissionSlice';
 import productReducer from './slices/productSlice';
 import skuReducer from './slices/skuSlice';
+import cartReducer from './slices/cartSlice';
 import {
   Action,
   combineReducers,
@@ -17,13 +18,10 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 
-interface GlobalState {
-    loading: boolean;
-}
 
 
 // Cấu hình persist
-const persistConfig = {
+const authPersistConfig = {
   key: 'root',
   storage,
   whitelist: ['auth'], // Chỉ persist reducer account (nơi lưu thông tin auth)
@@ -44,10 +42,12 @@ const rootReducer = combineReducers({
     category: persistReducer(categoryPersistConfig, categoryReducer),
     product: productReducer,
     sku: skuReducer, // Thêm reducer sk
+    cart: cartReducer,
+    
   
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(authPersistConfig, rootReducer);
 
 // Cấu hình store với getDefaultMiddleware để bỏ qua kiểm tra serializableCheck cho redux-persist
 export const store = configureStore({

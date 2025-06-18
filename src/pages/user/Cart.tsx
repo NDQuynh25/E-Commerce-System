@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Table, InputNumber, Button, Empty, Col, Row, Checkbox } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import {
+  Table,
+  InputNumber,
+  Button,
+  Empty,
+  Col,
+  Row,
+  Checkbox,
+  Popover,
+  message,
+} from "antd";
+import ProductVariantSelector from "./../../components/admin/cart/ProductVariantSelector";
 import "../../styles/modal.cart.css";
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  discount: number;
-  quantity: number;
-  image: string;
-  selected: boolean;
-}
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { fetchCartItems } from "../../redux/slices/cartSlice";
+import { RootState } from "../../redux/store";
+import { ICartItem, skuType } from "../../types/backend";
+import { callUpdateCartItem } from "../../api/cartApi";
 
 const Cart: React.FC = () => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -22,40 +26,37 @@ const Cart: React.FC = () => {
   const [isSticky, setIsSticky] = useState(true);
   const cartContainerRef = useRef<HTMLDivElement>(null);
   const totalSectionRef = useRef<HTMLDivElement>(null);
+  const userId = useAppSelector((state: RootState) => state.auth.user.id);
+  const cartId = useAppSelector((state: RootState) => state.auth.user.cartId);
+  const cartItems = useAppSelector((state: RootState) => state.cart.results);
+  const [cartItemsData, setCartItemsData] = useState<ICartItem[]>([]);
+  //const [newSku, setNewSku] = useState<skuType>();
+  const [cartItemSelected, setCartItemSelected] = useState<ICartItem>();
 
+  const dispatch = useAppDispatch();
   // Giả lập fetch dữ liệu từ backend
-  const fetchCartItems = async (pageNum: number) => {
+  const fetchCartItemss = async (pageNum: number) => {
     setLoading(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const newItems = Array(5)
-        .fill(null)
-        .map((_, index) => ({
-          id: `${pageNum}-${index}`,
-          name: `Sản phẩm ${pageNum * 5 + index}`,
-          price: Math.floor(Math.random() * 1000000) + 100000,
-          discount: Math.floor(Math.random() * 10) + 1,
-          quantity: 1,
-          image:
-            "https://bizweb.dktcdn.net/thumb/large/100/480/479/products/protrangnoithatmohobansofa.jpg",
-          selected: false,
-        }));
-
-      if (pageNum === 1) {
-        setCartItems(newItems);
-      } else {
-        setCartItems((prev) => [...prev, ...newItems]);
-      }
-      setHasMore(pageNum < 10);
-    } catch (error) {
-      console.error("Lỗi khi tải dữ liệu:", error);
-    }
+    await dispatch(
+      fetchCartItems({ userId: userId.toString(), query: "?page=0&size=10" })
+    );
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchCartItems(1);
-  }, []); // Chỉ gọi một lần khi component mount
+    fetchCartItemss(1);
+  }, []);
+
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      setCartItemsData(cartItems);
+    }
+  }, [cartItems]);
+
+  useEffect(() => {
+    console.log(cartItemsData);
+  }),
+    [cartItemsData];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,7 +83,7 @@ const Cart: React.FC = () => {
       ) {
         setPage((prev) => {
           const nextPage = prev + 1;
-          fetchCartItems(nextPage);
+          fetchCartItemss(nextPage);
           return nextPage;
         });
       }
@@ -94,36 +95,109 @@ const Cart: React.FC = () => {
 
   useEffect(() => {
     if (page > 1) {
-      fetchCartItems(page);
+      fetchCartItemss(page);
     }
   }, [page]);
 
+  useEffect(() => {
+    console.log("cartItemSelected", cartItemSelected);
+    if (!cartItemSelected) {
+      return;
+    }
+    handleQuantityChange(cartItemSelected?.id as string, 1);
+  }, [cartItemSelected]);
+
   const handleQuantityChange = (id: string, value: number) => {
-    setCartItems((prev) =>
+    setCartItemsData((prev) =>
       prev.map((item) => (item.id === id ? { ...item, quantity: value } : item))
     );
+    const item = cartItemsData.find((i) => i.id === id);
+
+    if (item) {
+      const payload = {
+        ...item,
+        cartId: cartId,
+        productId: item.product?.id,
+        skuId:
+          cartItemSelected?.skuId !== undefined
+            ? cartItemSelected.skuId
+            : item.sku?.id,
+        option1:
+          cartItemSelected?.option1 !== undefined
+            ? cartItemSelected.option1
+            : item.sku?.option1,
+        option2:
+          cartItemSelected?.option2 !== undefined
+            ? cartItemSelected.option2
+            : item.sku?.option2,
+        quantity: value, // Sử dụng giá trị mới từ InputNumber
+      } as ICartItem;
+      console.log("payload", item);
+      console.log("payload", payload);
+      debounceUpdate(payload); // Không cần chờ state cập nhật
+    }
   };
 
   const handleRemoveItem = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    //setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   const handleSelectAll = (checked: boolean) => {
     setSelectAll(checked);
-    setCartItems((prev) =>
-      prev.map((item) => ({ ...item, selected: checked }))
-    );
+    // setCartItems((prev) =>
+    //   prev.map((item) => ({ ...item, selected: checked }))
+    // );
   };
 
   const handleSelectItem = (id: string, checked: boolean) => {
-    setCartItems((prev) => {
-      const newItems = prev.map((item) =>
-        item.id === id ? { ...item, selected: checked } : item
+    // setCartItems((prev) => {
+    //   const newItems = prev.map((item) =>
+    //     item.id === id ? { ...item, selected: checked } : item
+    //   );
+    //   const allSelected = newItems.every((item) => item.selected);
+    //   setSelectAll(allSelected);
+    //   return newItems;
+    // });
+  };
+
+  const handleUpdateCartItem = async (payload: ICartItem) => {
+    try {
+      console.log(payload);
+      const response = await callUpdateCartItem(
+        userId as string,
+        payload.id as string,
+        payload
       );
-      const allSelected = newItems.every((item) => item.selected);
-      setSelectAll(allSelected);
-      return newItems;
-    });
+      if (response.status === 200) {
+        setCartItemsData(response.data?.cartItems || []);
+      } else {
+        dispatch(
+          fetchCartItems({
+            userId: userId.toString(),
+            query: "?page=0&size=10",
+          })
+        );
+        message.error(response.message);
+      }
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateTimeouts = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const debounceUpdate = (payload: ICartItem) => {
+    // Nếu đã có timeout trước đó, hủy nó
+    if (updateTimeouts.current[payload.id ?? ""]) {
+      clearTimeout(updateTimeouts.current[payload.id ?? ""]);
+    }
+
+    // Tạo mới timeout
+    updateTimeouts.current[payload.id ?? ""] = setTimeout(() => {
+      handleUpdateCartItem(payload);
+      delete updateTimeouts.current[payload.id ?? ""];
+    }, 1000); // Delay 1 giây
   };
 
   const calculateTotal = () => {
@@ -132,10 +206,11 @@ const Cart: React.FC = () => {
       .reduce((total, item) => total + item.price * item.quantity, 0);
   };
   const calculateTotalPriceDiscount = () => {
-    return cartItems
-     .filter((item) => item.selected)
-     .reduce((total, item) => total + item.price * item.quantity, 0) -
-     100000;
+    return (
+      cartItems
+        .filter((item) => item.selected)
+        .reduce((total, item) => total + item.price * item.quantity, 0) - 100000
+    );
   };
 
   const TotalSection = () => (
@@ -206,7 +281,7 @@ const Cart: React.FC = () => {
     <div
       style={{
         display: "flex",
-        justifyContent: "center",
+
         alignItems: "center",
         justifyItems: "center",
         width: "100%",
@@ -231,7 +306,7 @@ const Cart: React.FC = () => {
             onChange={(e) => handleSelectAll(e.target.checked)}
           />
         </Col>
-        <Col xl={8} lg={8} md={8} sm={8} xs={8}>
+        <Col xl={10} lg={10} md={10} sm={10} xs={10}>
           <span style={{ fontSize: "15px", fontWeight: "500" }}>Sản phẩm</span>
         </Col>
         <Col xl={4} lg={4} md={4} sm={4} xs={4}>
@@ -240,12 +315,12 @@ const Cart: React.FC = () => {
         <Col xl={4} lg={4} md={4} sm={4} xs={4}>
           <span style={{ fontSize: "15px", fontWeight: "500" }}>Số lượng</span>
         </Col>
-        <Col xl={4} lg={4} md={4} sm={4} xs={4}>
+        <Col xl={3} lg={3} md={3} sm={3} xs={3}>
           <span style={{ fontSize: "15px", fontWeight: "500" }}>
             Thành tiền
           </span>
         </Col>
-        <Col xl={3} lg={3} md={3} sm={3} xs={3}>
+        <Col xl={2} lg={2} md={2} sm={2} xs={2}>
           <span style={{ fontSize: "15px", fontWeight: "500" }}>Thao tác</span>
         </Col>
       </Row>
@@ -262,7 +337,7 @@ const Cart: React.FC = () => {
           }}
         >
           <div style={{ width: "100%" }}>
-            {cartItems.map((item) => (
+            {cartItemsData.map((item) => (
               <Row
                 key={item.id}
                 style={{ padding: "15px", backgroundColor: "white" }}
@@ -283,29 +358,39 @@ const Cart: React.FC = () => {
                   <Checkbox
                     checked={item.selected}
                     onChange={(e) =>
-                      handleSelectItem(item.id, e.target.checked)
+                      handleSelectItem(item.id || "", e.target.checked)
                     }
                   />
                 </Col>
                 <Col
-                  xl={8}
-                  lg={8}
-                  md={8}
-                  sm={8}
-                  xs={8}
+                  xl={10}
+                  lg={10}
+                  md={10}
+                  sm={10}
+                  xs={10}
                   style={{
                     display: "flex",
                     gap: "10px",
                     alignItems: "center",
+                    paddingRight: "15px",
                   }}
                 >
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={`${item.product?.promotionImageURLs?.[0]}`}
+                    alt={item.product?.productName}
                     style={{ width: 80, height: 80, objectFit: "cover" }}
                   />
-                  <span>{item.name}</span>
+                  <span>{item.product?.productName}</span>
+                  <div style={{ width: "50%" }}>
+                    <ProductVariantSelector
+                      product={item.product}
+                      sku={item.sku}
+                      cartItemSelected={item}
+                      setCartItemSelected={setCartItemSelected}
+                    />
+                  </div>
                 </Col>
+
                 <Col
                   xl={4}
                   lg={4}
@@ -315,9 +400,19 @@ const Cart: React.FC = () => {
                   style={{
                     display: "flex",
                     alignItems: "center",
+                    gap: "10px",
                   }}
                 >
-                  {item.price.toLocaleString("vi-VN")}đ
+                  <p
+                    style={{
+                      textDecoration: "line-through",
+                    }}
+                  >
+                    {(item?.sku?.originalPrice || 0).toLocaleString("vi-VN")}đ
+                  </p>
+                  <p style={{ color: "red" }}>
+                    {(item?.sku?.sellingPrice || 0).toLocaleString("vi-VN")}đ
+                  </p>
                 </Col>
                 <Col
                   xl={4}
@@ -332,24 +427,12 @@ const Cart: React.FC = () => {
                 >
                   <InputNumber
                     min={1}
+                    //max={item.sku?.stock || 0}
                     value={item.quantity}
                     onChange={(value) =>
-                      handleQuantityChange(item.id, value || 1)
+                      handleQuantityChange(item.id || "", value || 1)
                     }
                   />
-                </Col>
-                <Col
-                  xl={4}
-                  lg={4}
-                  md={4}
-                  sm={4}
-                  xs={4}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {(item.price * item.quantity).toLocaleString("vi-VN")}đ
                 </Col>
                 <Col
                   xl={3}
@@ -362,12 +445,30 @@ const Cart: React.FC = () => {
                     alignItems: "center",
                   }}
                 >
+                  <p style={{ color: "red" }}>
+                    {(
+                      (item?.sku?.sellingPrice || 0) * item.quantity
+                    ).toLocaleString("vi-VN")}
+                    đ
+                  </p>
+                </Col>
+                <Col
+                  xl={2}
+                  lg={2}
+                  md={2}
+                  sm={2}
+                  xs={2}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
                   <Button
                     type="link"
                     danger
-                    onClick={() => handleRemoveItem(item.id)}
+                    onClick={() => handleRemoveItem(item.id || "")}
                   >
-                    Xóa
+                    <p style={{ color: "red" }}> Xóa</p>
                   </Button>
                 </Col>
               </Row>

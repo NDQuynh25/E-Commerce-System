@@ -20,15 +20,17 @@ export interface IModelPaginate<T> {
 export interface IAccount {
     access_token: string;
     user: {
-        id: number;
+        id: number | string;
         email: string;
         fullname: string;
+        avatar?: string;
+        cartId?: string;
         role: {
-            id: number;
+            id: number | string;
             roleName: string;
-            permissions: {
-                id: number;
-                permissionName: string;
+            permissions?: {
+                id: number | string;
+                name: string;
                 apiAccess: string;
                 method: string;
             }[]
@@ -130,6 +132,38 @@ export interface IProduct {
     updatedAt?: string;
     [key: string]: any; // Add dynamic key
 }
+
+export interface ICartItem {
+    id?: string;
+    cartId: string;
+    productId: string;
+    option1?: string;
+    option2?: string;
+    skuId: string;
+    quantity: number;
+    sku?: skuType;
+    product?: IProduct;
+    isActive?: string;
+    createdBy?: string;
+    updatedBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    [key: string]: any; // Add dynamic key
+}
+
+export interface ICart {
+    id?: string;
+    cartItems: ICartItem[];
+    isActive?: string;
+    createdBy?: string;
+    updatedBy?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    [key: string]: any; // Add dynamic key
+    
+}
+
+
 
 
 
