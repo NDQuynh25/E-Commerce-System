@@ -19,7 +19,7 @@ import {
   Drawer,
   Spin,
 } from "antd";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { callLogout } from "../../api/authApi";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
@@ -42,7 +42,7 @@ interface IProps {
 
 const { Content, Sider } = Layout;
 
-const LayoutAdmin = (props: IProps) => {
+const LayoutAdmin: React.FC = () => {
   const location = useLocation();
 
   const loading = useAppSelector((state) => state.global.loading);
@@ -55,12 +55,19 @@ const LayoutAdmin = (props: IProps) => {
     (state) => state.auth.user.role.permissions
   );
   const [menuItems, setMenuItems] = useState<MenuProps["items"]>([]);
+  const pathNameCurrent = location.pathname;
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
+  if (
+    !pathNameCurrent.startsWith("/admin") ||
+    pathNameCurrent === "/admin/login"
+  ) {
+    return null;
+  }
   useEffect(() => {
     const ACL_ENABLE = import.meta.env.VITE_ACL_ENABLE;
     if (permissions?.length || ACL_ENABLE === "false") {
@@ -438,7 +445,8 @@ const LayoutAdmin = (props: IProps) => {
               }}
             ></Spin>
             <Content style={{ padding: "0px", overflow: "auto" }}>
-              {props.children}
+              {/* {props.children} */}
+              <Outlet />
             </Content>
           </div>
 

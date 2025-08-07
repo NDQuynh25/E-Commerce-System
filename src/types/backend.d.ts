@@ -14,7 +14,8 @@ export interface IModelPaginate<T> {
         total_elements: number;
         total_pages: number;
     },
-    results: T[]
+    results: T[] | {} 
+
 }
 
 export interface IAccount {
@@ -134,6 +135,7 @@ export interface IProduct {
 }
 
 export interface ICartItem {
+    selected?: boolean;
     id?: string;
     cartId: string;
     productId: string;
@@ -153,6 +155,7 @@ export interface ICartItem {
 
 export interface ICart {
     id?: string;
+    numberOfItems?: number;
     cartItems: ICartItem[];
     isActive?: string;
     createdBy?: string;
@@ -161,6 +164,13 @@ export interface ICart {
     updatedAt?: string;
     [key: string]: any; // Add dynamic key
     
+}
+
+export interface IOrder {
+    id?: string;
+    orderNumber?: string;
+    orderDate?: string;
+    totalAmount?: number;
 }
 
 

@@ -13,6 +13,7 @@
     "@ant-design/pro-components": "^2.7.14",
     "@ckeditor/ckeditor5-build-classic": "^44.2.0",
     "@ckeditor/ckeditor5-react": "^9.5.0",
+    "@react-oauth/google": "^0.12.2",
     "@reduxjs/toolkit": "^2.2.6",
     "@tailwindcss/vite": "^4.0.6",
     "@tinymce/tinymce-react": "^5.1.1",
@@ -27,9 +28,11 @@
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.3.1",
     "react-highlight-words": "^0.20.0",
+    "react-icons": "^5.5.0",
     "react-redux": "^9.1.2",
     "react-responsive": "^10.0.0",
     "react-router-dom": "^7.1.5",
+    "reactjs-social-login": "^2.6.3",
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "runes": "^0.4.3",
@@ -37,7 +40,8 @@
     "shop-react-vite": "file:",
     "spring-filter-query-builder": "^1.1.0",
     "styled-components": "^6.1.13",
-    "tui-image-editor": "^3.15.3"
+    "tui-image-editor": "^3.15.3",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.6",

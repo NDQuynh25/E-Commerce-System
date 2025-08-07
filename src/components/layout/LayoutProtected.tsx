@@ -3,14 +3,14 @@ import { setRefreshTokenAction } from "../../redux/slices/authSlice";
 import { message } from "antd";
 import { useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { role } from "../../utils/constant";
+import { roles } from "../../utils/constant";
 import { RootState } from "../../redux/store";
 
 interface IProps {
   children: React.ReactNode;
 }
 
-const LayoutApp = (props: IProps) => {
+const LayoutProtected = (props: IProps) => {
   const isAuthenticated = useAppSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
@@ -25,6 +25,7 @@ const LayoutApp = (props: IProps) => {
   );
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const pathName = window.location.pathname;
 
   //handle refresh token error
   useEffect(() => {
@@ -32,19 +33,21 @@ const LayoutApp = (props: IProps) => {
       localStorage.removeItem("access_token");
       message.error(errorRefreshToken);
       dispatch(setRefreshTokenAction({ status: false, message: "" }));
-      navigate("/admin/login");
+      navigate(pathName);
     }
   }, [isRefreshToken]);
 
   if (!isAuthenticated) {
-    return <Navigate to="/admin/login" />;
+    return (
+      <Navigate to={"/login"} state={{ pathName: pathName }} />
+    );
   }
 
-  if (userRole !== role.ADMIN) {
+  if (userRole !== roles.USER && userRole !== roles.ADMIN) {
     return <Navigate to="/unauthorized" />;
   }
 
   return <>{props.children}</>;
 };
 
-export default LayoutApp;
+export default LayoutProtected;

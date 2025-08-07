@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 
-import { IBackendRes, IModelPaginate, CategoryType, ICartItem } from '../../types/backend';
+import { IBackendRes, IModelPaginate, CategoryType, ICartItem, ICart } from '../../types/backend';
 import {callGetCartItems} from '../../api/cartApi';
+import { checkCartItems } from '../../api/orderApi';
 import { showMessage } from '../../utils/message';
 
 // First, create the thunk
@@ -11,27 +12,16 @@ import { showMessage } from '../../utils/message';
 export interface IState {
     isFetching: boolean;
     isEdit: boolean;
-    meta: {
-        page: number;
-        page_size: number;
-        total_elements: number;
-        total_pages: number;
-    },
-    results: ICartItem[],
-    result: ICartItem | null
+    cartItemsSelected: ICartItem[],
+    result: ICart,
+  
 }
 
 const initialState: IState = {
     isFetching: true,
     isEdit: false,
-    meta: {
-        page: 0,
-        page_size: 10,
-        total_elements: 0,
-        total_pages: 0
-    },
-    results: [] as ICartItem[],
-    result: {} as ICartItem
+    cartItemsSelected: [],
+    result: {} as ICart
 
 }
 
@@ -51,46 +41,84 @@ const cartSlice = createSlice({
     extraReducers: (builder) => {
 
         // Thunk: Fetch Categories List
-        builder.addCase(fetchCartItems.pending, (state, action) => {
+        builder.addCase(fetchCart.pending, (state, action) => {
             state.isFetching = true;
         });
         
-        builder.addCase(fetchCartItems.fulfilled, (state, action) => {
+        builder.addCase(fetchCart.fulfilled, (state, action) => {
             state.isFetching = false;
             if (action.payload && action.payload.status === 404) {
                 showMessage('error', "Không tìm thấy dữ liệu");
-                state.results = [];
+                state.result = {} as ICart;
             } else if (action.payload && action.payload.status === 200 && action.payload.data) {
-                state.meta = action.payload.data?.meta ? action.payload.data.meta : state.meta;
-                state.results = action.payload.data?.results ? action.payload.data.results : state.results;
+                state.result = action.payload.data;
             } else {
                 showMessage('error', "Lỗi hệ thống");
+                state.result = {} as ICart;
             }
         });
 
-        builder.addCase(fetchCartItems.rejected, (state, action) => {
+        builder.addCase(fetchCart.rejected, (state, action) => {
             state.isFetching = false;
             showMessage('error', "Lỗi hệ thống");
         });
 
-       
+
+        builder.addCase(fetchCheckCartItems.pending, (state, action) => {
+            state.isFetching = true;
+        });
+        builder.addCase(fetchCheckCartItems.fulfilled, (state, action) => {
+            state.isFetching = false;
+            if (action.payload && (action.payload.status === 400 || action.payload.status === 404 || action.payload.status === 422)) {
+                showMessage('error', "Giỏ hàng có sự thay đổi, vui lòng kiểm tra lại");
+                state.cartItemsSelected = [];
+            }
+            if (action.payload && action.payload.status === 200 && action.payload.data) {
+                console.log(action.payload.data);
+                state.cartItemsSelected = action.payload.data;
+                
+            } else {
+                showMessage('error', "Lỗi hệ thống");
+                state.cartItemsSelected = [];
+            }
+        })
+
+        builder.addCase(fetchCheckCartItems.rejected, (state, action) => {
+            state.isFetching = false;
+            showMessage('error', "Lỗi hệ thống");
+        })
 
        
+
+        
     },
 });
 
-export const fetchCartItems = createAsyncThunk<
-    IBackendRes<IModelPaginate<ICartItem>>,
+export const fetchCart = createAsyncThunk<
+    IBackendRes<ICart>,
     {userId: string, query: string },
     {}
 >(
-    'cartItems/fetchCartItems',
+    'cart/fetchCart',
     async ({userId, query}) => {
-        const response: IBackendRes<IModelPaginate<ICartItem>> = await callGetCartItems(userId, query);
+        const response: IBackendRes<ICart> = await callGetCartItems(userId, query);
         console.log(response);
         return response;
     }
 );
+
+export const fetchCheckCartItems = createAsyncThunk<
+    IBackendRes<ICartItem[]>,
+    {userId: string, cartItems: ICartItem[]},
+    {}
+>(
+    'cart/checkCartItems',
+    async ({userId, cartItems}) => {
+        const response: IBackendRes<ICartItem[]> = await checkCartItems(cartItems, userId);
+        console.log(response);
+        return response;
+    }
+)
 
 
 

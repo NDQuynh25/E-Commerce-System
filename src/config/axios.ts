@@ -3,7 +3,7 @@ import { Mutex } from "async-mutex";
 import axiosClient from "axios";
 import { store } from "../redux/store";
 import { setRefreshTokenAction } from "../redux/slices/authSlice";
-import { notification } from "antd";
+import { message, notification } from "antd";
 interface AccessTokenResponse {
     access_token: string;
 }
@@ -14,7 +14,8 @@ interface AccessTokenResponse {
 
 const instance = axiosClient.create({
     baseURL: import.meta.env.VITE_BACKEND_URL as string,
-    withCredentials: true // Required to handle cookies.
+    withCredentials: true, // Required to handle cookies.
+    timeout: 10000,
 });
 
 const mutex = new Mutex();
@@ -49,48 +50,58 @@ instance.interceptors.request.use(function (config) {
 instance.interceptors.response.use(
     (res) => res.data,
     async (error) => {
-        if (error.config && error.response
-            && +error.response.status === 401
-            && error.config.url !== '/api/v1/auth/login'
-            && !error.config.headers[NO_RETRY_HEADER]
-        ) {
-            error.config.headers[NO_RETRY_HEADER] = 'true'; // Prevent infinite loop
-
-            const access_token = await handleRefreshToken();
-            
-            if (access_token) {
-
-
-                localStorage.setItem('access_token', access_token); // Update local storage
-                error.config.headers['Authorization'] = `Bearer ${access_token}`; // Update access token
-                
-                console.log("Retry request with new access token");
-                return instance.request(error.config);
-            }
+      // ✅ Nếu máy chủ không phản hồi (timeout, connection refused, no internet)
+      if (!error.response) {
+        return Promise.reject({
+          status: 500,
+          message: "Máy chủ không phản hồi!",
+          error: error.message || "Unknown error",
+        });
+      }
+  
+      // ✅ Nếu lỗi 401 và không phải login
+      if (
+        error.config &&
+        error.response &&
+        +error.response.status === 401 &&
+        error.config.url !== "/api/v1/auth/login" &&
+        !error.config.headers[NO_RETRY_HEADER]
+      ) {
+        error.config.headers[NO_RETRY_HEADER] = "true";
+        const access_token = await handleRefreshToken();
+  
+        if (access_token) {
+          localStorage.setItem("access_token", access_token);
+          error.config.headers["Authorization"] = `Bearer ${access_token}`;
+          return instance.request(error.config);
         }
-
-        if (
-            error.config && error.response
-            && +error.response.status === 400
-            && error.config.url === '/api/v1/auth/refresh'
-            && location.pathname.startsWith("/admin")
-        ) {
-            const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";
-            //dispatch redux action
-            store.dispatch(setRefreshTokenAction({ status: true, message }));
-        }
-
-        if (+error.response.status === 403) {
-            notification.error({
-                message: error?.response?.data?.message ?? "",
-                description: error?.response?.data?.error ?? ""
-            })
-        }
-
-        return error?.response?.data ?? Promise.reject(error);
+      }
+  
+      // ✅ Nếu refresh token lỗi khi đang ở /admin
+      if (
+        error.config &&
+        error.response &&
+        +error.response.status === 400 &&
+        error.config.url === "/api/v1/auth/refresh" &&
+        location.pathname.startsWith("/admin")
+      ) {
+        const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";
+        store.dispatch(setRefreshTokenAction({ status: true, message }));
+      }
+  
+      // ✅ Lỗi 403
+      if (error.response && +error.response.status === 403) {
+        notification.error({
+          message: error?.response?.data?.message ?? "",
+          description: error?.response?.data?.error ?? "",
+        });
+      }
+  
+      // ✅ Luôn reject lỗi cuối cùng
+      return Promise.reject(error);
     }
-);
-
+  );
+  
 /**
  * Replaces main `axios` instance with the custom-one.
  *
