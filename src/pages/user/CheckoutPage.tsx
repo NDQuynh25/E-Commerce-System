@@ -27,21 +27,21 @@ import { useAppSelector } from "../../redux/hooks";
 import { RootState } from "../../redux/store";
 import { useAppDispatch } from "../../redux/hooks";
 const CheckoutPage: React.FC = () => {
-  const [quantity, setQuantity] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState<string>("shopeepay");
-  const [discountCode, setDiscountCode] = useState("");
+  // const [quantity, setQuantity] = useState(1);
+  // const [paymentMethod, setPaymentMethod] = useState<string>("shopeepay");
+  const [discountCode, setDiscountCode] = useState<string>("");
   const [cartItemList, setCartItemList] = useState<ICartItem[]>([]);
   const [form] = Form.useForm();
   const [merchandiseSubtotal, setMerchandiseSubtotal] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [totalPayment, setTotalPayment] = useState(0);
-  const [idempotencyKey, setIdempotencyKey] = useState(uuidv4());
-  const dispatch = useAppDispatch();
+  // const [idempotencyKey, setIdempotencyKey] = useState(uuidv4());
+  // const dispatch = useAppDispatch();
 
-  const cartItemsSelected = useAppSelector(
-    (state: RootState) => state.cart.result.cartItems
-  );
+  // const cartItemsSelected = useAppSelector(
+  //   (state: RootState) => state.cart.result.cartItems
+  // );
 
   // const handleDecrease = () => setQuantity((q) => Math.max(1, q - 1));
   // const handleIncrease = () => setQuantity((q) => q + 1);
@@ -56,8 +56,6 @@ const CheckoutPage: React.FC = () => {
 
   const handleCheckout = () => {
     console.log(form.getFieldsValue());
-    console.log(cartItemList);
-    message.success("Đặt hàng thành công!");
   };
 
   // React.useEffect(() => {
@@ -80,7 +78,7 @@ const CheckoutPage: React.FC = () => {
   };
 
   const calculateShippingFee = () => {
-    let total = 30000;
+    const total = 30000;
     return total;
   };
 

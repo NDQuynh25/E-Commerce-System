@@ -4,16 +4,17 @@ import { FaEyeSlash } from "react-icons/fa6";
 import "../../styles/login.page.css";
 import { callLogin } from "../../api/authApi";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { useAppSelector } from "../../redux/hooks";
+import { setRefreshTokenAction } from "../../redux/slices/authSlice";
 import { useAppDispatch } from "../../redux/hooks";
 import { LoadingOutlined } from "@ant-design/icons";
 import { setUserLoginInfo } from "../../redux/slices/authSlice";
 import GoogleLoginPage from "./GoogleLoginPage";
-import { useGoogleLoginHandler } from "../../hooks/useGoogleLoginHandler";
+
 import FacebookLoginPage from "./FacebookLoginPage";
 
 import { message, Spin } from "antd";
-import { useGoogleLogin } from "@react-oauth/google";
+// useNavigate is already imported above
 
 const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -22,19 +23,19 @@ const LoginPage: React.FC = () => {
   const [errorEmail, setErrorEmail] = useState<string>("");
   const [errorPassword, setErrorPassword] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [showGoogleLogin, setShowGoogleLogin] = useState(false);
-  const loginGoogle = useGoogleLoginHandler();
+
   const dispatch = useAppDispatch();
   let location = useLocation();
   let params = new URLSearchParams(location.search);
   const callback = params?.get("callback");
-  const login = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      const idToken = (tokenResponse as any).id_token; // Type assertion
-      console.log(idToken);
-    },
-    // flow: "implicit" (default)
-  });
+  const navigate = useNavigate();
+  const auth = useAppSelector((state) => state.auth);
+  useEffect(() => {
+    if (auth?.isRefreshToken === true) {
+      message.error(auth?.errorRefreshToken);
+      dispatch(setRefreshTokenAction({ status: false, messages: "" }));
+    }
+  }, []);
 
   useEffect(() => {
     if (window.google?.accounts?.id) {
@@ -75,19 +76,22 @@ const LoginPage: React.FC = () => {
 
     try {
       const res = await callLogin(email, password);
-      if (res?.data) {
-        localStorage.setItem("access_token", res.data.access_token);
-        dispatch(setUserLoginInfo(res.data?.user));
-        message.success("Đăng nhập tài khoản thành công!");
-        window.location.href = callback ? callback : "/";
+      if (res?.status === 200) {
+        localStorage.setItem("access_token", res.data?.access_token ?? "");
+        dispatch(setUserLoginInfo(res.data?.account_info));
+
+        navigate(callback || "/");
+        message.success("Đăng nhập thành công!");
       } else {
-        message.error("Đăng nhập tài khoản thất bại!");
+        localStorage.removeItem("persist:auth");
+        localStorage.removeItem("access_token");
+        message.error(res.message || "Đăng nhập thất bại.");
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      message.error(
-        err?.message || "Lỗi kết nối đến máy chủ. Vui lòng thử lại!"
-      );
+      localStorage.removeItem("persist:auth");
+      localStorage.removeItem("access_token");
+      message.error("Đăng nhập thất bại!");
     }
 
     setIsSubmitting(false);
@@ -127,7 +131,7 @@ const LoginPage: React.FC = () => {
               Đăng nhập
             </h2>
 
-            <form>
+            <form className="form_login">
               <div style={{}}>
                 <input
                   style={{

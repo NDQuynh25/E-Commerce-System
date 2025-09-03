@@ -1,13 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { callFetchAccount } from '../../api/authApi';
-import { IGetAccount } from '../../types/backend';
+import { IGetAccount, IBackendRes } from '../../types/backend';
 
 
-export const fetchAccount = createAsyncThunk<IGetAccount | undefined, void>(
+export const fetchAccount = createAsyncThunk<IBackendRes<IGetAccount>>(
     'account/fetchAccount',
     async () => {
         const response = await callFetchAccount();
-        return response.data ?? undefined; // Chuyển `null` thành `undefined`
+        return response
     }
 );
 
@@ -17,10 +17,10 @@ export interface IState {
     isLoading: boolean;
     isRefreshToken: boolean;
     errorRefreshToken: string;
-    user: {
+    account_info: {
         id: number | string;
         email: string;
-        fullname: string;
+        fullName: string;
         avatar?: string;
         cartId?: string;
         role: {
@@ -42,10 +42,10 @@ const initialState: IState = {
     isLoading: true,
     isRefreshToken: false,
     errorRefreshToken: "",
-    user: {
+    account_info: {
         id: "",
         email: "",
-        fullname: "",
+        fullName: "",
         avatar: "",
         cartId: "",
         role: {
@@ -67,13 +67,19 @@ export const authSlice = createSlice({
             state.isRefreshToken = action.payload?.status ?? false;
             state.errorRefreshToken = action.payload?.message ?? "";
         },
-        setLogoutAction: (state, action) => {
+
+        
+
+
+        
+        setLogoutAction: (state) => {
             localStorage.removeItem('access_token');
+            localStorage.removeItem("persist:auth");
             state.isAuthenticated = false;
-            state.user = {
+            state.account_info = {
                 id: "",
                 email: "",
-                fullname: "",
+                fullName: "",
                 avatar: "",
                 cartId: "",
                 role: {
@@ -84,39 +90,69 @@ export const authSlice = createSlice({
             }
         },
         setUserLoginInfo: (state, action) => {
+            console.log(action.payload);
             state.isAuthenticated = true;
             state.isLoading = false;
-            state.user.id = action.payload?.id;
-            state.user.email = action.payload?.email;
-            state.user.fullname = action.payload?.fullname;
-            state.user.avatar = action.payload?.avatar;
-            state.user.cartId = action.payload?.cartId;
-            state.user.role.id = action?.payload?.role?.id ?? -1;
-            state.user.role.roleName = action?.payload?.role?.roleName ?? "";
-            state.user.role.permissions = action?.payload?.role?.permissions ?? [];
-        },
+            state.account_info = {
+                id: action.payload?.id ?? "",
+                email: action.payload?.email ?? "",
+                fullName: action.payload?.fullName ?? "",
+                avatar: action.payload?.avatar ?? "",
+                cartId: action.payload?.cartId ?? "",
+                role: {
+                    id: action.payload?.role?.id ?? "",
+                    roleName: action.payload?.role?.roleName ?? "",
+                    permissions: action.payload?.role?.permissions ?? [],
+                },
+            };
+        }
+        
     },
     extraReducers: (builder) => {
         // Add reducers for additional action types here, and handle loading state as needed
-        builder.addCase(fetchAccount.pending, (state, action) => {
-            if (action.payload) {
-                state.isAuthenticated = false;
-                state.isLoading = true;
+        builder.addCase(fetchAccount.pending, (state) => {
+            state.isAuthenticated = false;
+            state.isLoading = true;
+            state.account_info = {
+                id: "",
+                email: "",
+                fullName: "",
+                avatar: "",
+                cartId: "",
+                role: {
+                    id: "",
+                    roleName: "",
+                    permissions: [],
+                },
             }
+            
         })
 
         builder.addCase(fetchAccount.fulfilled, (state, action) => {
-            if (action.payload) {
+            if (action.payload.status === 200) {
                 state.isAuthenticated = true;
                 state.isLoading = false;
+                state.account_info = {
+                    id: action.payload.data?.account_info?.id?? "",
+                    email: action.payload.data?.account_info?.email?? "",
+                    fullName: action.payload.data?.account_info?.fullName?? "",
+                    avatar: action.payload.data?.account_info?.avatar?? "",
+                    cartId: action.payload.data?.account_info?.cartId?? "",
+                    role: {
+                        id: action.payload.data?.account_info?.role?.id?? "",
+                        roleName: action.payload.data?.account_info?.role?.roleName?? "",
+                        permissions: action.payload.data?.account_info?.role?.permissions?? [],
+                    }
+                }
+                
+                
             }
         })
 
-        builder.addCase(fetchAccount.rejected, (state, action) => {
-            if (action.payload) {
-                state.isAuthenticated = false;
-                state.isLoading = false;
-            }
+        builder.addCase(fetchAccount.rejected, (state) => {
+            state.isAuthenticated = false;
+            state.isLoading = false;
+            
         })
 
     },

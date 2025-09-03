@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { callGetUser } from '../../api/userApi';
+import { callGetUsers } from '../../api/userApi';
 
 import { IUser, IBackendRes, IModelPaginate } from '../../types/backend';
 
@@ -49,7 +49,8 @@ const userSlice = createSlice({
                 console.log(action.payload.data.results);
                 state.isFetching = false;
                 state.meta = action.payload.data.meta;
-                state.results = action.payload.data.results;
+                state.results = (action.payload.data.results as IUser[]) ?? [];
+
             }
         });
 
@@ -66,7 +67,7 @@ export const fetchUser = createAsyncThunk<
 >(
     'user/fetchUser',
     async ({ query }) => {
-        const response: IBackendRes<IModelPaginate<IUser>> = await callGetUser(query);
+        const response: IBackendRes<IModelPaginate<IUser>> = await callGetUsers(query);
         console.log(response);
         return response;
     }

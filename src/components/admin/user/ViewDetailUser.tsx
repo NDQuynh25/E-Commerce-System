@@ -8,7 +8,7 @@ interface IProps {
     onClose: (v: boolean) => void;
     open: boolean;
     dataInit: IUser | null;
-    setDataInit: (v: any) => void;
+    setDataInit: (v: IUser | null) => void;
 }
 const ViewDetailUser = (props: IProps) => {
     const { onClose, open, dataInit, setDataInit } = props;

@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 import "../../styles/modal.header.client.css";
-import { Badge, Button, Dropdown, Menu, MenuProps, Space } from "antd";
+import { Badge, Button, Dropdown, MenuProps, Space } from "antd";
 import MenuProduct from "./MenuProduct";
 
 const items: MenuProps["items"] = [

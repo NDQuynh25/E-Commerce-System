@@ -18,7 +18,8 @@ const LoginAdmin = () => {
     (state: RootState) => state.auth.isAuthenticated
   );
   const isAdmin = useAppSelector(
-    (state: RootState) => state.auth.user?.role?.roleName === roles.ADMIN
+    (state: RootState) =>
+      state.auth.account_info?.role?.roleName === roles.ADMIN
   );
 
   let location = useLocation();
@@ -39,19 +40,15 @@ const LoginAdmin = () => {
     setIsSubmit(false);
     if (res?.data) {
       localStorage.setItem("access_token", res.data.access_token);
-      console.log("data: " + JSON.stringify(res.data.user));
-      dispatch(setUserLoginInfo(res.data?.user));
-      message.success("Đăng nhập tài khoản thành công!");
-      window.location.href = callback ? callback : "/admin/";
+      console.log("data: " + JSON.stringify(res.data.account_info));
+      dispatch(setUserLoginInfo(res.data?.account_info));
+      message.success("Đăng nhập thành công!");
+      navigate(callback || "/admin/dashboard");
     } else {
-      notification.error({
-        message: "Có lỗi xảy ra",
-        description:
-          res.message && Array.isArray(res.message)
-            ? res.message[0]
-            : res.message,
-        duration: 5,
-      });
+      console.log("error: " + JSON.stringify(res));
+      localStorage.removeItem("persist:auth");
+      localStorage.removeItem("access_token");
+      message.error("Đăng nhập thất bại!");
     }
   };
 

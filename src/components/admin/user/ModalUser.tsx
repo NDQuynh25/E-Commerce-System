@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import FloatingLabelInput from "../../input/FloatingLabelInput";
-import { IRole, IUser } from "../../../types/backend";
-import { Button, Form, Input, Modal, notification, Select, Steps} from "antd";
+import { IUser } from "../../../types/backend";
+import { Button, Form, Modal, notification,  Steps} from "antd";
 import "../../../styles/modal.user.css";
 import ImageUpload from "../../input/ImageUpload";
 import { useAppDispatch } from "../../../redux/hooks";

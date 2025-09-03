@@ -3,7 +3,8 @@ import { Mutex } from "async-mutex";
 import axiosClient from "axios";
 import { store } from "../redux/store";
 import { setRefreshTokenAction } from "../redux/slices/authSlice";
-import { message, notification } from "antd";
+import { notification } from "antd";
+
 interface AccessTokenResponse {
     access_token: string;
 }
@@ -19,6 +20,7 @@ const instance = axiosClient.create({
 });
 
 const mutex = new Mutex();
+
 const NO_RETRY_HEADER = 'x-no-retry';
 
 const handleRefreshToken = async (): Promise<string | null> => {
@@ -30,7 +32,7 @@ const handleRefreshToken = async (): Promise<string | null> => {
 };
 
 instance.interceptors.request.use(function (config) {
-    if (config.url && config.url.startsWith('/api/v1/auth/')) {
+    if (config.url && config.url.startsWith('/api/v1/auth/') && config.url !== '/api/v1/auth/logout') {
         return config;
     }
     if (typeof window !== "undefined" && window && window.localStorage && window.localStorage.getItem('access_token')) {
@@ -52,11 +54,13 @@ instance.interceptors.response.use(
     async (error) => {
       // ✅ Nếu máy chủ không phản hồi (timeout, connection refused, no internet)
       if (!error.response) {
-        return Promise.reject({
+        console.log(error);
+        return {
           status: 500,
           message: "Máy chủ không phản hồi!",
+          data: null, // Hoặc [] tùy API
           error: error.message || "Unknown error",
-        });
+        };
       }
   
       // ✅ Nếu lỗi 401 và không phải login
@@ -65,6 +69,7 @@ instance.interceptors.response.use(
         error.response &&
         +error.response.status === 401 &&
         error.config.url !== "/api/v1/auth/login" &&
+        
         !error.config.headers[NO_RETRY_HEADER]
       ) {
         error.config.headers[NO_RETRY_HEADER] = "true";
@@ -74,6 +79,17 @@ instance.interceptors.response.use(
           localStorage.setItem("access_token", access_token);
           error.config.headers["Authorization"] = `Bearer ${access_token}`;
           return instance.request(error.config);
+        } else {
+          // ✅ Nếu refresh token lỗi
+          const message = "Có lỗi xảy ra, vui lòng login.";
+          store.dispatch(setRefreshTokenAction({ status: true, message }));
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("persist:auth");
+          if (location.pathname.startsWith("/admin")) {
+            window.location.href = "/admin/login";
+          } else {
+            window.location.href = "/login";
+          }
         }
       }
   
@@ -82,15 +98,25 @@ instance.interceptors.response.use(
         error.config &&
         error.response &&
         +error.response.status === 400 &&
-        error.config.url === "/api/v1/auth/refresh" &&
-        location.pathname.startsWith("/admin")
+        error.config.url === "/api/v1/auth/refresh" 
       ) {
-        const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";
+        
+        const message = "Có lỗi xảy ra, vui lòng login.";
         store.dispatch(setRefreshTokenAction({ status: true, message }));
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("persist:auth");
+        if (location.pathname.startsWith("/admin")) {
+          window.location.href = "/admin/login";
+        } else {
+          window.location.href = "/login";
+        }
+    
+
       }
   
       // ✅ Lỗi 403
       if (error.response && +error.response.status === 403) {
+      
         notification.error({
           message: error?.response?.data?.message ?? "",
           description: error?.response?.data?.error ?? "",

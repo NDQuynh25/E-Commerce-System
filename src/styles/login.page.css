@@ -72,9 +72,9 @@
   margin-bottom: 40px;
 }
 
-form input[type='email'],
-form input[type='password'],
-form input[type='text']
+.form_login input[type='email'],
+.form_login input[type='password'],
+.form_login input[type='text']
  {
   width: 100%;
   padding: 16px;

@@ -15,8 +15,12 @@ import { callAddItemToCart } from "../../api/cartApi";
 const Product: React.FC = () => {
   const dispatch = useAppDispatch();
   const { id } = useParams();
-  const cartId = useAppSelector((state: RootState) => state.auth.user.cartId);
-  const userId = useAppSelector((state: RootState) => state.auth.user.id);
+  const cartId = useAppSelector(
+    (state: RootState) => state.auth.account_info.cartId
+  );
+  const userId = useAppSelector(
+    (state: RootState) => state.auth.account_info.id
+  );
   const product = useAppSelector((state: RootState) => state.product.result);
 
   useEffect(() => {

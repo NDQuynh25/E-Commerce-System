@@ -15,7 +15,7 @@ const LayoutProtected = (props: IProps) => {
     (state: RootState) => state.auth.isAuthenticated
   );
   const userRole = useAppSelector(
-    (state: RootState) => state.auth.user.role.roleName
+    (state: RootState) => state.auth.account_info.role.roleName
   );
   const isRefreshToken = useAppSelector(
     (state: RootState) => state.auth.isRefreshToken
@@ -38,9 +38,7 @@ const LayoutProtected = (props: IProps) => {
   }, [isRefreshToken]);
 
   if (!isAuthenticated) {
-    return (
-      <Navigate to={"/login"} state={{ pathName: pathName }} />
-    );
+    return <Navigate to={"/login"} state={{ pathName: pathName }} />;
   }
 
   if (userRole !== roles.USER && userRole !== roles.ADMIN) {

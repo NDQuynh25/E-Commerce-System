@@ -20,7 +20,10 @@ export const callUpdateUser = (id: string, userFormData: FormData) => {
 export const callDeleteUser = (id: string) => {
     return axios.delete<IBackendRes<IUser>>(`/api/v1/users/${id}`);
 }
+export const callGetUser = (id: string) => {
+    return axios.get<IBackendRes<IUser>>(`/api/v1/users/${id}`);
+}
 
-export const callGetUser = (query: string) => {
+export const callGetUsers = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IUser>>>(`/api/v1/users?${query}`);
 }

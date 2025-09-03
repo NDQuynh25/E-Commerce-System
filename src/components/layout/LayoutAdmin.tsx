@@ -49,10 +49,10 @@ const LayoutAdmin: React.FC = () => {
 
   const [collapsed, setCollapsed] = useState(false);
   const [activeMenu, setActiveMenu] = useState("");
-  const user = useAppSelector((state) => state.auth.user);
+  const user = useAppSelector((state) => state.auth.account_info);
 
   const permissions = useAppSelector(
-    (state) => state.auth.user.role.permissions
+    (state) => state.auth.account_info.role.permissions
   );
   const [menuItems, setMenuItems] = useState<MenuProps["items"]>([]);
   const pathNameCurrent = location.pathname;
@@ -404,7 +404,7 @@ const LayoutAdmin: React.FC = () => {
 
                 <Dropdown menu={{ items: itemsDropdown }} trigger={["click"]}>
                   <Space style={{ cursor: "pointer" }}>
-                    Welcome {user?.fullname}
+                    Welcome {user?.fullName}
                     <Avatar src={user?.avatar} />
                   </Space>
                 </Dropdown>

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 
-import { IBackendRes, IModelPaginate, CategoryType, ICartItem, ICart } from '../../types/backend';
+import { IBackendRes, ICartItem, ICart } from '../../types/backend';
 import {callGetCartItems} from '../../api/cartApi';
 import { checkCartItems } from '../../api/orderApi';
 import { showMessage } from '../../utils/message';
@@ -30,7 +30,7 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        setActiveMenu: (state, action) => {
+        setActiveMenu: () => {
             // state.activeMenu = action.payload;
         },
 
@@ -41,7 +41,7 @@ const cartSlice = createSlice({
     extraReducers: (builder) => {
 
         // Thunk: Fetch Categories List
-        builder.addCase(fetchCart.pending, (state, action) => {
+        builder.addCase(fetchCart.pending, (state) => {
             state.isFetching = true;
         });
         
@@ -58,13 +58,13 @@ const cartSlice = createSlice({
             }
         });
 
-        builder.addCase(fetchCart.rejected, (state, action) => {
+        builder.addCase(fetchCart.rejected, (state) => {
             state.isFetching = false;
             showMessage('error', "Lỗi hệ thống");
         });
 
 
-        builder.addCase(fetchCheckCartItems.pending, (state, action) => {
+        builder.addCase(fetchCheckCartItems.pending, (state) => {
             state.isFetching = true;
         });
         builder.addCase(fetchCheckCartItems.fulfilled, (state, action) => {
@@ -83,7 +83,7 @@ const cartSlice = createSlice({
             }
         })
 
-        builder.addCase(fetchCheckCartItems.rejected, (state, action) => {
+        builder.addCase(fetchCheckCartItems.rejected, (state) => {
             state.isFetching = false;
             showMessage('error', "Lỗi hệ thống");
         })
@@ -96,8 +96,7 @@ const cartSlice = createSlice({
 
 export const fetchCart = createAsyncThunk<
     IBackendRes<ICart>,
-    {userId: string, query: string },
-    {}
+    {userId: string, query: string }
 >(
     'cart/fetchCart',
     async ({userId, query}) => {
@@ -109,8 +108,7 @@ export const fetchCart = createAsyncThunk<
 
 export const fetchCheckCartItems = createAsyncThunk<
     IBackendRes<ICartItem[]>,
-    {userId: string, cartItems: ICartItem[]},
-    {}
+    {userId: string, cartItems: ICartItem[]}
 >(
     'cart/checkCartItems',
     async ({userId, cartItems}) => {

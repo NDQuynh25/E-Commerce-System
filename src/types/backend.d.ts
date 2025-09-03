@@ -1,4 +1,4 @@
-import { is } from "tinymce";
+
 
 export interface IBackendRes<T> {
     error?: string | null;
@@ -14,16 +14,16 @@ export interface IModelPaginate<T> {
         total_elements: number;
         total_pages: number;
     },
-    results: T[] | {} 
+    results: T[] | Record<string, never>
 
 }
 
 export interface IAccount {
     access_token: string;
-    user: {
+    account_info: {
         id: number | string;
         email: string;
-        fullname: string;
+        fullName: string;
         avatar?: string;
         cartId?: string;
         role: {
@@ -63,7 +63,7 @@ export interface IUser {
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | File | null | undefined; // Add dynamic key
 }
 
 
@@ -78,7 +78,7 @@ export interface IPermission {
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | undefined;
 
 }
 
@@ -92,10 +92,9 @@ export interface IRole {
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | IPermission[] | string[] | undefined; 
+
 }
-
-
 export interface ICategory {
     id?: string;
     categoryName: string;
@@ -104,7 +103,7 @@ export interface ICategory {
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | undefined; // Add dynamic key
 }
 
 export interface IProduct {
@@ -131,7 +130,7 @@ export interface IProduct {
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | string[] | skuType[] | undefined; // Add dynamic key
 }
 
 export interface ICartItem {
@@ -150,7 +149,7 @@ export interface ICartItem {
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | skuType | IProduct | undefined; // Add dynamic key
 }
 
 export interface ICart {
@@ -162,15 +161,35 @@ export interface ICart {
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | ICartItem[] | undefined; // Add dynamic key
     
+}
+export interface IOrderItem {
+    id?: string;
+    productId: string;
+    skuId: string;
+    quantity: number;
+    originalPriceAtOrderTime: number;
+    discountAtOrderTime: number;
 }
 
 export interface IOrder {
     id?: string;
-    orderNumber?: string;
+    recipientName: string;
+    recipientPhoneNumber: string;
+    recipientCodeProvince: string;
+    recipientCodeDistrict: string;
+    recipientCodeWard: string;
+    recipientAddress: string;
+    orderItems: IOrderItem[];
+    subtotalAmount: number;
+    grandTotal: number;
+    shippingFee: number;
+    discountAmount: number;
+    paymentMethodId: string;
     orderDate?: string;
-    totalAmount?: number;
+    statusOrder?: string;
+    note?: string;
 }
 
 
@@ -189,7 +208,7 @@ export interface skuType {
     stock: number;
     discount: number;
     isActive?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | undefined; // Add dynamic key
 }
 
 
@@ -208,7 +227,7 @@ export interface CategoryType {
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | CategoryType[] | string[] | undefined; // Add dynamic key
 
 }
 
@@ -226,7 +245,7 @@ export interface ProductType {
     updatedBy?: string;
     createdAt?: string;
     updatedAt?: string;
-    [key: string]: any; // Add dynamic key
+    [key: string]: string | number | boolean | string[] | undefined; // Add dynamic key
     
 
 }

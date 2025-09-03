@@ -16,7 +16,7 @@ const RequireAuth = ({
   allowedRoles: string[];
   children: React.ReactNode;
 }) => {
-  const user = useAppSelector((state: RootState) => state.auth.user);
+  const user = useAppSelector((state: RootState) => state.auth.account_info);
   const isAuthenticated = useAppSelector(
     (state: RootState) => state.auth.isAuthenticated
   );

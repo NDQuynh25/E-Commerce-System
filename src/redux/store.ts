@@ -22,36 +22,30 @@ import storage from 'redux-persist/lib/storage';
 
 // Cấu hình persist
 const authPersistConfig = {
-  key: 'root',
+  key: 'auth',
   storage,
-  whitelist: ['auth'], // Chỉ persist reducer account (nơi lưu thông tin auth)
 };
+
 const categoryPersistConfig = {
   key: 'category',
   storage,
-  whitelist: ['isEdit'], // Chỉ lưu trạng thái isEdit
+  whitelist: ['isEdit'],
 };
 
-
 const rootReducer = combineReducers({
-    global: globalReducer,
-    auth: authReducer,
-    user: userReducer,
-    role: roleReducer,
-    permission: permissionReducer,
-    category: persistReducer(categoryPersistConfig, categoryReducer),
-    product: productReducer,
-    sku: skuReducer, // Thêm reducer sk
-    cart: cartReducer,
-    
-  
+  global: globalReducer,
+  auth: persistReducer(authPersistConfig, authReducer),
+  user: userReducer,
+  role: roleReducer,
+  permission: permissionReducer,
+  category: persistReducer(categoryPersistConfig, categoryReducer),
+  product: productReducer,
+  sku: skuReducer,
+  cart: cartReducer,
 });
 
-const persistedReducer = persistReducer(authPersistConfig, rootReducer);
-
-// Cấu hình store với getDefaultMiddleware để bỏ qua kiểm tra serializableCheck cho redux-persist
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -61,6 +55,7 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

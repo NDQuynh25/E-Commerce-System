@@ -1,7 +1,8 @@
 import React from "react";
-import { Card, Input, Row, Col, Form, Button, Popover, Spin } from "antd";
+import { Card, Row, Col, Form, Button, Popover, Spin } from "antd";
 import FloatingLabelInput from "../FloatingLabelInput";
 import { useState, useEffect } from "react";
+import { IOrder } from "../../types/backend";
 
 interface Ward {
   name: string;
@@ -18,7 +19,7 @@ interface Province {
   districts: District[];
 }
 interface AddressSectionProps {
-  form: any;
+  form: import('antd').FormInstance;
 }
 const AddressSection: React.FC<AddressSectionProps> = ({ form }) => {
   const [visible, setVisible] = useState(false);
@@ -26,13 +27,19 @@ const AddressSection: React.FC<AddressSectionProps> = ({ form }) => {
   const [districts, setDistricts] = useState<District[]>([]);
   const [wards, setWards] = useState<Ward[]>([]);
   const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IOrder>({
     recipientName: "",
-    phoneNumber: "",
-    province: "",
-    district: "",
-    ward: "",
-    address: "",
+    recipientPhoneNumber: "",
+    recipientCodeProvince: "0",
+    recipientCodeDistrict: "0",
+    recipientCodeWard: "0",
+    recipientAddress: "",
+    orderItems: [],
+    subtotalAmount: 0,
+    grandTotal: 0,
+    shippingFee: 0,
+    discountAmount: 0,
+    paymentMethodId: "0",
   });
 
   useEffect(() => {
@@ -60,23 +67,26 @@ const AddressSection: React.FC<AddressSectionProps> = ({ form }) => {
           address: "123 Đường ABC",
         });
         setProvinces(sorted);
-
         setLoading(false);
       });
-  }, []);
+  }, [form]);
   useEffect(() => {
     setDistricts(
       provinces.find((p) => p.code === form.getFieldValue("province"))
         ?.districts || []
     );
-  }, [provinces]);
+  }, [provinces, form]);
+
+  useEffect(() => {
+    console.log(form.getFieldsValue());
+  }, [form]);
 
   useEffect(() => {
     setWards(
       districts.find((d) => d.code === form.getFieldValue("district"))?.wards ||
         []
     );
-  }, [districts]);
+  }, [districts, form]);
 
   const handleProvinceChange = (code: number) => {
     const selectedProvince = provinces.find((p) => p.code === code);
@@ -95,7 +105,7 @@ const AddressSection: React.FC<AddressSectionProps> = ({ form }) => {
     const selectedWard = wards.find((w) => w.code === code);
     setFormData({
       ...formData,
-      ward: selectedWard?.name || "",
+      recipientCodeWard: selectedWard?.name || "",
     });
 
     //form.setFieldsValue({ ward: selectedWard?.code });
@@ -105,12 +115,14 @@ const AddressSection: React.FC<AddressSectionProps> = ({ form }) => {
 
   const handleConfirm = () => {
     setFormData({
-      phoneNumber: form.getFieldValue("phoneNumber"),
+      ...formData,
+      recipientPhoneNumber: form.getFieldValue("phoneNumber"),
       recipientName: form.getFieldValue("recipientName"),
-      address: form.getFieldValue("address"),
-      province: form.getFieldValue("province"),
-      district: form.getFieldValue("district"),
-      ward: form.getFieldValue("ward"),
+      recipientCodeWard: form.getFieldValue("ward"),
+      recipientCodeDistrict: form.getFieldValue("district"),
+      recipientCodeProvince: form.getFieldValue("province"),
+      recipientAddress: form.getFieldValue("address"),
+      
     });
     setVisible(false);
   };
@@ -118,14 +130,14 @@ const AddressSection: React.FC<AddressSectionProps> = ({ form }) => {
   const handleCancel = () => {
     console.log(formData);
     setVisible(false);
-    form.setFieldValue("phoneNumber", formData.phoneNumber);
-    form.setFieldValue("recipientName", formData.recipientName);
-    form.setFieldValue("address", formData.address);
-    form.setFieldValue("province", formData.province);
-    form.setFieldValue("district", formData.district);
-    form.setFieldValue("ward", formData.ward);
+    // form.setFieldValue("phoneNumber", formData.phoneNumber);
+    // form.setFieldValue("recipientName", formData.recipientName);
+    // form.setFieldValue("address", formData.address);
+    // form.setFieldValue("province", formData.province);
+    // form.setFieldValue("district", formData.district);
+    // form.setFieldValue("ward", formData.ward);
   };
-  const handleClickOutside = (open: any) => {
+  const handleClickOutside = (open: boolean) => {
     // Không đóng popover khi click ra ngoài
     if (!open) return;
     setVisible(true);
@@ -321,17 +333,27 @@ const AddressSection: React.FC<AddressSectionProps> = ({ form }) => {
             >
               Địa chỉ nhận hàng
             </span>
+           
+           
+           
           </div>
         }
         style={{ borderRadius: "0 0px 10px 10px" }}
+        extra={
+          <Popover
+            trigger="click"
+            open={visible}
+            onOpenChange={handleClickOutside}
+            content={content}
+          >
+            <Button type="link" style={{ padding: 0 }}>
+              Thay đổi
+            </Button>
+          </Popover>
+      
+        }
       >
-        <Popover
-          trigger="click"
-          open={visible}
-          content={content}
-          onOpenChange={handleClickOutside}
-          destroyTooltipOnHide={false}
-        >
+        
           <div
             style={{
               display: "flex",
@@ -378,18 +400,11 @@ const AddressSection: React.FC<AddressSectionProps> = ({ form }) => {
                 }`}
               </span>
             </div>
+         
 
-            <Button
-              onChange={() => setVisible(true)}
-              style={{
-                width: "150px",
-                border: "none",
-              }}
-            >
-              <span style={{ fontSize: "16px" }}>Thay đổi</span>
-            </Button>
+            
           </div>
-        </Popover>
+      
       </Card>
     </div>
   );

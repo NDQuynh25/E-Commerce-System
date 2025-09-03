@@ -51,8 +51,12 @@ const CartPage: React.FC = () => {
   const [isSticky, setIsSticky] = useState(true);
   const cartContainerRef = useRef<HTMLDivElement>(null);
   const totalSectionRef = useRef<HTMLDivElement>(null);
-  const userId = useAppSelector((state: RootState) => state.auth.user.id);
-  const cartId = useAppSelector((state: RootState) => state.auth.user.cartId);
+  const userId = useAppSelector(
+    (state: RootState) => state.auth.account_info.id
+  );
+  const cartId = useAppSelector(
+    (state: RootState) => state.auth.account_info.cartId
+  );
   const cartItems = useAppSelector(
     (state: RootState) => state.cart.result.cartItems
   );
